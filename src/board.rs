@@ -1,8 +1,5 @@
 use crate::piece::Pattern;
-use std::{
-    fmt::Display,
-    ops::{Index, IndexMut},
-};
+use std::{fmt::Display, ops::Index};
 
 /// Represents a cell on the board.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
@@ -47,21 +44,11 @@ pub const BOARD_HEIGHT: usize = 20;
 /// Represents a Tetris board.
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Board {
-    data: [[Cell; BOARD_HEIGHT]; BOARD_HEIGHT],
+    data: [[Cell; BOARD_WIDTH]; BOARD_HEIGHT],
     heights: [usize; BOARD_WIDTH],
 }
 
 impl Board {
-    /// Returns the number of rows in the board.
-    pub fn rows(&self) -> usize {
-        BOARD_HEIGHT
-    }
-
-    /// Returns the number of columns in the board.
-    pub fn cols(&self) -> usize {
-        BOARD_WIDTH
-    }
-
     /// Returns the height of the given column.
     pub(crate) fn height(&self, col: usize) -> usize {
         return self.heights[col];
@@ -78,11 +65,12 @@ impl Board {
                 self.data[row + r][col + c].add(*cell);
             }
         }
+        // TODO: Update heights
     }
 
     /// Returns true if the pattern overlaps with the board.
     pub(crate) fn overlaps(&self, pattern: &Pattern, row: usize, col: usize) -> bool {
-        if row + pattern.rows() > self.rows() || col + pattern.cols() > self.cols() {
+        if row + pattern.rows() > BOARD_HEIGHT || col + pattern.cols() > BOARD_WIDTH {
             return true; // out of bounds
         }
         for (r, p_row) in pattern.iter_rows().enumerate() {
@@ -112,11 +100,22 @@ impl Board {
         // TODO: Update heights
         for row in rows.iter().rev() {
             for r in (1..=*row).rev() {
-                for c in 0..self.cols() {
+                for c in 0..BOARD_WIDTH {
                     self.data[r][c] = self.data[r - 1][c];
                 }
             }
         }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn get_data(&self) -> &[[Cell; BOARD_WIDTH]; BOARD_HEIGHT] {
+        &self.data
+    }
+
+    #[cfg(test)]
+    pub(crate) fn fill_cell(&mut self, row: usize, col: usize) {
+        self.data[row][col] = Cell::new(1);
+        self.heights[col] = self.heights[col].max(BOARD_HEIGHT - row);
     }
 }
 
@@ -128,17 +127,12 @@ impl Index<(usize, usize)> for Board {
     }
 }
 
-impl IndexMut<(usize, usize)> for Board {
-    fn index_mut(&mut self, (row, col): (usize, usize)) -> &mut Self::Output {
-        &mut self.data[row][col]
-    }
-}
-
 impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for row in self.data.iter() {
-            for cell in row.iter() {
-                write!(f, "{}", cell)?;
+        writeln!(f)?;
+        for r in 0..BOARD_HEIGHT {
+            for c in 0..BOARD_WIDTH {
+                write!(f, "{}", self.data[r][c])?;
             }
             writeln!(f)?;
         }

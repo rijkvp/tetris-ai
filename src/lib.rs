@@ -1,3 +1,4 @@
+use board::{BOARD_HEIGHT, BOARD_WIDTH};
 use piece::Piece;
 use state::{Move, State};
 
@@ -11,12 +12,12 @@ pub fn move_drop(state: &State, piece: Piece) -> Vec<Move> {
     let board = &state.board;
     let mut moves = Vec::new();
     for (rot, pattern) in piece.rotations().enumerate() {
-        for col in 0..=(board.cols() - pattern.cols()) {
+        for col in 0..=(BOARD_WIDTH - pattern.cols()) {
             let highest = (0..pattern.cols())
                 .map(|c| board.height(col + c))
                 .max()
                 .unwrap();
-            let mut row = board.rows() - highest - pattern.rows();
+            let mut row = BOARD_HEIGHT - highest - pattern.rows();
             if !board.overlaps(&pattern, row, col) {
                 while !board.overlaps(&pattern, row + 1, col) {
                     row += 1;

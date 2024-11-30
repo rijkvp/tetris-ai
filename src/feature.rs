@@ -1,12 +1,15 @@
-use crate::{board::BOARD_WIDTH, state::State};
+use crate::{
+    board::{BOARD_HEIGHT, BOARD_WIDTH},
+    state::State,
+};
 use std::cmp::{max, min};
 
 /// The number of times that two adjacent cells in the same row mismatch.
 fn row_trans(state: &State) -> usize {
     let mut sum = 0;
-    for row in 0..state.board.rows() {
-        for col in 0..state.board.cols() - 1 {
-            if state.board[(row, col)] != state.board[(row, col + 1)] {
+    for r in 0..BOARD_HEIGHT {
+        for c in 0..BOARD_WIDTH - 1 {
+            if state.board[(r, c)] != state.board[(r, c + 1)] {
                 sum += 1;
             }
         }
@@ -17,8 +20,8 @@ fn row_trans(state: &State) -> usize {
 /// The number of times that two adjacent cells in the same column mismatch.
 fn col_trans(state: &State) -> usize {
     let mut sum = 0;
-    for col in 0..state.board.cols() {
-        for row in 0..state.board.rows() - 1 {
+    for col in 0..BOARD_WIDTH {
+        for row in 0..BOARD_HEIGHT - 1 {
             if state.board[(row, col)] != state.board[(row + 1, col)] {
                 sum += 1;
             }
@@ -30,20 +33,24 @@ fn col_trans(state: &State) -> usize {
 /// The depth of each column with respect to its adjacent columns, as a list.
 /// If a column is not shorter than both of its neighbors, it has a value of 0.
 /// Otherwise, its value is how much shorter it is than its shortest neighbor.
-fn wells(state: &State) -> [usize; BOARD_WIDTH] {
-    let heights = state.board.heights();
-    let mut wells = [0; BOARD_WIDTH];
-    for i in 1..state.board.cols() - 1 {
+fn wells(state: &State) -> [i64; BOARD_WIDTH] {
+    let heights = state.board.heights().map(|x| x as i64);
+    let mut wells = [0i64; BOARD_WIDTH];
+    for i in 1..BOARD_WIDTH - 1 {
         wells[i] = max(0, min(heights[i - 1], heights[i + 1]) - heights[i]);
     }
+    wells[0] = max(0, heights[1] - heights[0]);
+    wells[BOARD_WIDTH - 1] = max(0, heights[BOARD_WIDTH - 2] - heights[BOARD_WIDTH - 1]);
     wells
 }
 
 /// The sum from 1 to wells.
 // Computed using the formula for the sum of natural numbers.
 fn cuml_wells(state: &State) -> usize {
-    let wells = wells(&state);
-    wells.iter().map(|&x| x * (x + 1) / 2).sum()
+    wells(&state)
+        .into_iter()
+        .map(|x| x * (x + 1) / 2)
+        .sum::<i64>() as usize
 }
 
 fn pits(_state: &State) -> usize {
@@ -51,7 +58,7 @@ fn pits(_state: &State) -> usize {
 }
 
 fn landing_height(state: &State) -> usize {
-    state.board.rows()
+    BOARD_HEIGHT
         + state
             .delta
             .map(|delta| {
@@ -82,4 +89,95 @@ pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
         score += feature(state) as f64 * weight;
     }
     score
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::board::Board;
+    use pyo3::ffi::c_str;
+    use pyo3::prelude::*;
+    use pyo3::types::PyTuple;
+    use rand::Rng;
+
+    const TEST_ITERATIONS: usize = 100;
+
+    const TEST_FEATURES: &[(&'static str, fn(&State) -> usize)] = &[
+        ("row_trans", row_trans),
+        ("col_trans", col_trans),
+        ("cuml_wells", cuml_wells),
+        // ("pits", pits),
+        ("landing_height", landing_height),
+        // ("eroded_cells", eroded_cells),
+    ];
+
+    /// Generates a random board with no gaps.
+    fn random_board() -> Board {
+        let mut board = Board::default();
+        let mut rng = rand::thread_rng();
+        let iterations = rng.gen_range(0..=BOARD_HEIGHT * BOARD_WIDTH);
+        for _ in 0..iterations {
+            let col = rng.gen_range(0..BOARD_WIDTH);
+            let col_height = board.height(col);
+            if col_height == BOARD_HEIGHT {
+                continue;
+            }
+            let row = BOARD_HEIGHT - col_height - 1;
+            board.fill_cell(row, col);
+        }
+        board
+    }
+
+    fn run_py_feature(state: &State, feature_name: &str) -> usize {
+        let board_data = state
+            .board
+            .get_data()
+            .into_iter()
+            .map(|row| {
+                row.into_iter()
+                    .map(|cell| cell.occupied())
+                    .collect::<Vec<bool>>()
+            })
+            .collect::<Vec<_>>();
+        Python::with_gil(|py| {
+            let py_mod = PyModule::from_code(
+                py,
+                c_str!(include_str!("../tetris.py")),
+                c_str!("tetris.py"),
+                c_str!("tetris"),
+            )
+            .unwrap();
+            let py_state = py_mod
+                .call_method(
+                    "import_state",
+                    PyTuple::new(py, &[board_data]).unwrap(),
+                    None,
+                )
+                .unwrap();
+
+            let output = py_mod
+                .call_method(feature_name, PyTuple::new(py, &[py_state]).unwrap(), None)
+                .unwrap();
+            output.extract::<usize>().unwrap()
+        })
+    }
+
+    #[test]
+    fn test_features() {
+        for (feature_name, feature) in TEST_FEATURES {
+            println!("Testing feature: {}", feature_name);
+            for _ in 0..TEST_ITERATIONS {
+                let state = State::new(random_board());
+                assert_eq!(run_py_feature(&state, feature_name), feature(&state));
+            }
+        }
+    }
+
+    #[test]
+    fn test_cuml_wells() {
+        for _ in 0..TEST_ITERATIONS {
+            let state = State::new(random_board());
+            cuml_wells(&state);
+        }
+    }
 }

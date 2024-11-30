@@ -30,12 +30,19 @@
           (
             { pkgs, config, ... }:
             {
-              packages = [ pkgs.cargo-edit ];
+              packages = [
+                pkgs.cargo-edit
+                pkgs.python3Packages.numpy
+              ];
 
               languages.rust = {
                 enable = true;
                 channel = "stable";
                 targets = [ "wasm32-unknown-unknown" ];
+              };
+
+              languages.python = {
+                enable = true;
               };
 
               pre-commit.hooks = {
