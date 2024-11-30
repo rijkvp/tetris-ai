@@ -53,13 +53,23 @@ fn cuml_wells(state: &State) -> usize {
         .sum::<i64>() as usize
 }
 
-fn pits(_state: &State) -> usize {
-    todo!()
+/// The number of empty cells that have at least one filled cell above them.
+fn pits(state: &State) -> usize {
+    let mut total = 0;
+    for c in 0..BOARD_WIDTH {
+        for r in BOARD_HEIGHT - state.board.height(c)..BOARD_HEIGHT {
+            if !state.board[(r, c)].occupied() {
+                total += 1;
+            }
+        }
+    }
+    total
 }
 
+/// The height of the row containing the bottom-most cell of the previously placed piece.
 fn landing_height(state: &State) -> usize {
     BOARD_HEIGHT
-        + state
+        - state
             .delta
             .map(|delta| {
                 let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
@@ -68,8 +78,9 @@ fn landing_height(state: &State) -> usize {
             .unwrap_or(0)
 }
 
-fn eroded_cells(_state: &State) -> usize {
-    todo!()
+/// The number of cells that were cleared from the previously placed piece.
+fn eroded_cells(state: &State) -> usize {
+    state.delta.map(|delta| delta.eroded).unwrap_or(0)
 }
 
 pub type FeatureWeights<'a> = &'a [(fn(&State) -> usize, f64)];
@@ -78,9 +89,9 @@ pub const DEFAULT_WEIGHTS: FeatureWeights = &[
     (row_trans, -2.700),
     (col_trans, -6.786),
     (cuml_wells, -0.396),
-    // (pits, -12.668),
+    (pits, -12.668),
     (landing_height, -3.383),
-    // (eroded_cells, -9.277),
+    (eroded_cells, -9.277),
 ];
 
 pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
@@ -106,9 +117,9 @@ mod tests {
         ("row_trans", row_trans),
         ("col_trans", col_trans),
         ("cuml_wells", cuml_wells),
-        // ("pits", pits),
+        ("pits", pits),
         ("landing_height", landing_height),
-        // ("eroded_cells", eroded_cells),
+        ("eroded_cells", eroded_cells),
     ];
 
     /// Generates a random board with no gaps.
@@ -165,10 +176,16 @@ mod tests {
     #[test]
     fn test_features() {
         for (feature_name, feature) in TEST_FEATURES {
-            println!("Testing feature: {}", feature_name);
             for _ in 0..TEST_ITERATIONS {
                 let state = State::new(random_board());
-                assert_eq!(run_py_feature(&state, feature_name), feature(&state));
+                let py_output = run_py_feature(&state, feature_name);
+                let rust_output = feature(&state);
+                if py_output != rust_output {
+                    panic!(
+                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}",
+                        feature_name, py_output, rust_output, state.board
+                    );
+                }
             }
         }
     }

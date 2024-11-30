@@ -10,6 +10,10 @@ impl Pattern {
         self.0.iter()
     }
 
+    pub fn get_row(&self, row: usize) -> &[Cell] {
+        &self.0[row]
+    }
+
     pub fn rows(&self) -> usize {
         self.0.len()
     }
@@ -25,24 +29,28 @@ pub struct Piece(usize);
 
 impl Piece {
     pub fn from_index(index: usize) -> Self {
-        assert!(index < PIECES.len());
+        assert!(index < PIECE_DATA.len());
         Piece(index)
     }
 
+    pub fn get_index(&self) -> usize {
+        self.0
+    }
+
     pub fn rotations(&self) -> Box<impl Iterator<Item = Pattern>> {
-        let pattern = PIECES[self.0].pattern;
-        let rots = PIECES[self.0].rotations;
+        let pattern = PIECE_DATA[self.0].pattern;
+        let rots = PIECE_DATA[self.0].rotations;
         Box::new((0..rots).map(|i| rot90(pattern, i)))
     }
 
     pub fn get_rotation(&self, rotation: usize) -> Pattern {
-        rot90(PIECES[self.0].pattern, rotation)
+        rot90(PIECE_DATA[self.0].pattern, rotation)
     }
 }
 
 impl std::fmt::Display for Piece {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Piece {}", PIECES[self.0].name)
+        write!(f, "Piece {}", PIECE_DATA[self.0].name)
     }
 }
 
@@ -53,7 +61,8 @@ pub struct PieceData {
     rotations: usize,
 }
 
-const PIECES: [PieceData; 7] = [
+pub const N_PIECES: usize = 7;
+const PIECE_DATA: [PieceData; N_PIECES] = [
     PieceData {
         name: 'I',
         pattern: &[&[Cell::new(1), Cell::new(1), Cell::new(1), Cell::new(1)]],

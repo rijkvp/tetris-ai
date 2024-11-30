@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tetris_ai::{board::Board, feature, piece::Piece, state::State};
 
@@ -22,10 +23,11 @@ fn test_game() {
     tetris_ai::simulate(
         state,
         || {
-            let i = &index.load(Ordering::Relaxed);
-            let piece = Piece::from_index(*i);
-            index.store((i + 1) % 7, Ordering::Relaxed);
-            piece
+            // let i = &index.load(Ordering::Relaxed);
+            // let piece = Piece::from_index(*i);
+            // index.store((i + 1) % 7, Ordering::Relaxed);
+            // piece
+            Piece::from_index(rand::thread_rng().gen_range(0..7))
         },
         tetris_ai::move_drop,
         policy_best,

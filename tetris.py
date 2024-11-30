@@ -154,7 +154,9 @@ def pits(_, __pits):
 @define()
 def landing_height(state):
     return state.board.rows() - (
-        state.delta.row + state.delta.zoid[state.delta.rot].shape[0]
+        (state.delta.row + state.delta.zoid[state.delta.rot].shape[0])
+        if state.delta is not None
+        else 0  # CHANGED: None detection
     )
 
 
@@ -162,10 +164,15 @@ def landing_height(state):
 #   The number of cells that were cleared from the previously placed zoid.
 @define()
 def eroded_cells(state):
-    return sum(
-        sum(state.delta.zoid[state.delta.rot][row - state.delta.row])
-        for row in state.delta.cleared
+    return (
+        sum(
+            sum(state.delta.zoid[state.delta.rot][row - state.delta.row])
+            for row in state.delta.cleared
+        )
+        if state.delta is not None
+        else 0
     )
+    # CHANGED: None detection
 
 
 class Zoid:
@@ -198,8 +205,6 @@ zoids = enum(
         S=Zoid("S", np.array([[0, 1, 1], [1, 1, 0]], dtype=np.bool_), 2),
     ),
 )
-
-del enum
 
 
 class Board:
@@ -348,7 +353,8 @@ def move_drop(state, zoid):
         orient = zoid[rot]
         for col in range(0, board.cols() - orient.shape[1] + 1):
             highest = max(board.height(col + c) for c in range(0, orient.shape[1]))
-            row = board.rows() - highest - orient.shape[0]
+            # CHANGE: this can allow negative row values
+            row = max(board.rows() - highest - orient.shape[0], 0)
             if not board.overlaps(orient, row, col):
                 while not board.overlaps(orient, row + 1, col):
                     row += 1
@@ -444,12 +450,22 @@ def zoid_gen(zoids, rng):
         yield rng.choice(zoids)
 
 
-# Added for testing purposes
+# CHANGE: Added for testing purposes
 def import_state(board_data):
     board = Board(20, 10)
     matrix = np.array(board_data, dtype=np.bool_)
     board.imprint(matrix, 0, 0)
     return State(None, board)
+
+
+# CHANGE: Added for testing purposes
+def import_zoid(index):
+    return zoids.classic[index]
+
+
+# CHANGE: Added for testing purposes
+def collect_moves(state, zoid):
+    return [m for m in move_drop(state, zoid)]
 
 
 if __name__ == "__main__":
@@ -466,29 +482,20 @@ if __name__ == "__main__":
             lambda state: sum(evaluate(state, feats).values()),
             random.Random(-seed).choice,
         ),
-        2,
+        1,
     )  ## Create simulator "object"
 
     ## Run the simulator
     # Inside this loop, print episode level data to file (take a good look at state and delta classes in game.py)
     for episode, state in enumerate(sim, 1):
-        # print(episode, state.delta.zoid)
-        # print(state.board)
-
-        # set some kind of limit
-        if episode >= 10:
-            break
+        pass
 
     elapsed = time.time() - start_time
     print(
-        f"episodes: {episode}, elapsed =  {elapsed:.2f}s, epi/s =  {episode/elapsed:.2f}"
+        f"moves: {episode}, elapsed =  {elapsed:.2f}s, moves/sec =  {episode/elapsed:.2f}"
     )
-    print("score: ", state.score())
-    print(state.board)
-
-    print(state.board.heights)
-    print(state.board.data)
-    print(state.lines_cleared(1))
-    print(state.lines_cleared(2))
-    print(state.lines_cleared(3))
-    print(state.lines_cleared(4))
+    print("score:", state.score())
+    print("board:", state.board)
+    print("heights:", state.board.heights)
+    print("lines_cleared:", state.lines_cleared())
+    print("cleared:", state.cleared)

@@ -60,12 +60,19 @@ impl Board {
 
     /// Imprints the given matrix onto the board at the given row and column.
     pub(crate) fn imprint(&mut self, pattern: Pattern, row: usize, col: usize) {
-        for (r, p_row) in pattern.iter_rows().enumerate() {
+        let mut iter = pattern.iter_rows().enumerate();
+        // first row also updates heights
+        if let Some((r, p_row)) = iter.next() {
+            for (c, cell) in p_row.iter().enumerate() {
+                self.data[row + r][col + c].add(*cell);
+                self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
+            }
+        }
+        for (r, p_row) in iter {
             for (c, cell) in p_row.iter().enumerate() {
                 self.data[row + r][col + c].add(*cell);
             }
         }
-        // TODO: Update heights
     }
 
     /// Returns true if the pattern overlaps with the board.
@@ -83,28 +90,38 @@ impl Board {
         return false;
     }
 
-    /// Returns the indices of full rows.
-    // TODO: Optimize this.
-    pub(crate) fn full(&self) -> Vec<usize> {
-        self.data
-            .iter()
-            .enumerate()
-            .filter(|(_, row)| row.iter().all(|cell| cell.0 != 0))
-            .map(|(r, _)| r)
-            .collect()
-    }
-
-    /// Clears the rows with the given indices.
-    // TODO: Figure out ordering of rows
-    pub(crate) fn clear(&mut self, rows: &[usize]) {
-        // TODO: Update heights
-        for row in rows.iter().rev() {
-            for r in (1..=*row).rev() {
+    /// Clears the full rows and returns the number of rows cleared.
+    pub(crate) fn clear_full(&mut self) -> Vec<usize> {
+        let mut rows = Vec::new();
+        for bottom in (1..=BOARD_HEIGHT).rev() {
+            let mut top = bottom;
+            while {
+                top -= 1;
+                self.data[top].iter().all(|cell| cell.occupied())
+            } {
+                rows.push(top);
+            }
+            // shift all rows above top down
+            let shift = bottom - top - 1;
+            if shift == 0 {
+                continue;
+            }
+            // shift rows down
+            for r in (0..=top).rev() {
                 for c in 0..BOARD_WIDTH {
-                    self.data[r][c] = self.data[r - 1][c];
+                    self.data[r + shift][c] = self.data[r][c]; // shift down
+                    self.data[r][c] = Cell::default(); // clear row
                 }
             }
         }
+        let rows_cleared = rows.len();
+        if rows_cleared > 0 {
+            // update heights accordingly
+            for c in 0..BOARD_WIDTH {
+                self.heights[c] -= rows_cleared;
+            }
+        }
+        rows
     }
 
     #[cfg(test)]
