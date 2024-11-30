@@ -106,6 +106,8 @@ pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
 mod tests {
     use super::*;
     use crate::board::Board;
+    use crate::move_drop;
+    use crate::piece::Piece;
     use pyo3::ffi::c_str;
     use pyo3::prelude::*;
     use pyo3::types::PyTuple;
@@ -122,7 +124,7 @@ mod tests {
         ("eroded_cells", eroded_cells),
     ];
 
-    /// Generates a random board with no gaps.
+    /// Generates a random board.
     fn random_board() -> Board {
         let mut board = Board::default();
         let mut rng = rand::thread_rng();
@@ -136,7 +138,34 @@ mod tests {
             let row = BOARD_HEIGHT - col_height - 1;
             board.fill_cell(row, col);
         }
+        // make some cells empty
+        for r in 0..BOARD_HEIGHT {
+            for c in 0..BOARD_WIDTH {
+                if board[(r, c)].occupied() {
+                    if rng.gen_bool(0.05) {
+                        board.clear_cell(r, c);
+                    }
+                }
+            }
+        }
+        board.clear_full();
         board
+    }
+
+    /// Generates a random state by dropping pieces until no more moves are possible.
+    fn random_state() -> State {
+        let mut state = State::new(Board::default());
+        let mut rng = rand::thread_rng();
+        loop {
+            let piece = Piece::from_index(rng.gen_range(0..7));
+            let possible_moves = move_drop(&mut state, piece);
+            if possible_moves.is_empty() {
+                break;
+            }
+            let r#move = possible_moves[rng.gen_range(0..possible_moves.len())];
+            state = state.future(piece, r#move);
+        }
+        state
     }
 
     fn run_py_feature(state: &State, feature_name: &str) -> usize {
@@ -174,10 +203,31 @@ mod tests {
     }
 
     #[test]
-    fn test_features() {
+    fn test_features_random_board() {
         for (feature_name, feature) in TEST_FEATURES {
             for _ in 0..TEST_ITERATIONS {
                 let state = State::new(random_board());
+                let py_output = run_py_feature(&state, feature_name);
+                let rust_output = feature(&state);
+                if py_output != rust_output {
+                    panic!(
+                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}",
+                        feature_name,
+                        py_output,
+                        rust_output,
+                        state.board,
+                        state.board.heights()
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_features_random_state() {
+        for (feature_name, feature) in TEST_FEATURES {
+            for _ in 0..TEST_ITERATIONS {
+                let state = random_state();
                 let py_output = run_py_feature(&state, feature_name);
                 let rust_output = feature(&state);
                 if py_output != rust_output {
@@ -187,14 +237,6 @@ mod tests {
                     );
                 }
             }
-        }
-    }
-
-    #[test]
-    fn test_cuml_wells() {
-        for _ in 0..TEST_ITERATIONS {
-            let state = State::new(random_board());
-            cuml_wells(&state);
         }
     }
 }

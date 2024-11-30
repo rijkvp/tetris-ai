@@ -134,6 +134,22 @@ impl Board {
         self.data[row][col] = Cell::new(1);
         self.heights[col] = self.heights[col].max(BOARD_HEIGHT - row);
     }
+
+    #[cfg(test)]
+    pub(crate) fn clear_cell(&mut self, row: usize, col: usize) {
+        self.data[row][col] = Cell::default();
+        // if the top cell was cleared
+        if self.heights[col] == BOARD_HEIGHT - row {
+            // find the highest cell in the column
+            for r in 0..BOARD_HEIGHT {
+                if self.data[r][col].occupied() {
+                    self.heights[col] = BOARD_HEIGHT - r;
+                    return;
+                }
+            }
+            self.heights[col] = 0; // reset to 0 if column is empty
+        }
+    }
 }
 
 impl Index<(usize, usize)> for Board {
