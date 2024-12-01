@@ -35,11 +35,13 @@ impl State {
         let mut eroded = 0;
         for row in cleared {
             let pattern = piece.get_rotation(r#move.rot);
-            pattern.get_row(row - r#move.row).iter().for_each(|cell| {
-                if cell.occupied() {
-                    eroded += 1;
-                }
-            });
+            if let Some(row_iter) = pattern.get_row(row - r#move.row) {
+                row_iter.iter().for_each(|cell| {
+                    if cell.occupied() {
+                        eroded += 1;
+                    }
+                });
+            }
         }
 
         Self {

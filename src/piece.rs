@@ -10,8 +10,8 @@ impl Pattern {
         self.0.iter()
     }
 
-    pub fn get_row(&self, row: usize) -> &[Cell] {
-        &self.0[row]
+    pub fn get_row(&self, row: usize) -> Option<&[Cell]> {
+        self.0.get(row).map(|r| r.as_slice())
     }
 
     pub fn rows(&self) -> usize {

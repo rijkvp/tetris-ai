@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::AtomicUsize;
 use tetris_ai::{board::Board, feature, piece::Piece, state::State};
 
 #[test]
@@ -29,7 +29,7 @@ fn test_game() {
             // piece
             Piece::from_index(rand::thread_rng().gen_range(0..7))
         },
-        tetris_ai::move_drop,
+        tetris_ai::r#move::move_drop,
         policy_best,
     );
 }

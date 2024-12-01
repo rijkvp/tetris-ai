@@ -60,17 +60,10 @@ impl Board {
 
     /// Imprints the given matrix onto the board at the given row and column.
     pub(crate) fn imprint(&mut self, pattern: Pattern, row: usize, col: usize) {
-        let mut iter = pattern.iter_rows().enumerate();
-        // first row also updates heights
-        if let Some((r, p_row)) = iter.next() {
+        for (r, p_row) in pattern.iter_rows().enumerate() {
             for (c, cell) in p_row.iter().enumerate() {
                 self.data[row + r][col + c].add(*cell);
                 self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
-            }
-        }
-        for (r, p_row) in iter {
-            for (c, cell) in p_row.iter().enumerate() {
-                self.data[row + r][col + c].add(*cell);
             }
         }
     }
@@ -93,31 +86,41 @@ impl Board {
     /// Clears the full rows and returns the number of rows cleared.
     pub(crate) fn clear_full(&mut self) -> Vec<usize> {
         let mut rows = Vec::new();
-        for bottom in (1..=BOARD_HEIGHT).rev() {
+        let mut bottom = (BOARD_HEIGHT - 1) as i64;
+        while bottom >= 0 {
             let mut top = bottom;
-            while {
+            while top >= 0 && self.data[top as usize].iter().all(|cell| cell.occupied()) {
+                rows.push(top as usize);
                 top -= 1;
-                self.data[top].iter().all(|cell| cell.occupied())
-            } {
-                rows.push(top);
             }
-            // shift all rows above top down
-            let shift = bottom - top - 1;
-            if shift == 0 {
+            if top == bottom {
+                bottom -= 1;
                 continue;
             }
             // shift rows down
-            for r in (0..=top).rev() {
+            let shift = (bottom - top) as usize;
+            if shift < BOARD_HEIGHT {
+                for r in (0..=top.max(0) as usize).rev() {
+                    for c in 0..BOARD_WIDTH {
+                        self.data[r + shift][c] = self.data[r][c]; // shift down
+                        self.data[r][c] = Cell::default(); // clear row
+                    }
+                }
+            }
+            // clear the rest of the rows
+            for r in (top + 1) as usize..shift {
                 for c in 0..BOARD_WIDTH {
-                    self.data[r + shift][c] = self.data[r][c]; // shift down
                     self.data[r][c] = Cell::default(); // clear row
                 }
             }
+            bottom = top;
         }
         let rows_cleared = rows.len();
         if rows_cleared > 0 {
             // update heights accordingly
             for c in 0..BOARD_WIDTH {
+                // Important: this assumes there are no empty cells below full rows
+                // otherwise the heights calculation will be incorrect
                 self.heights[c] -= rows_cleared;
             }
         }
@@ -170,5 +173,72 @@ impl Display for Board {
             writeln!(f)?;
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fill_row(board: &mut Board, row: usize) {
+        for c in 0..BOARD_WIDTH {
+            board.fill_cell(row, c);
+        }
+    }
+
+    #[test]
+    fn test_clear_board_single() {
+        let mut board = Board::default();
+        fill_row(&mut board, BOARD_HEIGHT - 1);
+        assert_eq!(board.clear_full(), vec![BOARD_HEIGHT - 1]);
+        assert_eq!(board.heights(), &[0; BOARD_WIDTH]);
+    }
+
+    #[test]
+    fn test_clear_board_single_2() {
+        let mut board = Board::default();
+        fill_row(&mut board, 8);
+        assert_eq!(board.clear_full(), vec![8]);
+    }
+
+    #[test]
+    fn test_clear_board_single_3() {
+        let mut board = Board::default();
+        fill_row(&mut board, 0);
+        assert_eq!(board.clear_full(), vec![0]);
+    }
+
+    #[test]
+    fn test_clear_board_multiple() {
+        let ranges = vec![0..3, 4..9, 5..14, 16..BOARD_HEIGHT, 0..BOARD_HEIGHT];
+        for (n, range) in ranges.into_iter().enumerate() {
+            let mut board = Board::default();
+            for r in range.clone() {
+                fill_row(&mut board, r);
+            }
+            assert_eq!(board.clear_full(), range.rev().collect::<Vec<_>>());
+            if n >= 3 {
+                // last three are valid Tetris boards
+                assert_eq!(board.heights(), &[0; BOARD_WIDTH]);
+            }
+        }
+    }
+
+    #[test]
+    fn test_clear_board_bottom_fill() {
+        let mut board = Board::default();
+        for i in 0..BOARD_HEIGHT - 1 {
+            let range = i..BOARD_HEIGHT;
+            for r in range.clone() {
+                fill_row(&mut board, r);
+            }
+            assert_eq!(board.clear_full(), range.rev().collect::<Vec<_>>());
+            for r in 0..BOARD_HEIGHT {
+                for c in 0..BOARD_WIDTH {
+                    assert_eq!(board[(r, c)].empty(), true);
+                }
+            }
+            assert_eq!(board.heights(), &[0; BOARD_WIDTH]);
+        }
     }
 }

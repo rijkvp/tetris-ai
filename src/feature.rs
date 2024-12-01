@@ -9,7 +9,7 @@ fn row_trans(state: &State) -> usize {
     let mut sum = 0;
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH - 1 {
-            if state.board[(r, c)] != state.board[(r, c + 1)] {
+            if state.board[(r, c)].occupied() != state.board[(r, c + 1)].occupied() {
                 sum += 1;
             }
         }
@@ -22,7 +22,7 @@ fn col_trans(state: &State) -> usize {
     let mut sum = 0;
     for col in 0..BOARD_WIDTH {
         for row in 0..BOARD_HEIGHT - 1 {
-            if state.board[(row, col)] != state.board[(row + 1, col)] {
+            if state.board[(row, col)].occupied() != state.board[(row + 1, col)].occupied() {
                 sum += 1;
             }
         }
@@ -30,7 +30,7 @@ fn col_trans(state: &State) -> usize {
     sum
 }
 
-/// The depth of each column with respect to its adjacent columns, as a list.
+/// The depth of each column with respect to its adjacent columns.
 /// If a column is not shorter than both of its neighbors, it has a value of 0.
 /// Otherwise, its value is how much shorter it is than its shortest neighbor.
 fn wells(state: &State) -> [i64; BOARD_WIDTH] {
@@ -106,8 +106,8 @@ pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
 mod tests {
     use super::*;
     use crate::board::Board;
-    use crate::move_drop;
     use crate::piece::Piece;
+    use crate::r#move::move_drop;
     use pyo3::ffi::c_str;
     use pyo3::prelude::*;
     use pyo3::types::PyTuple;
@@ -138,7 +138,10 @@ mod tests {
             let row = BOARD_HEIGHT - col_height - 1;
             board.fill_cell(row, col);
         }
+        board.clear_full();
         // make some cells empty
+        // NOTE we deliberately do this after the clearing since we want to ensure that the board
+        // is a valid 'Tetris' board, i.e. no empty cells below filled cells
         for r in 0..BOARD_HEIGHT {
             for c in 0..BOARD_WIDTH {
                 if board[(r, c)].occupied() {
@@ -148,7 +151,6 @@ mod tests {
                 }
             }
         }
-        board.clear_full();
         board
     }
 
@@ -232,8 +234,12 @@ mod tests {
                 let rust_output = feature(&state);
                 if py_output != rust_output {
                     panic!(
-                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}",
-                        feature_name, py_output, rust_output, state.board
+                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}",
+                        feature_name,
+                        py_output,
+                        rust_output,
+                        state.board,
+                        state.board.heights()
                     );
                 }
             }
