@@ -11,7 +11,7 @@ impl Cell {
     }
 
     /// Returns true if the cell is occupied.
-    pub fn occupied(&self) -> bool {
+    pub fn filled(&self) -> bool {
         self.0 != 0
     }
 
@@ -19,18 +19,11 @@ impl Cell {
     pub fn empty(&self) -> bool {
         self.0 == 0
     }
-
-    /// Adds the other cell to this cell, replacing it if it is occupied.
-    pub fn add(&mut self, other: Cell) {
-        if other.occupied() {
-            self.0 = other.0;
-        }
-    }
 }
 
 impl Display for Cell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.occupied() {
+        if self.filled() {
             write!(f, "#")
         } else {
             write!(f, ".")
@@ -62,8 +55,10 @@ impl Board {
     pub(crate) fn imprint(&mut self, pattern: Pattern, row: usize, col: usize) {
         for (r, p_row) in pattern.iter_rows().enumerate() {
             for (c, cell) in p_row.iter().enumerate() {
-                self.data[row + r][col + c].add(*cell);
-                self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
+                if cell.filled() {
+                    self.data[row + r][col + c] = *cell;
+                    self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
+                }
             }
         }
     }
@@ -75,7 +70,7 @@ impl Board {
         }
         for (r, p_row) in pattern.iter_rows().enumerate() {
             for (c, cell) in p_row.iter().enumerate() {
-                if cell.occupied() && self.data[row + r][col + c].occupied() {
+                if cell.filled() && self.data[row + r][col + c].filled() {
                     return true;
                 }
             }
@@ -89,7 +84,7 @@ impl Board {
         let mut bottom = (BOARD_HEIGHT - 1) as i64;
         while bottom >= 0 {
             let mut top = bottom;
-            while top >= 0 && self.data[top as usize].iter().all(|cell| cell.occupied()) {
+            while top >= 0 && self.data[top as usize].iter().all(|cell| cell.filled()) {
                 rows.push(top as usize);
                 top -= 1;
             }
@@ -145,7 +140,7 @@ impl Board {
         if self.heights[col] == BOARD_HEIGHT - row {
             // find the highest cell in the column
             for r in 0..BOARD_HEIGHT {
-                if self.data[r][col].occupied() {
+                if self.data[r][col].filled() {
                     self.heights[col] = BOARD_HEIGHT - r;
                     return;
                 }

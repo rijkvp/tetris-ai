@@ -63,7 +63,7 @@ mod tests {
             .into_iter()
             .map(|row| {
                 row.into_iter()
-                    .map(|cell| cell.occupied())
+                    .map(|cell| cell.filled())
                     .collect::<Vec<bool>>()
             })
             .collect::<Vec<_>>();

@@ -9,7 +9,7 @@ fn row_trans(state: &State) -> usize {
     let mut sum = 0;
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH - 1 {
-            if state.board[(r, c)].occupied() != state.board[(r, c + 1)].occupied() {
+            if state.board[(r, c)].filled() != state.board[(r, c + 1)].filled() {
                 sum += 1;
             }
         }
@@ -22,7 +22,7 @@ fn col_trans(state: &State) -> usize {
     let mut sum = 0;
     for col in 0..BOARD_WIDTH {
         for row in 0..BOARD_HEIGHT - 1 {
-            if state.board[(row, col)].occupied() != state.board[(row + 1, col)].occupied() {
+            if state.board[(row, col)].filled() != state.board[(row + 1, col)].filled() {
                 sum += 1;
             }
         }
@@ -58,7 +58,7 @@ fn pits(state: &State) -> usize {
     let mut total = 0;
     for c in 0..BOARD_WIDTH {
         for r in BOARD_HEIGHT - state.board.height(c)..BOARD_HEIGHT {
-            if !state.board[(r, c)].occupied() {
+            if state.board[(r, c)].empty() {
                 total += 1;
             }
         }
@@ -144,7 +144,7 @@ mod tests {
         // is a valid 'Tetris' board, i.e. no empty cells below filled cells
         for r in 0..BOARD_HEIGHT {
             for c in 0..BOARD_WIDTH {
-                if board[(r, c)].occupied() {
+                if board[(r, c)].filled() {
                     if rng.gen_bool(0.05) {
                         board.clear_cell(r, c);
                     }
@@ -177,7 +177,7 @@ mod tests {
             .into_iter()
             .map(|row| {
                 row.into_iter()
-                    .map(|cell| cell.occupied())
+                    .map(|cell| cell.filled())
                     .collect::<Vec<bool>>()
             })
             .collect::<Vec<_>>();
