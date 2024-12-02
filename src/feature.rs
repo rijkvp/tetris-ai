@@ -138,10 +138,7 @@ mod tests {
             let row = BOARD_HEIGHT - col_height - 1;
             board.fill_cell(row, col);
         }
-        board.clear_full();
         // make some cells empty
-        // NOTE we deliberately do this after the clearing since we want to ensure that the board
-        // is a valid 'Tetris' board, i.e. no empty cells below filled cells
         for r in 0..BOARD_HEIGHT {
             for c in 0..BOARD_WIDTH {
                 if board[(r, c)].filled() {
@@ -151,6 +148,7 @@ mod tests {
                 }
             }
         }
+        board.clear_full();
         board
     }
 

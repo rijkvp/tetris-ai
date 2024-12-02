@@ -113,10 +113,15 @@ impl Board {
         let rows_cleared = rows.len();
         if rows_cleared > 0 {
             // update heights accordingly
-            for c in 0..BOARD_WIDTH {
-                // Important: this assumes there are no empty cells below full rows
-                // otherwise the heights calculation will be incorrect
-                self.heights[c] -= rows_cleared;
+            'outer: for c in 0..BOARD_WIDTH {
+                let max_height = self.heights[c] - rows_cleared;
+                for r in (BOARD_HEIGHT - max_height)..BOARD_HEIGHT {
+                    if self.data[r][c].filled() {
+                        self.heights[c] = BOARD_HEIGHT - r;
+                        continue 'outer;
+                    }
+                }
+                self.heights[c] = 0;
             }
         }
         rows
