@@ -72,8 +72,8 @@ fn landing_height(state: &State) -> usize {
         - state
             .delta
             .map(|delta| {
-                let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
-                delta.r#move.row + piece_height
+                //let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
+                delta.r#move.row //+ piece_height
             })
             .unwrap_or(0)
 }
@@ -179,6 +179,8 @@ mod tests {
                     .collect::<Vec<bool>>()
             })
             .collect::<Vec<_>>();
+        // TODO: Convert to optional piece_idx, rot, col, row dict
+        let delta_data = state.delta;
         Python::with_gil(|py| {
             let py_mod = PyModule::from_code(
                 py,
@@ -190,7 +192,7 @@ mod tests {
             let py_state = py_mod
                 .call_method(
                     "import_state",
-                    PyTuple::new(py, &[board_data]).unwrap(),
+                    PyTuple::new(py, &[board_data, delta_data]).unwrap(),
                     None,
                 )
                 .unwrap();
@@ -232,12 +234,13 @@ mod tests {
                 let rust_output = feature(&state);
                 if py_output != rust_output {
                     panic!(
-                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}",
+                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
                         feature_name,
                         py_output,
                         rust_output,
                         state.board,
-                        state.board.heights()
+                        state.board.heights(),
+                        state.delta
                     );
                 }
             }

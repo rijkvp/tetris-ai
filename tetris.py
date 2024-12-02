@@ -451,11 +451,22 @@ def zoid_gen(zoids, rng):
 
 
 # CHANGE: Added for testing purposes
-def import_state(board_data):
+def import_state(board_data, delta_data):
     board = Board(20, 10)
     matrix = np.array(board_data, dtype=np.bool_)
     board.imprint(matrix, 0, 0)
-    return State(None, board)
+    delta = (
+        State.Delta(
+            zoids.classic[delta_data.piece_idx],
+            delta_data.rot,
+            delta_data.col,
+            delta_data.row,
+            {},
+        )
+        if delta_data is not None
+        else None
+    )
+    return State(None, board, delta=delta)
 
 
 # CHANGE: Added for testing purposes
