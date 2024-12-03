@@ -1,5 +1,5 @@
 use crate::piece::Pattern;
-use std::{fmt::Display, ops::Index};
+use std::{fmt::Display, ops::Index, str::FromStr};
 
 /// Represents a cell on the board.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
@@ -35,7 +35,7 @@ pub const BOARD_WIDTH: usize = 10;
 pub const BOARD_HEIGHT: usize = 20;
 
 /// Represents a Tetris board.
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Default)]
 pub struct Board {
     data: [[Cell; BOARD_WIDTH]; BOARD_HEIGHT],
     heights: [usize; BOARD_WIDTH],
@@ -95,7 +95,7 @@ impl Board {
             // shift rows down
             let shift = (bottom - top) as usize;
             if shift < BOARD_HEIGHT {
-                for r in (0..=top.max(0) as usize).rev() {
+                for r in (0..(top + 1) as usize).rev() {
                     for c in 0..BOARD_WIDTH {
                         self.data[r + shift][c] = self.data[r][c]; // shift down
                         self.data[r][c] = Cell::default(); // clear row
@@ -176,6 +176,31 @@ impl Display for Board {
     }
 }
 
+impl FromStr for Board {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let lines = s.trim().lines().collect::<Vec<_>>();
+        assert!(lines.len() == BOARD_HEIGHT);
+        let mut data = [[Cell::default(); BOARD_WIDTH]; BOARD_HEIGHT];
+        let mut heights = [0; BOARD_WIDTH];
+        for (r, line) in lines.iter().enumerate() {
+            assert!(line.len() == BOARD_WIDTH);
+            for (c, ch) in line.chars().enumerate() {
+                if ch == '#' {
+                    data[r][c] = Cell::new(1);
+                    heights[c] = heights[c].max(BOARD_HEIGHT - r);
+                } else if ch == '.' {
+                    data[r][c] = Cell::default();
+                } else {
+                    panic!("invalid character: {}", ch);
+                }
+            }
+        }
+        Ok(Board { data, heights })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -240,5 +265,65 @@ mod tests {
             }
             assert_eq!(board.heights(), &[0; BOARD_WIDTH]);
         }
+    }
+
+    #[test]
+    fn test_clear_board_regression() {
+        let mut board = Board::from_str(
+            r#"
+##########
+#########.
+#.#..###..
+..#..###..
+.##...#...
+.##...#...
+..###.#...
+..##..#...
+..##..#...
+#.##.##...
+#.##.##...
+###..#.#..
+###.##.#..
+########..
+..######..
+.#.#.####.
+.#.#...###
+##.#..####
+##.#...###
+##.#....##
+    "#,
+        )
+        .unwrap();
+        let cleared = board.clear_full();
+        assert_eq!(cleared, vec![0]);
+        let expected = Board::from_str(
+            r#"
+..........
+#########.
+#.#..###..
+..#..###..
+.##...#...
+.##...#...
+..###.#...
+..##..#...
+..##..#...
+#.##.##...
+#.##.##...
+###..#.#..
+###.##.#..
+########..
+..######..
+.#.#.####.
+.#.#...###
+##.#..####
+##.#...###
+##.#....##
+            "#,
+        )
+        .unwrap();
+        println!("Expected board:{}", expected);
+        println!("Actual board:{}", board);
+        assert_eq!(board.heights, expected.heights);
+        assert_eq!(board.data, expected.data);
     }
 }

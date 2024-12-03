@@ -23,6 +23,19 @@ impl Pattern {
     }
 }
 
+impl std::fmt::Display for Pattern {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f)?;
+        for row in self.iter_rows() {
+            for cell in row.iter() {
+                write!(f, "{cell}")?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
+
 /// A rotatable tetromino piece.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Piece(usize);

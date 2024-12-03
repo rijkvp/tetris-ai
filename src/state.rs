@@ -1,16 +1,19 @@
 use crate::{board::Board, piece::Piece};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone)]
 pub struct State {
     pub board: Board,
     pub delta: Option<Delta>,
 }
 
-#[derive(Clone, Copy, Debug)]
+// TODO: make Copy again
+#[derive(Clone, Debug)]
 pub struct Delta {
     pub piece: Piece,
     pub r#move: Move,
     pub eroded: usize,
+    #[cfg(test)]
+    pub cleared: Vec<usize>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -33,7 +36,7 @@ impl State {
 
         // count the number of cells that were cleared by the move.
         let mut eroded = 0;
-        for row in cleared {
+        for row in &cleared {
             let pattern = piece.get_rotation(r#move.rot);
             if let Some(row_iter) = pattern.get_row(row - r#move.row) {
                 row_iter.iter().for_each(|cell| {
@@ -50,6 +53,8 @@ impl State {
                 piece,
                 r#move,
                 eroded,
+                #[cfg(test)]
+                cleared,
             }),
         }
     }

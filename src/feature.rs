@@ -71,16 +71,17 @@ fn landing_height(state: &State) -> usize {
     BOARD_HEIGHT
         - state
             .delta
+            .as_ref()
             .map(|delta| {
-                //let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
-                delta.r#move.row //+ piece_height
+                let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
+                delta.r#move.row + piece_height
             })
             .unwrap_or(0)
 }
 
 /// The number of cells that were cleared from the previously placed piece.
 fn eroded_cells(state: &State) -> usize {
-    state.delta.map(|delta| delta.eroded).unwrap_or(0)
+    state.delta.as_ref().map(|delta| delta.eroded).unwrap_or(0)
 }
 
 pub type FeatureWeights<'a> = &'a [(fn(&State) -> usize, f64)];
@@ -104,13 +105,14 @@ pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
     use crate::board::Board;
     use crate::piece::Piece;
     use crate::r#move::move_drop;
     use pyo3::ffi::c_str;
-    use pyo3::prelude::*;
-    use pyo3::types::PyTuple;
+    use pyo3::types::{PyDict, PyTuple};
+    use pyo3::{prelude::*, IntoPyObjectExt};
     use rand::Rng;
 
     const TEST_ITERATIONS: usize = 100;
@@ -158,11 +160,12 @@ mod tests {
         let mut rng = rand::thread_rng();
         loop {
             let piece = Piece::from_index(rng.gen_range(0..7));
-            let possible_moves = move_drop(&mut state, piece);
+            let possible_moves = move_drop(&state, piece);
             if possible_moves.is_empty() {
                 break;
             }
             let r#move = possible_moves[rng.gen_range(0..possible_moves.len())];
+            println!("Previous board:{}", state.board);
             state = state.future(piece, r#move);
         }
         state
@@ -179,8 +182,6 @@ mod tests {
                     .collect::<Vec<bool>>()
             })
             .collect::<Vec<_>>();
-        // TODO: Convert to optional piece_idx, rot, col, row dict
-        let delta_data = state.delta;
         Python::with_gil(|py| {
             let py_mod = PyModule::from_code(
                 py,
@@ -189,12 +190,27 @@ mod tests {
                 c_str!("tetris"),
             )
             .unwrap();
+            let delta_dict = PyDict::new(py);
+            if let Some(delta) = &state.delta {
+                delta_dict
+                    .set_item("piece_idx", delta.piece.get_index())
+                    .unwrap();
+                delta_dict.set_item("rot", delta.r#move.rot).unwrap();
+                delta_dict.set_item("col", delta.r#move.col).unwrap();
+                delta_dict.set_item("row", delta.r#move.row).unwrap();
+                delta_dict
+                    .set_item("cleared", delta.cleared.clone())
+                    .unwrap();
+            }
+
+            let args_tuple = PyTuple::new(
+                py,
+                &[board_data.into_py_any(py).unwrap(), delta_dict.into()],
+            )
+            .unwrap();
+
             let py_state = py_mod
-                .call_method(
-                    "import_state",
-                    PyTuple::new(py, &[board_data, delta_data]).unwrap(),
-                    None,
-                )
+                .call_method("import_state", args_tuple, None)
                 .unwrap();
 
             let output = py_mod
@@ -233,15 +249,21 @@ mod tests {
                 let py_output = run_py_feature(&state, feature_name);
                 let rust_output = feature(&state);
                 if py_output != rust_output {
+                    if let Some(delta) = &state.delta {
+                        println!(
+                            "Piece rotation: {}",
+                            delta.piece.get_rotation(delta.r#move.rot)
+                        );
+                    }
                     panic!(
-                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
-                        feature_name,
-                        py_output,
-                        rust_output,
-                        state.board,
-                        state.board.heights(),
-                        state.delta
-                    );
+                         "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
+                         feature_name,
+                         py_output,
+                         rust_output,
+                         state.board,
+                         state.board.heights(),
+                         state.delta
+                     );
                 }
             }
         }

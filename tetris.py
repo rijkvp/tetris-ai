@@ -353,7 +353,7 @@ def move_drop(state, zoid):
         orient = zoid[rot]
         for col in range(0, board.cols() - orient.shape[1] + 1):
             highest = max(board.height(col + c) for c in range(0, orient.shape[1]))
-            # CHANGE: this can allow negative row values
+            # CHANGED: this can allow negative row values
             row = max(board.rows() - highest - orient.shape[0], 0)
             if not board.overlaps(orient, row, col):
                 while not board.overlaps(orient, row + 1, col):
@@ -455,18 +455,16 @@ def import_state(board_data, delta_data):
     board = Board(20, 10)
     matrix = np.array(board_data, dtype=np.bool_)
     board.imprint(matrix, 0, 0)
-    delta = (
-        State.Delta(
-            zoids.classic[delta_data.piece_idx],
-            delta_data.rot,
-            delta_data.col,
-            delta_data.row,
+    if len(delta_data) > 0:
+        delta = State.Delta(
+            zoids.classic[delta_data["piece_idx"]],
+            delta_data["rot"],
+            delta_data["row"],
+            delta_data["col"],
             {},
         )
-        if delta_data is not None
-        else None
-    )
-    return State(None, board, delta=delta)
+        return State(None, board, delta=delta)
+    return State(None, board)
 
 
 # CHANGE: Added for testing purposes
@@ -483,7 +481,7 @@ if __name__ == "__main__":
     move_gen = move_drop  # Create a move generator (this is where overhang detection or time pressure filtering are implemented. move_drop is basic version)
     feats = testfeatures  # Define Features
     state = State(None, Board(20, 10))  ## Define Initial State
-    seed = 101  ## Pick a seed (if using)
+    seed = 109845  ## Pick a seed (if using)
     start_time = time.time()
     sim = simulate(
         state,
