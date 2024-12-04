@@ -169,10 +169,10 @@ def eroded_cells(state):
             sum(state.delta.zoid[state.delta.rot][row - state.delta.row])
             for row in state.delta.cleared
         )
+        # CHANGED: None detection
         if state.delta is not None
         else 0
     )
-    # CHANGED: None detection
 
 
 class Zoid:
@@ -461,7 +461,7 @@ def import_state(board_data, delta_data):
             delta_data["rot"],
             delta_data["row"],
             delta_data["col"],
-            {},
+            frozenset(delta_data["cleared"]),
         )
         return State(None, board, delta=delta)
     return State(None, board)

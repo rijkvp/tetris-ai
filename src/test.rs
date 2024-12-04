@@ -47,7 +47,6 @@ pub fn random_state() -> State {
             break;
         }
         let r#move = possible_moves[rng.gen_range(0..possible_moves.len())];
-        println!("Previous board:{}", state.board);
         state = state.future(piece, r#move);
     }
     state
