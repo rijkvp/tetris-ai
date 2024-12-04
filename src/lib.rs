@@ -8,6 +8,8 @@ pub mod feature;
 pub mod r#move;
 pub mod piece;
 pub mod state;
+#[cfg(test)]
+pub mod test;
 
 pub fn simulate(
     mut state: State,
