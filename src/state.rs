@@ -6,7 +6,6 @@ pub struct State {
     pub delta: Option<Delta>,
 }
 
-// TODO: make Copy again
 #[derive(Clone, Debug)]
 pub struct Delta {
     pub piece: Piece,
@@ -30,7 +29,7 @@ impl State {
 
     /// Computes the new 'future' state after a piece has been moved.
     pub(crate) fn future(&self, piece: Piece, r#move: Move) -> Self {
-        let mut board = self.board.clone();
+        let mut board = self.board;
         board.imprint(piece.get_rotation(r#move.rot), r#move.row, r#move.col);
         let cleared = board.clear_full();
 
@@ -39,7 +38,7 @@ impl State {
         for row in &cleared {
             let pattern = piece.get_rotation(r#move.rot);
             if let Some(row_iter) = pattern.get_row(row - r#move.row) {
-                row_iter.iter().for_each(|cell| {
+                row_iter.for_each(|cell| {
                     if cell.filled() {
                         eroded += 1;
                     }

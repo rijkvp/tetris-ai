@@ -2,32 +2,11 @@ use crate::board::Cell;
 
 type PatternRef<'a> = &'a [&'a [Cell]];
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Pattern(Vec<Vec<Cell>>);
-
-impl Pattern {
-    pub fn iter_rows(&self) -> std::slice::Iter<'_, Vec<Cell>> {
-        self.0.iter()
-    }
-
-    pub fn get_row(&self, row: usize) -> Option<&[Cell]> {
-        self.0.get(row).map(|r| r.as_slice())
-    }
-
-    pub fn rows(&self) -> usize {
-        self.0.len()
-    }
-
-    pub fn cols(&self) -> usize {
-        self.0[0].len()
-    }
-}
-
 impl std::fmt::Display for Pattern {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f)?;
         for row in self.iter_rows() {
-            for cell in row.iter() {
+            for cell in row {
                 write!(f, "{cell}")?;
             }
             writeln!(f)?;
@@ -50,14 +29,13 @@ impl Piece {
         self.0
     }
 
-    pub fn rotations(&self) -> Box<impl Iterator<Item = Pattern>> {
-        let pattern = PIECE_DATA[self.0].pattern;
-        let rots = PIECE_DATA[self.0].rotations;
-        Box::new((0..rots).map(|i| rot90(pattern, i)))
+    pub fn get_rotation(&self, rotation: usize) -> Pattern {
+        debug_assert!(rotation < self.num_rotations());
+        rot90(PIECE_DATA[self.0].pattern, rotation)
     }
 
-    pub fn get_rotation(&self, rotation: usize) -> Pattern {
-        rot90(PIECE_DATA[self.0].pattern, rotation)
+    pub fn num_rotations(&self) -> usize {
+        PIECE_DATA[self.0].rotations
     }
 }
 
@@ -128,47 +106,163 @@ const PIECE_DATA: [PieceData; N_PIECES] = [
     },
 ];
 
-fn rot90(pattern: PatternRef<'_>, times: usize) -> Pattern {
-    debug_assert!(times < 4); // 4 rotations is the same as 0
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Pattern {
+    data: PatternRef<'static>,
+    rev_rows: bool,
+    rev_cols: bool,
+}
 
-    if times == 0 || times == 2 {
-        let mut result = Vec::with_capacity(pattern.len());
-        if times == 0 {
-            // no rotation
-            for row in pattern.iter() {
-                result.push(row.iter().copied().collect());
+impl Pattern {
+    fn new(data: PatternRef<'static>, rev_rows: bool, rev_cols: bool) -> Self {
+        Self {
+            data,
+            rev_rows,
+            rev_cols,
+        }
+    }
+
+    pub fn iter_rows(&self) -> PatternRowIter {
+        PatternRowIter::new(
+            self.data,
+            self.rev_rows,
+            self.rev_cols,
+            self.rev_cols != self.rev_rows,
+        )
+    }
+
+    pub fn get_row(&self, row: usize) -> Option<PatternColIter> {
+        self.iter_rows().nth(row)
+    }
+
+    pub fn rows(&self) -> usize {
+        if self.rev_cols == self.rev_rows {
+            self.data.len()
+        } else {
+            self.data[0].len()
+        }
+    }
+
+    pub fn cols(&self) -> usize {
+        if self.rev_cols == self.rev_rows {
+            self.data[0].len()
+        } else {
+            self.data.len()
+        }
+    }
+}
+
+pub struct PatternRowIter {
+    data: PatternRef<'static>,
+    row: isize,
+    rev_rows: bool,
+    rev_cols: bool,
+    transpose: bool,
+}
+
+impl PatternRowIter {
+    fn new(data: PatternRef<'static>, rev_rows: bool, rev_cols: bool, transpose: bool) -> Self {
+        Self {
+            data,
+            row: if rev_rows {
+                (if transpose { data[0].len() } else { data.len() }) as isize - 1
+            } else {
+                0
+            },
+            rev_rows,
+            rev_cols,
+            transpose,
+        }
+    }
+}
+
+impl Iterator for PatternRowIter {
+    type Item = PatternColIter;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let length = if self.transpose {
+            self.data[0].len()
+        } else {
+            self.data.len()
+        };
+        if self.row >= 0 && (self.row as usize) < length {
+            let prev = self.row as usize;
+            self.row = if self.rev_rows {
+                self.row - 1
+            } else {
+                self.row + 1
+            };
+            Some(PatternColIter::new(
+                self.data,
+                prev,
+                self.rev_cols,
+                self.transpose,
+            ))
+        } else {
+            None
+        }
+    }
+}
+
+pub struct PatternColIter {
+    data: PatternRef<'static>,
+    row: usize,
+    col: isize,
+    rev_cols: bool,
+    transpose: bool,
+}
+
+impl PatternColIter {
+    fn new(data: PatternRef<'static>, row: usize, rev_cols: bool, transpose: bool) -> Self {
+        Self {
+            data,
+            row,
+            col: if rev_cols {
+                (if transpose { data.len() } else { data[0].len() }) as isize - 1
+            } else {
+                0
+            },
+            rev_cols,
+            transpose,
+        }
+    }
+}
+
+impl Iterator for PatternColIter {
+    type Item = Cell;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let length = if self.transpose {
+            self.data.len()
+        } else {
+            self.data[0].len()
+        };
+        if self.col >= 0 && (self.col as usize) < length {
+            let prev = self.col as usize;
+            self.col = if self.rev_cols {
+                self.col - 1
+            } else {
+                self.col + 1
+            };
+            if self.transpose {
+                Some(self.data[prev][self.row]) // for 1 and 3
+            } else {
+                Some(self.data[self.row][prev]) // for 0 and 2
             }
         } else {
-            // 180 degree rotation, reverse both rows and columns
-            for row in pattern.iter().rev() {
-                result.push(row.iter().rev().copied().collect());
-            }
+            None
         }
-        Pattern(result)
-    } else {
-        let mut result = Vec::with_capacity(pattern[0].len());
-        let rows = pattern.len();
-        let cols = pattern[0].len();
-        if times == 1 {
-            // 90 degree rotation
-            for c in 0..cols {
-                let mut new_row = Vec::with_capacity(rows);
-                for r in (0..rows).rev() {
-                    new_row.push(pattern[r][c]);
-                }
-                result.push(new_row);
-            }
-        } else {
-            // 270 degree rotation
-            for c in (0..cols).rev() {
-                let mut new_row = Vec::with_capacity(rows);
-                for r in 0..rows {
-                    new_row.push(pattern[r][c]);
-                }
-                result.push(new_row);
-            }
-        }
-        Pattern(result)
+    }
+}
+
+fn rot90(pattern: PatternRef<'static>, times: usize) -> Pattern {
+    debug_assert!(times < 4); // 4 rotations is the same as 0
+    match times {
+        0 => Pattern::new(pattern, false, false),
+        1 => Pattern::new(pattern, false, true),
+        2 => Pattern::new(pattern, true, true),
+        3 => Pattern::new(pattern, true, false),
+        _ => unreachable!(),
     }
 }
 
@@ -176,44 +270,51 @@ fn rot90(pattern: PatternRef<'_>, times: usize) -> Pattern {
 mod tests {
     use super::*;
 
+    const TEST_PATTERN: PatternRef<'static> = &[
+        &[Cell::new(1), Cell::new(2), Cell::new(3)],
+        &[Cell::new(4), Cell::new(5), Cell::new(6)],
+        &[Cell::new(7), Cell::new(8), Cell::new(9)],
+    ];
+
     #[test]
     fn test_rot90() {
-        let pattern: &[&[Cell]] = &[
-            &[Cell::new(1), Cell::new(2), Cell::new(3)],
-            &[Cell::new(4), Cell::new(5), Cell::new(6)],
-            &[Cell::new(7), Cell::new(8), Cell::new(9)],
-        ];
+        fn rot90vec(times: usize) -> Vec<Vec<Cell>> {
+            rot90(TEST_PATTERN, times)
+                .iter_rows()
+                .map(|r| r.collect())
+                .collect()
+        }
         assert_eq!(
-            rot90(pattern, 0),
-            Pattern(vec![
+            rot90vec(0),
+            vec![
                 vec![Cell::new(1), Cell::new(2), Cell::new(3)],
                 vec![Cell::new(4), Cell::new(5), Cell::new(6)],
                 vec![Cell::new(7), Cell::new(8), Cell::new(9)]
-            ])
+            ]
         );
         assert_eq!(
-            rot90(pattern, 1),
-            Pattern(vec![
+            rot90vec(1),
+            vec![
                 vec![Cell::new(7), Cell::new(4), Cell::new(1)],
                 vec![Cell::new(8), Cell::new(5), Cell::new(2)],
                 vec![Cell::new(9), Cell::new(6), Cell::new(3)]
-            ])
+            ]
         );
         assert_eq!(
-            rot90(pattern, 2),
-            Pattern(vec![
+            rot90vec(2),
+            vec![
                 vec![Cell::new(9), Cell::new(8), Cell::new(7)],
                 vec![Cell::new(6), Cell::new(5), Cell::new(4)],
                 vec![Cell::new(3), Cell::new(2), Cell::new(1)]
-            ])
+            ]
         );
         assert_eq!(
-            rot90(pattern, 3),
-            Pattern(vec![
+            rot90vec(3),
+            vec![
                 vec![Cell::new(3), Cell::new(6), Cell::new(9)],
                 vec![Cell::new(2), Cell::new(5), Cell::new(8)],
                 vec![Cell::new(1), Cell::new(4), Cell::new(7)]
-            ])
+            ]
         );
     }
 }

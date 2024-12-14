@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 use piece::Piece;
 use state::{Move, State};
 
@@ -18,8 +16,7 @@ pub fn simulate(
     move_policy: impl Fn(Vec<State>) -> Option<State>,
 ) {
     let mut piece;
-    let mut i = 0;
-    let start = Instant::now();
+    // let start = Instant::now();
     loop {
         // println!("\n\nIteration {i}");
         piece = piece_gen(); // generate a new piece
@@ -40,14 +37,14 @@ pub fn simulate(
             // no possible moves, game over
             break;
         }
-        i += 1;
+        // i += 1;
     }
-    let elapsed = start.elapsed();
-    println!(
-        "moves: {}, elapsed: {:.2}s, moves/sec: {:.2}",
-        i,
-        elapsed.as_secs_f64(),
-        i as f64 / elapsed.as_secs_f64()
-    );
-    println!("Final board: {}", state.board);
+    // let elapsed = start.elapsed();
+    // println!(
+    //     "moves: {}, elapsed: {:.2}s, moves/sec: {:.2}",
+    //     i,
+    //     elapsed.as_secs_f64(),
+    //     i as f64 / elapsed.as_secs_f64()
+    // );
+    // println!("Final board: {}", state.board);
 }

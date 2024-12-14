@@ -7,7 +7,8 @@ pub fn move_drop(state: &State, piece: Piece) -> Vec<Move> {
     let board = &state.board;
     let mut moves = Vec::new();
     // for each rotation of the piece
-    for (rot, pattern) in piece.rotations().enumerate() {
+    for rot in 0..piece.num_rotations() {
+        let pattern = piece.get_rotation(rot);
         // for each column where the piece can be placed
         for col in 0..=(BOARD_WIDTH - pattern.cols()) {
             // the highest point where the pattern can be placed

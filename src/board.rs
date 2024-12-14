@@ -54,9 +54,9 @@ impl Board {
     /// Imprints the given matrix onto the board at the given row and column.
     pub(crate) fn imprint(&mut self, pattern: Pattern, row: usize, col: usize) {
         for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, cell) in p_row.iter().enumerate() {
+            for (c, cell) in p_row.enumerate() {
                 if cell.filled() {
-                    self.data[row + r][col + c] = *cell;
+                    self.data[row + r][col + c] = cell;
                     self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
                 }
             }
@@ -69,7 +69,7 @@ impl Board {
             return true; // out of bounds
         }
         for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, cell) in p_row.iter().enumerate() {
+            for (c, cell) in p_row.enumerate() {
                 if cell.filled() && self.data[row + r][col + c].filled() {
                     return true;
                 }

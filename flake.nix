@@ -33,6 +33,7 @@
               packages = [
                 pkgs.cargo-edit
                 pkgs.python3Packages.numpy
+                pkgs.cargo-flamegraph
               ];
 
               languages.rust = {
