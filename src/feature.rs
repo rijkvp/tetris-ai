@@ -155,14 +155,14 @@ mod tests {
                         );
                     }
                     panic!(
-                         "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
-                         feature_name,
-                         py_output,
-                         rust_output,
-                         state.board,
-                         state.board.heights(),
-                         state.delta
-                     );
+                        "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
+                        feature_name,
+                        py_output,
+                        rust_output,
+                        state.board,
+                        state.board.heights(),
+                        state.delta
+                    );
                 }
             }
         }

@@ -61,26 +61,29 @@ const PIECE_DATA: [PieceData; N_PIECES] = [
     },
     PieceData {
         name: 'T',
-        pattern: &[
-            &[Cell::new(2), Cell::new(2), Cell::new(2)],
-            &[Cell::new(0), Cell::new(2), Cell::new(0)],
-        ],
+        pattern: &[&[Cell::new(2), Cell::new(2), Cell::new(2)], &[
+            Cell::new(0),
+            Cell::new(2),
+            Cell::new(0),
+        ]],
         rotations: 4,
     },
     PieceData {
         name: 'L',
-        pattern: &[
-            &[Cell::new(3), Cell::new(3), Cell::new(3)],
-            &[Cell::new(3), Cell::new(0), Cell::new(0)],
-        ],
+        pattern: &[&[Cell::new(3), Cell::new(3), Cell::new(3)], &[
+            Cell::new(3),
+            Cell::new(0),
+            Cell::new(0),
+        ]],
         rotations: 4,
     },
     PieceData {
         name: 'J',
-        pattern: &[
-            &[Cell::new(4), Cell::new(4), Cell::new(4)],
-            &[Cell::new(0), Cell::new(0), Cell::new(4)],
-        ],
+        pattern: &[&[Cell::new(4), Cell::new(4), Cell::new(4)], &[
+            Cell::new(0),
+            Cell::new(0),
+            Cell::new(4),
+        ]],
         rotations: 4,
     },
     PieceData {
@@ -90,18 +93,20 @@ const PIECE_DATA: [PieceData; N_PIECES] = [
     },
     PieceData {
         name: 'Z',
-        pattern: &[
-            &[Cell::new(6), Cell::new(6), Cell::new(0)],
-            &[Cell::new(0), Cell::new(6), Cell::new(6)],
-        ],
+        pattern: &[&[Cell::new(6), Cell::new(6), Cell::new(0)], &[
+            Cell::new(0),
+            Cell::new(6),
+            Cell::new(6),
+        ]],
         rotations: 2,
     },
     PieceData {
         name: 'S',
-        pattern: &[
-            &[Cell::new(0), Cell::new(7), Cell::new(7)],
-            &[Cell::new(7), Cell::new(7), Cell::new(0)],
-        ],
+        pattern: &[&[Cell::new(0), Cell::new(7), Cell::new(7)], &[
+            Cell::new(7),
+            Cell::new(7),
+            Cell::new(0),
+        ]],
         rotations: 2,
     },
 ];
@@ -284,37 +289,25 @@ mod tests {
                 .map(|r| r.collect())
                 .collect()
         }
-        assert_eq!(
-            rot90vec(0),
-            vec![
-                vec![Cell::new(1), Cell::new(2), Cell::new(3)],
-                vec![Cell::new(4), Cell::new(5), Cell::new(6)],
-                vec![Cell::new(7), Cell::new(8), Cell::new(9)]
-            ]
-        );
-        assert_eq!(
-            rot90vec(1),
-            vec![
-                vec![Cell::new(7), Cell::new(4), Cell::new(1)],
-                vec![Cell::new(8), Cell::new(5), Cell::new(2)],
-                vec![Cell::new(9), Cell::new(6), Cell::new(3)]
-            ]
-        );
-        assert_eq!(
-            rot90vec(2),
-            vec![
-                vec![Cell::new(9), Cell::new(8), Cell::new(7)],
-                vec![Cell::new(6), Cell::new(5), Cell::new(4)],
-                vec![Cell::new(3), Cell::new(2), Cell::new(1)]
-            ]
-        );
-        assert_eq!(
-            rot90vec(3),
-            vec![
-                vec![Cell::new(3), Cell::new(6), Cell::new(9)],
-                vec![Cell::new(2), Cell::new(5), Cell::new(8)],
-                vec![Cell::new(1), Cell::new(4), Cell::new(7)]
-            ]
-        );
+        assert_eq!(rot90vec(0), vec![
+            vec![Cell::new(1), Cell::new(2), Cell::new(3)],
+            vec![Cell::new(4), Cell::new(5), Cell::new(6)],
+            vec![Cell::new(7), Cell::new(8), Cell::new(9)]
+        ]);
+        assert_eq!(rot90vec(1), vec![
+            vec![Cell::new(7), Cell::new(4), Cell::new(1)],
+            vec![Cell::new(8), Cell::new(5), Cell::new(2)],
+            vec![Cell::new(9), Cell::new(6), Cell::new(3)]
+        ]);
+        assert_eq!(rot90vec(2), vec![
+            vec![Cell::new(9), Cell::new(8), Cell::new(7)],
+            vec![Cell::new(6), Cell::new(5), Cell::new(4)],
+            vec![Cell::new(3), Cell::new(2), Cell::new(1)]
+        ]);
+        assert_eq!(rot90vec(3), vec![
+            vec![Cell::new(3), Cell::new(6), Cell::new(9)],
+            vec![Cell::new(2), Cell::new(5), Cell::new(8)],
+            vec![Cell::new(1), Cell::new(4), Cell::new(7)]
+        ]);
     }
 }

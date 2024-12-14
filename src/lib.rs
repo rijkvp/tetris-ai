@@ -1,3 +1,8 @@
+#![feature(gen_blocks)]
+
+use std::time::Instant;
+
+use board::Board;
 use piece::Piece;
 use state::{Move, State};
 
@@ -9,42 +14,45 @@ pub mod state;
 #[cfg(test)]
 pub mod test;
 
-pub fn simulate(
+pub fn simulate<F, I>(
     mut state: State,
     piece_gen: impl Fn() -> Piece,
-    move_gen: impl Fn(&State, Piece) -> Vec<Move>,
-    move_policy: impl Fn(Vec<State>) -> Option<State>,
-) {
+    move_gen: F,
+    eval: impl Fn(&State) -> f64,
+) where
+    F: Fn(Board, Piece) -> I,
+    I: Iterator<Item = Move>,
+{
     let mut piece;
-    // let start = Instant::now();
+    let start = Instant::now();
+    let mut i = 0;
     loop {
-        // println!("\n\nIteration {i}");
         piece = piece_gen(); // generate a new piece
-                             // println!("Piece: {}", piece);
-                             // println!("Board: {}", state.board);
 
-        // TODO: every state is a copy in this pool, optimize it
-        let pool = move_gen(&state, piece)
-            .into_iter()
-            .map(|r#move| state.future(piece, r#move))
-            .collect::<Vec<_>>();
+        let mut best = None;
+        let mut best_score = f64::NEG_INFINITY;
+        for r#move in move_gen(state.board, piece) {
+            let future = state.future(piece, r#move);
+            let score = eval(&future);
+            if score > best_score {
+                best = Some(future);
+                best_score = score;
+            }
+        }
 
-        // println!("Pool size: {}", pool.len());
-
-        if let Some(next) = move_policy(pool) {
+        if let Some(next) = best {
             state = next; // update state
         } else {
-            // no possible moves, game over
             break;
         }
-        // i += 1;
+        i += 1;
     }
-    // let elapsed = start.elapsed();
-    // println!(
-    //     "moves: {}, elapsed: {:.2}s, moves/sec: {:.2}",
-    //     i,
-    //     elapsed.as_secs_f64(),
-    //     i as f64 / elapsed.as_secs_f64()
-    // );
-    // println!("Final board: {}", state.board);
+    let elapsed = start.elapsed();
+    println!(
+        "moves: {}, elapsed: {:?}, moves/sec: {:.2}",
+        i,
+        elapsed,
+        i as f64 / elapsed.as_secs_f64()
+    );
+    println!("Final board: {}", state.board);
 }

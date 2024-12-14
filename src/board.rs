@@ -84,7 +84,11 @@ impl Board {
         let mut bottom = (BOARD_HEIGHT - 1) as i64;
         while bottom >= 0 {
             let mut top = bottom;
-            while top >= 0 && self.data[top as usize].iter().all(|cell| cell.filled()) {
+            while top >= 0
+                && self.data[top as usize]
+                    .into_iter()
+                    .all(|cell| cell.filled())
+            {
                 rows.push(top as usize);
                 top -= 1;
             }

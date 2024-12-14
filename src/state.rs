@@ -37,12 +37,12 @@ impl State {
         let mut eroded = 0;
         for row in &cleared {
             let pattern = piece.get_rotation(r#move.rot);
-            if let Some(row_iter) = pattern.get_row(row - r#move.row) {
-                row_iter.for_each(|cell| {
+            if let Some(row) = pattern.get_row(row - r#move.row) {
+                for cell in row {
                     if cell.filled() {
                         eroded += 1;
                     }
-                });
+                }
             }
         }
 

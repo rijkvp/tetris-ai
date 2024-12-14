@@ -3,4 +3,4 @@
 .direnv
 .pre-commit-config.yaml
 flamegraph.svg
-perf.data
+perf.data*

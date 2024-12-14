@@ -1,37 +1,40 @@
-use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
+use crate::board::{BOARD_HEIGHT, BOARD_WIDTH, Board};
 use crate::piece::Piece;
-use crate::state::{Move, State};
+use crate::state::Move;
 
 /// Returns all possible moves when dropping a piece.
-pub fn move_drop(state: &State, piece: Piece) -> Vec<Move> {
-    let board = &state.board;
-    let mut moves = Vec::new();
-    // for each rotation of the piece
-    for rot in 0..piece.num_rotations() {
-        let pattern = piece.get_rotation(rot);
-        // for each column where the piece can be placed
-        for col in 0..=(BOARD_WIDTH - pattern.cols()) {
-            // the highest point where the pattern can be placed
-            let highest = (0..pattern.cols())
-                .map(|c| board.height(col + c))
-                .max()
-                .unwrap();
-            let mut row = (BOARD_HEIGHT - highest).saturating_sub(pattern.rows()); // saturating_sub to avoid underflow
-            if !board.overlaps(&pattern, row, col) {
-                while !board.overlaps(&pattern, row + 1, col) {
-                    row += 1;
+// TODO: Copies board here
+pub fn move_drop(board: Board, piece: Piece) -> impl Iterator<Item = Move> {
+    gen move {
+        // let mut moves = Vec::new();
+        // for each rotation of the piece
+        for rot in 0..piece.num_rotations() {
+            let pattern = piece.get_rotation(rot);
+            // for each column where the piece can be placed
+            for col in 0..=(BOARD_WIDTH - pattern.cols()) {
+                // the highest point where the pattern can be placed
+                let highest = (0..pattern.cols())
+                    .map(|c| board.height(col + c))
+                    .max()
+                    .unwrap();
+                let mut row = (BOARD_HEIGHT - highest).saturating_sub(pattern.rows()); // saturating_sub to avoid underflow
+                if !board.overlaps(&pattern, row, col) {
+                    while !board.overlaps(&pattern, row + 1, col) {
+                        row += 1;
+                    }
+                    yield Move { rot, row, col };
+                    // moves.push(Move { rot, row, col });
                 }
-                moves.push(Move { rot, row, col });
             }
         }
     }
-    moves
+    .into_iter()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{piece, test};
+    use crate::{piece, state::State, test};
 
     const TEST_ITERATIONS: usize = 100;
 
@@ -42,7 +45,7 @@ mod tests {
             for piece_index in 0..piece::N_PIECES {
                 let piece = Piece::from_index(piece_index);
                 let py_output = test::run_py_move(&state, piece);
-                let rust_output = move_drop(&state, piece);
+                let rust_output = move_drop(state.board, piece).collect::<Vec<_>>();
                 if py_output != rust_output {
                     let mut diff = vec![];
                     for item in rust_output.iter() {

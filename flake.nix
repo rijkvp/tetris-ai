@@ -32,24 +32,28 @@
             {
               packages = [
                 pkgs.cargo-edit
+                pkgs.python3
                 pkgs.python3Packages.numpy
                 pkgs.cargo-flamegraph
               ];
 
               languages.rust = {
                 enable = true;
-                channel = "stable";
+                channel = "nightly";
                 targets = [ "wasm32-unknown-unknown" ];
-              };
-
-              languages.python = {
-                enable = true;
               };
 
               pre-commit.hooks = {
                 rustfmt.enable = true;
                 clippy.enable = true;
               };
+
+              env.LD_LIBRARY_PATH =
+                with pkgs;
+                lib.makeLibraryPath [
+                  python3
+                  python3Packages.numpy
+                ];
             }
           )
         ];
