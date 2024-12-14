@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+        }
+
+        body {
+            margin: 12px;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #game {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tetris AI Prototype</h1>
+    <canvas id="game" width="320" height="640"></canvas>
+    <br>
+    <p id="step-label"></p>
+    <input id="speed-slider" type="range" min="1" max="100" value="5" />
+    <label id="speed-label" for="speed">5 pices/sec</label>
+    <script type="module" src="tetris.js"></script>
+</body>
+</html>

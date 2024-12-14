@@ -1,0 +1,15 @@
+{
+  "name": "tetris-ai",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "tetris_ai_bg.wasm",
+    "tetris_ai.js",
+    "tetris_ai.d.ts"
+  ],
+  "main": "tetris_ai.js",
+  "types": "tetris_ai.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
