@@ -35,6 +35,7 @@
                 pkgs.python3
                 pkgs.python3Packages.numpy
                 pkgs.cargo-flamegraph
+                pkgs.wasm-pack
               ];
 
               languages.rust = {
@@ -54,6 +55,10 @@
                   python3
                   python3Packages.numpy
                 ];
+
+              scripts.build.exec = ''
+                wasm-pack build --target web --out-dir "$DEVENV_ROOT/frontend/pkg"
+              '';
             }
           )
         ];

@@ -3,6 +3,7 @@ use std::{fmt::Display, ops::Index, str::FromStr};
 
 /// Represents a cell on the board.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
+#[repr(transparent)]
 pub struct Cell(u8);
 
 impl Cell {
@@ -18,6 +19,11 @@ impl Cell {
     /// Returns true if the cell is empty.
     pub fn empty(&self) -> bool {
         self.0 == 0
+    }
+
+    /// Returns the inner value of the cell.
+    pub fn inner(&self) -> u8 {
+        self.0
     }
 }
 
@@ -131,7 +137,6 @@ impl Board {
         rows
     }
 
-    #[cfg(test)]
     pub(crate) fn get_data(&self) -> &[[Cell; BOARD_WIDTH]; BOARD_HEIGHT] {
         &self.data
     }

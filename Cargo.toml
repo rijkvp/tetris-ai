@@ -3,8 +3,13 @@ name = "tetris-ai"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
-rand = "0.8.5"
+rand = { version = "0.8.5" }
+getrandom = { version = "0.2.15", features = ["js"] }
+wasm-bindgen = "0.2.99"
 
 [dev-dependencies]
 criterion = "0.5.1"

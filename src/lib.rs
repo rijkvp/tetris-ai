@@ -2,7 +2,8 @@
 
 use board::Board;
 use piece::Piece;
-use state::{Move, State};
+use rand::Rng;
+use state::State;
 
 pub mod board;
 pub mod feature;
@@ -12,26 +13,37 @@ pub mod state;
 #[cfg(test)]
 pub mod test;
 
-pub fn simulate<F, I>(
-    mut state: State,
-    piece_gen: impl Fn() -> Piece,
-    move_gen: F,
-    eval: impl Fn(&State) -> f64,
-) -> (State, u64)
-where
-    F: Fn(Board, Piece) -> I,
-    I: Iterator<Item = Move>,
-{
-    let mut piece;
-    let mut steps = 0;
-    loop {
-        piece = piece_gen(); // generate a new piece
+use wasm_bindgen::prelude::*;
+
+fn random_piece() -> Piece {
+    Piece::from_index(rand::thread_rng().gen_range(0..7))
+}
+
+#[wasm_bindgen]
+pub struct Simulator {
+    #[wasm_bindgen(skip)]
+    pub state: State,
+    pub steps: u64,
+}
+
+#[wasm_bindgen]
+impl Simulator {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            state: State::new(Board::default()),
+            steps: 0,
+        }
+    }
+
+    pub fn step(&mut self) -> bool {
+        let piece = random_piece();
 
         let mut best = None;
         let mut best_score = f64::NEG_INFINITY;
-        for r#move in move_gen(state.board, piece) {
-            let future = state.future(piece, r#move);
-            let score = eval(&future);
+        for r#move in r#move::move_drop(self.state.board, piece) {
+            let future = self.state.future(piece, r#move);
+            let score = feature::evaluate_default(&future);
             if score > best_score {
                 best = Some(future);
                 best_score = score;
@@ -39,11 +51,27 @@ where
         }
 
         if let Some(next) = best {
-            state = next; // update state
+            self.state = next; // update state
         } else {
-            break;
+            return false;
         }
-        steps += 1;
+        self.steps += 1;
+        return true;
     }
-    (state, steps)
+
+    pub fn board_data(&self) -> Box<[u8]> {
+        let data = self.state.board.get_data();
+        let mut result = Vec::with_capacity(board::BOARD_HEIGHT);
+        for row in data.iter() {
+            for cell in row.iter() {
+                result.push(cell.inner());
+            }
+        }
+        result.into_boxed_slice()
+    }
+}
+
+#[wasm_bindgen]
+pub fn wasm_test() -> Result<JsValue, JsValue> {
+    Ok(JsValue::from_str("Hello from wasm!"))
 }
