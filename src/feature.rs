@@ -20,9 +20,9 @@ fn row_trans(state: &State) -> usize {
 /// The number of times that two adjacent cells in the same column mismatch.
 fn col_trans(state: &State) -> usize {
     let mut sum = 0;
-    for col in 0..BOARD_WIDTH {
-        for row in 0..BOARD_HEIGHT - 1 {
-            if state.board[(row, col)].filled() != state.board[(row + 1, col)].filled() {
+    for c in 0..BOARD_WIDTH {
+        for r in 0..BOARD_HEIGHT - 1 {
+            if state.board[(r, c)].filled() != state.board[(r + 1, c)].filled() {
                 sum += 1;
             }
         }
@@ -84,9 +84,9 @@ fn eroded_cells(state: &State) -> usize {
     state.delta.as_ref().map(|delta| delta.eroded).unwrap_or(0)
 }
 
-pub type FeatureWeights<'a> = &'a [(fn(&State) -> usize, f64)];
+type FeatureWeights<'a> = &'a [(fn(&State) -> usize, f64)];
 
-pub const DEFAULT_WEIGHTS: FeatureWeights = &[
+const DEFAULT_WEIGHTS: FeatureWeights = &[
     (row_trans, -2.700),
     (col_trans, -6.786),
     (cuml_wells, -0.396),
@@ -95,12 +95,16 @@ pub const DEFAULT_WEIGHTS: FeatureWeights = &[
     (eroded_cells, -9.277),
 ];
 
-pub fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
+fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
     let mut score = 0.0;
     for (feature, weight) in weights {
         score += feature(state) as f64 * weight;
     }
     score
+}
+
+pub fn evaluate_default(state: &State) -> f64 {
+    evaluate(state, DEFAULT_WEIGHTS)
 }
 
 #[cfg(test)]

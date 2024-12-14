@@ -1,7 +1,5 @@
 #![feature(gen_blocks)]
 
-use std::time::Instant;
-
 use board::Board;
 use piece::Piece;
 use state::{Move, State};
@@ -19,13 +17,13 @@ pub fn simulate<F, I>(
     piece_gen: impl Fn() -> Piece,
     move_gen: F,
     eval: impl Fn(&State) -> f64,
-) where
+) -> (State, u64)
+where
     F: Fn(Board, Piece) -> I,
     I: Iterator<Item = Move>,
 {
     let mut piece;
-    let start = Instant::now();
-    let mut i = 0;
+    let mut steps = 0;
     loop {
         piece = piece_gen(); // generate a new piece
 
@@ -45,14 +43,7 @@ pub fn simulate<F, I>(
         } else {
             break;
         }
-        i += 1;
+        steps += 1;
     }
-    let elapsed = start.elapsed();
-    println!(
-        "moves: {}, elapsed: {:?}, moves/sec: {:.2}",
-        i,
-        elapsed,
-        i as f64 / elapsed.as_secs_f64()
-    );
-    println!("Final board: {}", state.board);
+    (state, steps)
 }

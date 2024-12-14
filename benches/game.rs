@@ -8,7 +8,7 @@ fn run_game() {
         state,
         || Piece::from_index(rand::thread_rng().gen_range(0..7)),
         tetris_ai::r#move::move_drop,
-        |state| feature::evaluate(state, feature::DEFAULT_WEIGHTS),
+        |state| feature::evaluate_default(state),
     );
 }
 
