@@ -139,7 +139,11 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Vec<Move>> {
             destinations.push(current);
         }
         for next in next_moves(current, piece, &board).into_iter() {
-            let new_cost = current_cost + 1;
+            let new_cost = if next.row != current.row || next.col != current.col {
+                current_cost + 1
+            } else {
+                current_cost
+            };
             if distance.get(&next).is_none() || new_cost < distance[&next] {
                 distance.insert(next, new_cost);
                 to_visit.push(Node {
