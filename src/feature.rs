@@ -73,10 +73,11 @@ fn landing_height(state: &State) -> usize {
             .delta
             .as_ref()
             .map(|delta| {
-                let piece_height = delta.piece.get_rotation(delta.r#move.rot).rows();
-                delta.r#move.row + piece_height
+                let piece_height = delta.piece.rotation(delta.r#move.rot).rows();
+                delta.r#move.row.max(0) as usize + piece_height
             })
             .unwrap_or(0)
+            .min(BOARD_HEIGHT)
 }
 
 /// The number of cells that were cleared from the previously placed piece.
@@ -153,10 +154,7 @@ mod tests {
                 let rust_output = feature(&state);
                 if py_output != rust_output {
                     if let Some(delta) = &state.delta {
-                        println!(
-                            "Piece rotation: {}",
-                            delta.piece.get_rotation(delta.r#move.rot)
-                        );
+                        println!("Piece rotation: {}", delta.piece.rotation(delta.r#move.rot));
                     }
                     panic!(
                         "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",

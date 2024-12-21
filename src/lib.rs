@@ -1,6 +1,7 @@
 #![feature(gen_blocks)]
 
 use board::Board;
+use r#move::Move;
 use piece::Piece;
 use rand::Rng;
 use state::State;
@@ -26,6 +27,12 @@ pub struct Simulator {
     pub steps: u64,
 }
 
+#[wasm_bindgen(getter_with_clone)]
+pub struct MoveResult {
+    pub piece_idx: usize,
+    pub path: Vec<Move>,
+}
+
 #[wasm_bindgen]
 impl Simulator {
     #[wasm_bindgen(constructor)]
@@ -36,27 +43,30 @@ impl Simulator {
         }
     }
 
-    pub fn step(&mut self) -> bool {
+    pub fn step(&mut self) -> Option<MoveResult> {
         let piece = random_piece();
 
         let mut best = None;
         let mut best_score = f64::NEG_INFINITY;
-        for r#move in r#move::move_drop(self.state.board, piece) {
-            let future = self.state.future(piece, r#move);
+        for path in r#move::move_dijkstra(self.state.board, piece) {
+            let r#move = path.last().unwrap();
+            let future = self.state.future(piece, *r#move);
             let score = feature::evaluate_default(&future);
             if score > best_score {
-                best = Some(future);
+                best = Some((future, path));
                 best_score = score;
             }
         }
 
-        if let Some(next) = best {
+        if let Some((next, path)) = best {
             self.state = next; // update state
-        } else {
-            return false;
+            self.steps += 1;
+            return Some(MoveResult {
+                piece_idx: piece.index(),
+                path,
+            });
         }
-        self.steps += 1;
-        return true;
+        None
     }
 
     pub fn board_data(&self) -> Box<[u8]> {
@@ -68,6 +78,14 @@ impl Simulator {
             }
         }
         result.into_boxed_slice()
+    }
+
+    pub fn generate_moves(&self, piece_idx: usize) -> Vec<Move> {
+        let piece = Piece::from_index(piece_idx);
+        r#move::move_dijkstra(self.state.board, piece)
+            .into_iter()
+            .flatten()
+            .collect()
     }
 }
 

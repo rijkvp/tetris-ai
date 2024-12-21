@@ -1,4 +1,7 @@
-use crate::piece::Pattern;
+use crate::{
+    r#move::Move,
+    piece::{Pattern, Piece},
+};
 use std::{fmt::Display, ops::Index, str::FromStr};
 
 /// Represents a cell on the board.
@@ -58,26 +61,60 @@ impl Board {
     }
 
     /// Imprints the given matrix onto the board at the given row and column.
-    pub(crate) fn imprint(&mut self, pattern: Pattern, row: usize, col: usize) {
-        for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, cell) in p_row.enumerate() {
-                if cell.filled() {
-                    self.data[row + r][col + c] = cell;
-                    self.heights[col + c] = self.heights[col + c].max(BOARD_HEIGHT - (row + r));
+    pub(crate) fn imprint(&mut self, pattern: Pattern, row: isize, col: isize, cell: Cell) {
+        for (r_offset, p_row) in pattern.iter_rows().enumerate() {
+            for (c_offset, filled) in p_row.into_iter().enumerate() {
+                let r = row + r_offset as isize;
+                let c = col + c_offset as isize;
+                if *filled
+                    && r >= 0
+                    && r < BOARD_HEIGHT as isize
+                    && c >= 0
+                    && c < BOARD_WIDTH as isize
+                {
+                    let (r, c) = (r as usize, c as usize);
+                    self.data[r][c] = cell;
+                    self.heights[c] = self.heights[c].max(BOARD_HEIGHT - r);
                 }
             }
         }
     }
 
     /// Returns true if the pattern overlaps with the board.
+    // TODO: obsolete
     pub(crate) fn overlaps(&self, pattern: &Pattern, row: usize, col: usize) -> bool {
         if row + pattern.rows() > BOARD_HEIGHT || col + pattern.cols() > BOARD_WIDTH {
             return true; // out of bounds
         }
         for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, cell) in p_row.enumerate() {
-                if cell.filled() && self.data[row + r][col + c].filled() {
+            for (c, filled) in p_row.into_iter().enumerate() {
+                if *filled && self.data[row + r][col + c].filled() {
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /// Returns true if the move overlaps with the board.
+    pub(crate) fn overlaps_move(&self, piece: Piece, r#move: Move) -> bool {
+        let pattern = piece.rotation(r#move.rot);
+        for (r, p_row) in pattern.iter_rows().enumerate() {
+            for (c, filled) in p_row.into_iter().enumerate() {
+                if !*filled {
+                    continue;
+                }
+                let row = r as isize + r#move.row;
+                let col = c as isize + r#move.col;
+                if row >= BOARD_HEIGHT as isize || col < 0 || col >= BOARD_WIDTH as isize {
+                    return true; // collision with the bottom or sides
+                } else if row >= 0 // in bounds of board
+                    && row < BOARD_HEIGHT as isize
+                    && col >= 0
+                    && col < BOARD_WIDTH as isize
+                    && self.data[row as usize][col as usize].filled()
+                {
+                    return true; // collision with a filled cell
                 }
             }
         }

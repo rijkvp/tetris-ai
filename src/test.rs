@@ -1,8 +1,8 @@
 use crate::board::Board;
 use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
-use crate::r#move::move_drop;
+use crate::r#move::{Move, move_drop};
 use crate::piece::Piece;
-use crate::state::{Move, State};
+use crate::state::State;
 use pyo3::ffi::c_str;
 use pyo3::types::{PyDict, PyTuple};
 use pyo3::{IntoPyObjectExt, prelude::*};
@@ -75,7 +75,7 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
         let delta_dict = PyDict::new(py);
         if let Some(delta) = &state.delta {
             delta_dict
-                .set_item("piece_idx", delta.piece.get_index())
+                .set_item("piece_idx", delta.piece.index())
                 .unwrap();
             delta_dict.set_item("rot", delta.r#move.rot).unwrap();
             delta_dict.set_item("col", delta.r#move.col).unwrap();
@@ -136,7 +136,7 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
         let py_zoid = py_mod
             .call_method(
                 "import_zoid",
-                PyTuple::new(py, &[piece.get_index()]).unwrap(),
+                PyTuple::new(py, &[piece.index()]).unwrap(),
                 None,
             )
             .unwrap();
@@ -148,7 +148,7 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
                 None,
             )
             .unwrap();
-        let output = output.extract::<Vec<(usize, usize, usize)>>().unwrap();
+        let output = output.extract::<Vec<(usize, isize, isize)>>().unwrap();
         output
             .into_iter()
             .map(|(rot, row, col)| Move { rot, row, col })
