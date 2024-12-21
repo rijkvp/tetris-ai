@@ -42,6 +42,54 @@ function getArrayU8FromWasm0(ptr, len) {
     return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
+let WASM_VECTOR_LEN = 0;
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+/**
+ * @param {number} piece_idx
+ * @param {number} rotation
+ * @returns {WasmPattern}
+ */
+export function get_piece_rotation(piece_idx, rotation) {
+    const ret = wasm.get_piece_rotation(piece_idx, rotation);
+    return WasmPattern.__wrap(ret);
+}
+
+let cachedDataViewMemory0 = null;
+
+function getDataViewMemory0() {
+    if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
+        cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
+    }
+    return cachedDataViewMemory0;
+}
+
+function getArrayJsValueFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    const mem = getDataViewMemory0();
+    const result = [];
+    for (let i = ptr; i < ptr + 4 * len; i += 4) {
+        result.push(wasm.__wbindgen_export_2.get(mem.getUint32(i, true)));
+    }
+    wasm.__externref_drop_slice(ptr, len);
+    return result;
+}
+
+function passArrayJsValueToWasm0(array, malloc) {
+    const ptr = malloc(array.length * 4, 4) >>> 0;
+    const mem = getDataViewMemory0();
+    for (let i = 0; i < array.length; i++) {
+        mem.setUint32(ptr + 4 * i, addToExternrefTable0(array[i]), true);
+    }
+    WASM_VECTOR_LEN = array.length;
+    return ptr;
+}
+
 function takeFromExternrefTable0(idx) {
     const value = wasm.__wbindgen_export_2.get(idx);
     wasm.__externref_table_dealloc(idx);
@@ -56,6 +104,176 @@ export function wasm_test() {
         throw takeFromExternrefTable0(ret[1]);
     }
     return takeFromExternrefTable0(ret[0]);
+}
+
+const MoveFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_move_free(ptr >>> 0, 1));
+
+export class Move {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(Move.prototype);
+        obj.__wbg_ptr = ptr;
+        MoveFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    static __unwrap(jsValue) {
+        if (!(jsValue instanceof Move)) {
+            return 0;
+        }
+        return jsValue.__destroy_into_raw();
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        MoveFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_move_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get rot() {
+        const ret = wasm.__wbg_get_move_rot(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set rot(arg0) {
+        wasm.__wbg_set_move_rot(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get row() {
+        const ret = wasm.__wbg_get_move_row(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set row(arg0) {
+        wasm.__wbg_set_move_row(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get col() {
+        const ret = wasm.__wbg_get_move_col(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set col(arg0) {
+        wasm.__wbg_set_move_col(this.__wbg_ptr, arg0);
+    }
+}
+
+const MoveResultFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_moveresult_free(ptr >>> 0, 1));
+
+export class MoveResult {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(MoveResult.prototype);
+        obj.__wbg_ptr = ptr;
+        MoveResultFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        MoveResultFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_moveresult_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get piece_idx() {
+        const ret = wasm.__wbg_get_moveresult_piece_idx(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set piece_idx(arg0) {
+        wasm.__wbg_set_moveresult_piece_idx(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {(Move)[]}
+     */
+    get path() {
+        const ret = wasm.__wbg_get_moveresult_path(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @param {(Move)[]} arg0
+     */
+    set path(arg0) {
+        const ptr0 = passArrayJsValueToWasm0(arg0, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_moveresult_path(this.__wbg_ptr, ptr0, len0);
+    }
+}
+
+const PatternFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_pattern_free(ptr >>> 0, 1));
+
+export class Pattern {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        PatternFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_pattern_free(ptr, 0);
+    }
+}
+
+const PieceFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_piece_free(ptr >>> 0, 1));
+/**
+ * A rotatable tetromino piece.
+ */
+export class Piece {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        PieceFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_piece_free(ptr, 0);
+    }
 }
 
 const SimulatorFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -95,11 +313,11 @@ export class Simulator {
         return this;
     }
     /**
-     * @returns {boolean}
+     * @returns {MoveResult | undefined}
      */
     step() {
         const ret = wasm.simulator_step(this.__wbg_ptr);
-        return ret !== 0;
+        return ret === 0 ? undefined : MoveResult.__wrap(ret);
     }
     /**
      * @returns {Uint8Array}
@@ -109,6 +327,73 @@ export class Simulator {
         var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         return v1;
+    }
+    /**
+     * @param {number} piece_idx
+     * @returns {(Move)[]}
+     */
+    generate_moves(piece_idx) {
+        const ret = wasm.simulator_generate_moves(this.__wbg_ptr, piece_idx);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+}
+
+const WasmPatternFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_wasmpattern_free(ptr >>> 0, 1));
+
+export class WasmPattern {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(WasmPattern.prototype);
+        obj.__wbg_ptr = ptr;
+        WasmPatternFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        WasmPatternFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_wasmpattern_free(ptr, 0);
+    }
+    /**
+     * @returns {Uint8Array}
+     */
+    get data() {
+        const ret = wasm.__wbg_get_wasmpattern_data(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @param {Uint8Array} arg0
+     */
+    set data(arg0) {
+        const ptr0 = passArray8ToWasm0(arg0, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_wasmpattern_data(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {number}
+     */
+    get size() {
+        const ret = wasm.__wbg_get_moveresult_piece_idx(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set size(arg0) {
+        wasm.__wbg_set_moveresult_piece_idx(this.__wbg_ptr, arg0);
     }
 }
 
@@ -165,6 +450,14 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_getRandomValues_bcb4912f16000dc4 = function() { return handleError(function (arg0, arg1) {
         arg0.getRandomValues(arg1);
     }, arguments) };
+    imports.wbg.__wbg_move_new = function(arg0) {
+        const ret = Move.__wrap(arg0);
+        return ret;
+    };
+    imports.wbg.__wbg_move_unwrap = function(arg0) {
+        const ret = Move.__unwrap(arg0);
+        return ret;
+    };
     imports.wbg.__wbg_msCrypto_0a36e2ec3a343d26 = function(arg0) {
         const ret = arg0.msCrypto;
         return ret;
@@ -276,6 +569,7 @@ function __wbg_init_memory(imports, memory) {
 function __wbg_finalize_init(instance, module) {
     wasm = instance.exports;
     __wbg_init.__wbindgen_wasm_module = module;
+    cachedDataViewMemory0 = null;
     cachedUint8ArrayMemory0 = null;
 
 
