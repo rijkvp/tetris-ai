@@ -6,6 +6,21 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+        }
+
+        body {
+            margin: 12px;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
