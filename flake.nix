@@ -36,6 +36,7 @@
                 pkgs.python3Packages.numpy
                 pkgs.cargo-flamegraph
                 pkgs.wasm-pack
+                pkgs.bun
               ];
 
               languages.rust = {
