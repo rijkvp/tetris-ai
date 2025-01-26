@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Simulator, Move, MoveResult, get_piece_rotation } from "tetris-ai";
+    import { Simulator, Move, MoveResult, Weights, get_piece_rotation } from "tetris-ai";
 
     const BOARD_WIDTH = 10;
     const BOARD_HEIGHT = 20;
@@ -23,6 +23,7 @@
     let context: CanvasRenderingContext2D;
 
     const simulator = new Simulator();
+    let weights = new Weights();
 
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;
@@ -136,20 +137,48 @@
         window.requestAnimationFrame(gameLoop);
     }
 
+    function onRowTransChange(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const value = parseFloat(input.value);
+
+        let weights2 = new Weights();
+        weights2.row_trans = value;
+        console.log(`row trans is: ${weights2.row_trans}`);
+        simulator.update_weights(weights2);
+    }
+
     window.requestAnimationFrame(gameLoop);
 </script>
-<style>
-    canvas {
-        border: 2px solid #444;
-        background-color: #ddd;
-    }
-</style>
 
 <h1>Tetris AI</h1>
 <canvas bind:this={canvas} id="game" width="320" height="640"></canvas>
 
 <div>
     <h2>Controls</h2>
-    <input id="speed-input" type="range" bind:value={tickRate} min="1" max="1000" />
+    <input
+        id="speed-input"
+        type="range"
+        bind:value={tickRate}
+        min="1"
+        max="1000"
+    />
     <label for="speed-input">{tickRate} ticks per second</label>
+    <h2>Weights</h2>
+    <input
+        id="row-trans-input"
+        type="range"
+        on:input={onRowTransChange}
+        min="-10.0"
+        max="10.0"
+    />
+    <label for="row-trans-input"
+        >Row transitions: {weights.row_trans}</label
+    >
 </div>
+
+<style>
+    canvas {
+        border: 2px solid #444;
+        background-color: #ddd;
+    }
+</style>

@@ -1,6 +1,7 @@
 #![feature(gen_blocks)]
 
 use board::Board;
+use feature::Weights;
 use r#move::Move;
 use piece::Piece;
 use rand::Rng;
@@ -25,6 +26,7 @@ pub struct Simulator {
     #[wasm_bindgen(skip)]
     pub state: State,
     pub steps: u64,
+    weights: Weights,
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -40,7 +42,12 @@ impl Simulator {
         Self {
             state: State::new(Board::default()),
             steps: 0,
+            weights: Weights::default(),
         }
+    }
+
+    pub fn update_weights(&mut self, weights: Weights) {
+        self.weights = weights;
     }
 
     pub fn step(&mut self) -> Option<MoveResult> {
@@ -51,7 +58,7 @@ impl Simulator {
         for path in r#move::move_dijkstra(self.state.board, piece) {
             let r#move = path.last().unwrap();
             let future = self.state.future(piece, *r#move);
-            let score = feature::evaluate_default(&future);
+            let score = feature::evaluate(&future, &self.weights);
             if score > best_score {
                 best = Some((future, path));
                 best_score = score;

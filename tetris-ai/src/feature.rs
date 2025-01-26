@@ -3,6 +3,63 @@ use crate::{
     state::State,
 };
 use std::cmp::{max, min};
+use wasm_bindgen::prelude::wasm_bindgen;
+
+#[wasm_bindgen]
+#[derive(Debug, Clone, Copy)]
+pub struct Weights {
+    pub row_trans: f64,
+    pub col_trans: f64,
+    pub cuml_wells: f64,
+    pub pits: f64,
+    pub landing_height: f64,
+    pub eroded_cells: f64,
+}
+
+impl Default for Weights {
+    fn default() -> Self {
+        Self {
+            row_trans: -2.700,
+            col_trans: -6.786,
+            cuml_wells: -0.396,
+            pits: -12.668,
+            landing_height: -3.383,
+            eroded_cells: -9.277,
+        }
+    }
+}
+
+#[wasm_bindgen]
+impl Weights {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self::default()
+
+    }
+
+    fn to_array(&self) -> [(fn(&State) -> usize, f64); 6] {
+        [
+            (row_trans, self.row_trans),
+            (col_trans, self.col_trans),
+            (cuml_wells, self.cuml_wells),
+            (pits, self.pits),
+            (landing_height, self.landing_height),
+            (eroded_cells, self.eroded_cells),
+        ]
+    }
+}
+
+pub fn evaluate_default(state: &State) -> f64 {
+    evaluate(state, &Weights::default())
+}
+
+pub fn evaluate(state: &State, weights: &Weights) -> f64 {
+    let mut score = 0.0;
+    for (feature, weight) in weights.to_array().iter() {
+        score += feature(state) as f64 * weight;
+    }
+    score
+}
 
 /// The number of times that two adjacent cells in the same row mismatch.
 fn row_trans(state: &State) -> usize {
@@ -83,29 +140,6 @@ fn landing_height(state: &State) -> usize {
 /// The number of cells that were cleared from the previously placed piece.
 fn eroded_cells(state: &State) -> usize {
     state.delta.as_ref().map(|delta| delta.eroded).unwrap_or(0)
-}
-
-type FeatureWeights<'a> = &'a [(fn(&State) -> usize, f64)];
-
-const DEFAULT_WEIGHTS: FeatureWeights = &[
-    (row_trans, -2.700),
-    (col_trans, -6.786),
-    (cuml_wells, -0.396),
-    (pits, -12.668),
-    (landing_height, -3.383),
-    (eroded_cells, -9.277),
-];
-
-fn evaluate(state: &State, weights: FeatureWeights) -> f64 {
-    let mut score = 0.0;
-    for (feature, weight) in weights {
-        score += feature(state) as f64 * weight;
-    }
-    score
-}
-
-pub fn evaluate_default(state: &State) -> f64 {
-    evaluate(state, DEFAULT_WEIGHTS)
 }
 
 #[cfg(test)]

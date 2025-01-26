@@ -45,10 +45,11 @@
                 targets = [ "wasm32-unknown-unknown" ];
               };
 
-              pre-commit.hooks = {
-                rustfmt.enable = true;
-                clippy.enable = true;
-              };
+              # TODO: fix
+              # git-hooks.hooks = {
+              #   rustfmt.enable = true;
+              #   clippy.enable = true;
+              # };
 
               env.LD_LIBRARY_PATH =
                 with pkgs;
@@ -58,7 +59,8 @@
                 ];
 
               scripts.build.exec = ''
-                wasm-pack build --target web --out-dir "$DEVENV_ROOT/frontend/pkg"
+                wasm-pack build ./tetris-ai -t web
+                bun run build
               '';
             }
           )
