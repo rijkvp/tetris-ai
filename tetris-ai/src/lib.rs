@@ -1,5 +1,3 @@
-#![feature(gen_blocks)]
-
 use board::Board;
 use feature::Weights;
 use r#move::Move;

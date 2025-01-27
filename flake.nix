@@ -36,12 +36,13 @@
                 pkgs.python3Packages.numpy
                 pkgs.cargo-flamegraph
                 pkgs.wasm-pack
-                pkgs.bun
+                pkgs.nodejs
+                pkgs.yarn
               ];
 
               languages.rust = {
                 enable = true;
-                channel = "nightly";
+                channel = "stable";
                 targets = [ "wasm32-unknown-unknown" ];
               };
 

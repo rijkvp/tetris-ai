@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Simulator, Move, MoveResult, Weights, get_piece_rotation } from "tetris-ai";
+    import init, { Simulator, Move, MoveResult, Weights, get_piece_rotation } from "tetris-ai";
 
     const BOARD_WIDTH = 10;
     const BOARD_HEIGHT = 20;
@@ -22,17 +22,12 @@
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D;
 
-    const simulator = new Simulator();
-    let weights = new Weights();
+    let simulator;
+    let weights;
 
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;
     let nextBoard: Uint8Array | null = null;
-
-    onMount(() => {
-        context = canvas.getContext("2d")!;
-    });
-
     function drawBoard(board: Uint8Array) {
         for (let row = 0; row < BOARD_HEIGHT; row++) {
             for (let col = 0; col < BOARD_WIDTH; col++) {
@@ -141,13 +136,21 @@
         const input = event.target as HTMLInputElement;
         const value = parseFloat(input.value);
 
-        let weights2 = new Weights();
-        weights2.row_trans = value;
-        console.log(`row trans is: ${weights2.row_trans}`);
-        simulator.update_weights(weights2);
+        // let weights2 = new Weights();
+        // weights2.row_trans = value;
+        // console.log(`row trans is: ${weights2.row_trans}`);
+        // simulator.update_weights(weights2);
     }
 
-    window.requestAnimationFrame(gameLoop);
+
+    onMount(async () => {
+        await init();
+        simulator = new Simulator();
+        weights = new Weights();
+        context = canvas.getContext("2d")!;
+        window.requestAnimationFrame(gameLoop);
+    });
+
 </script>
 
 <h1>Tetris AI</h1>
@@ -172,7 +175,7 @@
         max="10.0"
     />
     <label for="row-trans-input"
-        >Row transitions: {weights.row_trans}</label
+        >Row transitions: TODO</label
     >
 </div>
 

@@ -42,7 +42,7 @@ pub fn random_state() -> State {
     let mut rng = rand::thread_rng();
     loop {
         let piece = Piece::from_index(rng.gen_range(0..7));
-        let possible_moves = move_drop(state.board, piece).collect::<Vec<_>>();
+        let possible_moves = move_drop(state.board, piece);
         if possible_moves.is_empty() {
             break;
         }
