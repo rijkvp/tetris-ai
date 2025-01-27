@@ -1,9 +1,19 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris</title>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="modulepreload" href="./_app/immutable/entry/start.-ef5XVbt.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/V5xLtPhI.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/CKMq1a7r.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/CEr92PVL.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.GfzHkD0x.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/DxC5zK4P.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/CoI_JOtk.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/CiCHoYRH.js">
+	</head>
     <style>
         * {
             margin: 0;
@@ -18,18 +28,25 @@
             margin-left: auto;
             margin-right: auto;
         }
-        #game {
-            background-color: #ddd;
-        }
     </style>
-</head>
-<body>
-    <h1>Tetris AI Prototype</h1>
-    <canvas id="game" width="320" height="640"></canvas>
-    <br>
-    <p id="step-label"></p>
-    <input id="speed-slider" type="range" min="2" max="1000" value="10" />
-    <label id="speed-label" for="speed">10 t/s</label>
-    <script type="module" src="tetris.js"></script>
-</body>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">
+			<script>
+				{
+					__sveltekit_1hj55h0 = {
+						base: new URL(".", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("./_app/immutable/entry/start.-ef5XVbt.js"),
+						import("./_app/immutable/entry/app.GfzHkD0x.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
 </html>
