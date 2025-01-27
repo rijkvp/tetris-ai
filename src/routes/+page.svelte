@@ -1,6 +1,13 @@
 <script lang="ts">
+    import WeightsControl from "$lib/WeightsControl.svelte";
     import { onMount } from "svelte";
-    import init, { Simulator, Move, MoveResult, Weights, get_piece_rotation } from "tetris-ai";
+    import init, {
+        Simulator,
+        Move,
+        MoveResult,
+        Weights,
+        get_piece_rotation,
+    } from "tetris-ai";
 
     const BOARD_WIDTH = 10;
     const BOARD_HEIGHT = 20;
@@ -22,12 +29,12 @@
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D;
 
-    let simulator: Simulator;
-    let weights: Weights;
+    let simulator: Simulator = new Simulator();
 
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;
     let nextBoard: Uint8Array | null = null;
+
     function drawBoard(board: Uint8Array) {
         for (let row = 0; row < BOARD_HEIGHT; row++) {
             for (let col = 0; col < BOARD_WIDTH; col++) {
@@ -132,25 +139,20 @@
         window.requestAnimationFrame(gameLoop);
     }
 
-    function onRowTransChange(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const value = parseFloat(input.value);
-
+    function onWeightsChange(weights: Weights) {
+        // const input = event.target as HTMLInputElement;
+        // const value = parseFloat(input.value);
+        //
         // let weights2 = new Weights();
         // weights2.row_trans = value;
-        // console.log(`row trans is: ${weights2.row_trans}`);
-        // simulator.update_weights(weights2);
+        console.log(`row trans is: ${weights.row_trans}`);
+        simulator.update_weights(weights);
     }
 
-
-    onMount(async () => {
-        await init();
-        simulator = new Simulator();
-        weights = new Weights();
+    onMount(() => {
         context = canvas.getContext("2d")!;
         window.requestAnimationFrame(gameLoop);
     });
-
 </script>
 
 <h1>Tetris AI</h1>
@@ -166,17 +168,7 @@
         max="1000"
     />
     <label for="speed-input">{tickRate} ticks per second</label>
-    <h2>Weights</h2>
-    <input
-        id="row-trans-input"
-        type="range"
-        on:input={onRowTransChange}
-        min="-10.0"
-        max="10.0"
-    />
-    <label for="row-trans-input"
-        >Row transitions: TODO</label
-    >
+    <WeightsControl {onWeightsChange} />
 </div>
 
 <style>
