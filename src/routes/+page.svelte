@@ -22,8 +22,8 @@
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D;
 
-    let simulator;
-    let weights;
+    let simulator: Simulator;
+    let weights: Weights;
 
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;

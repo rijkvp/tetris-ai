@@ -61,7 +61,7 @@
 
               scripts.build.exec = ''
                 wasm-pack build ./tetris-ai -t web
-                bun run build
+                npm run build
               '';
             }
           )

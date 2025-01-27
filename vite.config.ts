@@ -1,15 +1,17 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import wasmPack from "vite-plugin-wasm-pack";
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
     plugins: [
-        wasmPack('./tetris-ai'),
         sveltekit(),
+        wasm(),
+        topLevelAwait(),
     ],
     server: {
         fs: {
-            allow: ["./tetris-ai/pkg"]
+            allow: ["./tetris-ai"]
         }
     }
 });
