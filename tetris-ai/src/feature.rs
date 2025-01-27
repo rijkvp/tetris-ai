@@ -6,46 +6,77 @@ use std::cmp::{max, min};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy)]
-pub struct Weights {
-    pub row_trans: f64,
-    pub col_trans: f64,
-    pub cuml_wells: f64,
-    pub pits: f64,
-    pub landing_height: f64,
-    pub eroded_cells: f64,
-}
+#[derive(Debug, Copy, Clone)]
+pub struct Weights([(fn(&State) -> usize, f64); 6]);
+
+const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
+    (row_trans, -2.700),
+    (col_trans, -6.786),
+    (cuml_wells, -0.396),
+    (pits, -12.668),
+    (landing_height, -3.383),
+    (eroded_cells, -9.277),
+];
 
 impl Default for Weights {
     fn default() -> Self {
+        Weights(DEFAULT_WEIGHTS)
+    }
+}
+
+#[wasm_bindgen]
+pub struct WeightInfo {
+    name: &'static str,
+    pub default_value: f64,
+}
+
+#[wasm_bindgen]
+impl WeightInfo {
+    fn new(name: &'static str, default_value: f64) -> Self {
         Self {
-            row_trans: -2.700,
-            col_trans: -6.786,
-            cuml_wells: -0.396,
-            pits: -12.668,
-            landing_height: -3.383,
-            eroded_cells: -9.277,
+            name,
+            default_value,
         }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn name(&self) -> String {
+        self.name.to_string()
     }
 }
 
 #[wasm_bindgen]
 impl Weights {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
+    pub fn defaults() -> Self {
         Self::default()
-
     }
 
-    fn to_array(&self) -> [(fn(&State) -> usize, f64); 6] {
-        [
-            (row_trans, self.row_trans),
-            (col_trans, self.col_trans),
-            (cuml_wells, self.cuml_wells),
-            (pits, self.pits),
-            (landing_height, self.landing_height),
-            (eroded_cells, self.eroded_cells),
+    pub fn info() -> Box<[WeightInfo]> {
+        vec![
+            WeightInfo::new("row_trans", DEFAULT_WEIGHTS[0].1),
+            WeightInfo::new("col_trans", DEFAULT_WEIGHTS[1].1),
+            WeightInfo::new("cuml_wells", DEFAULT_WEIGHTS[2].1),
+            WeightInfo::new("pits", DEFAULT_WEIGHTS[3].1),
+            WeightInfo::new("landing_height", DEFAULT_WEIGHTS[4].1),
+            WeightInfo::new("eroded_cells", DEFAULT_WEIGHTS[5].1),
         ]
+        .into()
+    }
+
+    pub fn from_values(values: Box<[f64]>) -> Self {
+        let mut weights = DEFAULT_WEIGHTS;
+        for (i, value) in values.iter().enumerate() {
+            weights[i].1 = *value;
+        }
+        Weights(weights)
+    }
+
+    pub fn values(self) -> Box<[f64]> {
+        self.0
+            .into_iter()
+            .map(|(_, weight)| weight)
+            .collect::<Vec<_>>()
+            .into()
     }
 }
 
@@ -55,7 +86,7 @@ pub fn evaluate_default(state: &State) -> f64 {
 
 pub fn evaluate(state: &State, weights: &Weights) -> f64 {
     let mut score = 0.0;
-    for (feature, weight) in weights.to_array().iter() {
+    for (feature, weight) in weights.0.iter() {
         score += feature(state) as f64 * weight;
     }
     score

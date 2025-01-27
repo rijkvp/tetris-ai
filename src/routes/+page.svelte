@@ -140,12 +140,7 @@
     }
 
     function onWeightsChange(weights: Weights) {
-        // const input = event.target as HTMLInputElement;
-        // const value = parseFloat(input.value);
-        //
-        // let weights2 = new Weights();
-        // weights2.row_trans = value;
-        console.log(`row trans is: ${weights.row_trans}`);
+        console.log(`updating weights`);
         simulator.update_weights(weights);
     }
 
