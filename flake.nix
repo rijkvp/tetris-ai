@@ -59,9 +59,17 @@
                   python3Packages.numpy
                 ];
 
-              scripts.build.exec = ''
-                wasm-pack build ./tetris-ai -t web
+              scripts.deploy.exec = ''
+                #!/bin/sh
+                if [ -z "$1" ]; then
+                  echo "usage: $0 <deploy_dir>"
+                  exit 1
+                fi
                 npm run build
+                cd "$1"
+                find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+                cp -a "$DEVENV_ROOT/build/." .
+                touch .nojekyll
               '';
             }
           )
