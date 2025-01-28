@@ -1,9 +1,10 @@
-use crate::{board::Board, r#move::Move, piece::Piece};
+use crate::{board::Board, piece::Piece, r#move::Move};
 
 #[derive(Clone)]
 pub struct State {
     pub board: Board,
     pub delta: Option<Delta>,
+    pub cleared_rows: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -17,7 +18,11 @@ pub struct Delta {
 
 impl State {
     pub fn new(board: Board) -> Self {
-        Self { board, delta: None }
+        Self {
+            board,
+            delta: None,
+            cleared_rows: 0,
+        }
     }
 
     /// Computes the new 'future' state after a piece has been moved.
@@ -30,6 +35,7 @@ impl State {
             piece.cell(),
         );
         let cleared = board.clear_full();
+        let cleared_rows = cleared.len();
 
         // count the number of cells that were cleared by the move.
         let mut eroded = 0;
@@ -55,6 +61,7 @@ impl State {
                 #[cfg(test)]
                 cleared,
             }),
+            cleared_rows: self.cleared_rows + cleared_rows,
         }
     }
 }

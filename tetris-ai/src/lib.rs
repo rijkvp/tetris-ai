@@ -1,7 +1,7 @@
 use board::Board;
 use feature::Weights;
-use r#move::Move;
 use piece::Piece;
+use r#move::Move;
 use rand::Rng;
 use state::State;
 
@@ -46,6 +46,11 @@ impl Simulator {
 
     pub fn update_weights(&mut self, weights: Weights) {
         self.weights = weights;
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn cleared_rows(&self) -> usize {
+        self.state.cleared_rows
     }
 
     pub fn step(&mut self) -> Option<MoveResult> {

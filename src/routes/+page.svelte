@@ -1,7 +1,7 @@
 <script lang="ts">
     import WeightsControl from "$lib/WeightsControl.svelte";
     import { onMount } from "svelte";
-    import init, {
+    import {
         Simulator,
         Move,
         MoveResult,
@@ -34,6 +34,7 @@
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;
     let nextBoard: Uint8Array | null = null;
+    let clearedLines = 0;
 
     function drawBoard(board: Uint8Array) {
         for (let row = 0; row < BOARD_HEIGHT; row++) {
@@ -130,6 +131,7 @@
         }
         if (currentMove == null || tick > currentMove.path.length) {
             currentMove = simulator.step();
+            clearedLines = simulator.cleared_rows;
             tick = tickRate;
             board = nextBoard;
             nextBoard = simulator.board_data();
@@ -154,6 +156,7 @@
 <canvas bind:this={canvas} id="game" width="320" height="640"></canvas>
 
 <div>
+    <p>Cleared {clearedLines} lines</p>
     <h2>Controls</h2>
     <input
         id="speed-input"

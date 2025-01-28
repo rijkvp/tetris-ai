@@ -121,7 +121,7 @@ impl Board {
         return false;
     }
 
-    /// Clears the full rows and returns the number of rows cleared.
+    /// Clears the full rows and returns the indices of rows cleared.
     pub(crate) fn clear_full(&mut self) -> Vec<usize> {
         let mut rows = Vec::new();
         let mut bottom = (BOARD_HEIGHT - 1) as i64;
