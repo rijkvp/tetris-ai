@@ -1,11 +1,11 @@
 use crate::board::Board;
 use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
-use crate::r#move::{Move, move_drop};
 use crate::piece::Piece;
+use crate::r#move::{move_drop, Move};
 use crate::state::State;
 use pyo3::ffi::c_str;
 use pyo3::types::{PyDict, PyTuple};
-use pyo3::{IntoPyObjectExt, prelude::*};
+use pyo3::{prelude::*, IntoPyObjectExt};
 use rand::Rng;
 
 /// Generates a random board.
@@ -85,10 +85,10 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
                 .unwrap();
         }
 
-        let args_tuple = PyTuple::new(py, &[
-            board_data.into_py_any(py).unwrap(),
-            delta_dict.into(),
-        ])
+        let args_tuple = PyTuple::new(
+            py,
+            &[board_data.into_py_any(py).unwrap(), delta_dict.into()],
+        )
         .unwrap();
 
         let py_state = py_mod
@@ -125,10 +125,10 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
         let py_state = py_mod
             .call_method(
                 "import_state",
-                PyTuple::new(py, &[
-                    board_data.into_py_any(py).unwrap(),
-                    PyDict::new(py).into(),
-                ])
+                PyTuple::new(
+                    py,
+                    &[board_data.into_py_any(py).unwrap(), PyDict::new(py).into()],
+                )
                 .unwrap(),
                 None,
             )

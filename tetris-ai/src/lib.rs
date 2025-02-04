@@ -98,8 +98,3 @@ impl Simulator {
             .collect()
     }
 }
-
-#[wasm_bindgen]
-pub fn wasm_test() -> Result<JsValue, JsValue> {
-    Ok(JsValue::from_str("Hello from wasm!"))
-}

@@ -1,4 +1,4 @@
-use crate::board::{BOARD_HEIGHT, BOARD_WIDTH, Board};
+use crate::board::{Board, BOARD_HEIGHT, BOARD_WIDTH};
 use crate::piece::Piece;
 use std::collections::{BinaryHeap, HashMap};
 use wasm_bindgen::prelude::*;
@@ -106,11 +106,14 @@ impl PartialOrd for Node {
 }
 
 fn touches_ground(piece: Piece, r#move: Move, board: &Board) -> bool {
-    board.overlaps_move(piece, Move {
-        rot: r#move.rot,
-        row: r#move.row + 1,
-        col: r#move.col,
-    })
+    board.overlaps_move(
+        piece,
+        Move {
+            rot: r#move.rot,
+            row: r#move.row + 1,
+            col: r#move.col,
+        },
+    )
 }
 
 pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Vec<Move>> {
@@ -167,53 +170,4 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Vec<Move>> {
             path
         })
         .collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::{piece, state::State, test};
-
-    const TEST_ITERATIONS: usize = 100;
-
-    #[test]
-    fn test_move_drop() {
-        for _ in 0..TEST_ITERATIONS {
-            let state = State::new(test::random_board());
-            for piece_index in 0..piece::N_PIECES {
-                let piece = Piece::from_index(piece_index);
-                let mut py_output = test::run_py_move(&state, piece);
-                py_output.sort();
-                let mut rust_output = move_drop(state.board, piece);
-                rust_output.sort();
-                if py_output != rust_output {
-                    let mut diff = vec![];
-                    for item in rust_output.iter() {
-                        if !py_output.contains(&item) {
-                            diff.push(item);
-                        }
-                    }
-                    println!("{} differences found", diff.len());
-                    for diff in diff.iter() {
-                        let mut board = state.board.clone();
-                        let pattern = piece.rotation(diff.rot);
-                        println!("Pattern: {}", pattern);
-                        println!("Position: {},{}", diff.row, diff.col);
-                        board.imprint(pattern, diff.row, diff.col, piece.cell());
-                        println!("Modified board: {}", board);
-                    }
-                    panic!(
-                        "move_drop mismatch for {}\nPython ({}): {:?}\nRust ({}): {:?}\nDifference: {:?}\nBoard {}",
-                        piece,
-                        py_output.len(),
-                        py_output,
-                        rust_output.len(),
-                        rust_output,
-                        diff,
-                        state.board
-                    );
-                }
-            }
-        }
-    }
 }

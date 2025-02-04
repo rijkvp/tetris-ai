@@ -1,6 +1,6 @@
 use crate::{
-    r#move::Move,
     piece::{Pattern, Piece},
+    r#move::Move,
 };
 use std::{fmt::Display, ops::Index, str::FromStr};
 
@@ -44,7 +44,7 @@ pub const BOARD_WIDTH: usize = 10;
 pub const BOARD_HEIGHT: usize = 20;
 
 /// Represents a Tetris board.
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone, Default, Debug)]
 pub struct Board {
     data: [[Cell; BOARD_WIDTH]; BOARD_HEIGHT],
     heights: [usize; BOARD_WIDTH],
@@ -125,6 +125,7 @@ impl Board {
     pub(crate) fn clear_full(&mut self) -> Vec<usize> {
         let mut rows = Vec::new();
         let mut bottom = (BOARD_HEIGHT - 1) as i64;
+        let mut total_shift = 0;
         while bottom >= 0 {
             let mut top = bottom;
             while top >= 0
@@ -132,7 +133,7 @@ impl Board {
                     .into_iter()
                     .all(|cell| cell.filled())
             {
-                rows.push(top as usize);
+                rows.push(top as usize - total_shift);
                 top -= 1;
             }
             if top == bottom {
@@ -141,6 +142,7 @@ impl Board {
             }
             // shift rows down
             let shift = (bottom - top) as usize;
+            total_shift += shift;
             if shift < BOARD_HEIGHT {
                 for r in (0..(top + 1) as usize).rev() {
                     for c in 0..BOARD_WIDTH {
@@ -155,7 +157,6 @@ impl Board {
                     self.data[r][c] = Cell::default(); // clear row
                 }
             }
-            bottom = top;
         }
         let rows_cleared = rows.len();
         if rows_cleared > 0 {
@@ -313,9 +314,20 @@ mod tests {
         }
     }
 
+    fn test_clear_board(input: &str, expected: &str, expected_rows: Vec<usize>) {
+        let mut board = Board::from_str(input).unwrap();
+        let cleared = board.clear_full();
+        let expected_board = Board::from_str(expected).unwrap();
+        println!("Expected board:{}", expected);
+        println!("Actual board:{}", board);
+        assert_eq!(cleared, expected_rows);
+        assert_eq!(board.heights, expected_board.heights);
+        assert_eq!(board.data, expected_board.data);
+    }
+
     #[test]
     fn test_clear_board_regression() {
-        let mut board = Board::from_str(
+        test_clear_board(
             r#"
 ##########
 #########.
@@ -338,11 +350,6 @@ mod tests {
 ##.#...###
 ##.#....##
     "#,
-        )
-        .unwrap();
-        let cleared = board.clear_full();
-        assert_eq!(cleared, vec![0]);
-        let expected = Board::from_str(
             r#"
 ..........
 #########.
@@ -365,11 +372,56 @@ mod tests {
 ##.#...###
 ##.#....##
             "#,
-        )
-        .unwrap();
-        println!("Expected board:{}", expected);
-        println!("Actual board:{}", board);
-        assert_eq!(board.heights, expected.heights);
-        assert_eq!(board.data, expected.data);
+            vec![0],
+        );
+    }
+
+    #[test]
+    fn test_clear_board_regression_2() {
+        test_clear_board(
+            r#"
+..........
+..........
+..........
+..........
+...#......
+..##......
+######.##.
+#########.
+#########.
+#########.
+#########.
+##########
+.#########
+##########
+##########
+.####.####
+.#########
+######.###
+######.###
+######.###"#,
+            r#"
+..........
+..........
+..........
+..........
+..........
+..........
+..........
+...#......
+..##......
+######.##.
+#########.
+#########.
+#########.
+#########.
+.#########
+.####.####
+.#########
+######.###
+######.###
+######.###"#,
+            vec![14, 13, 11],
+        );
     }
 }
