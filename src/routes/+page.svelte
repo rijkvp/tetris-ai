@@ -34,7 +34,7 @@
     let currentMove: MoveResult | undefined;
     let board: Uint8Array | null = null;
     let nextBoard: Uint8Array | null = null;
-    let clearedLines = 0;
+    let stats = simulator.stats();
 
     function drawBoard(board: Uint8Array) {
         for (let row = 0; row < BOARD_HEIGHT; row++) {
@@ -114,6 +114,13 @@
         }
         // draw the board
         if (board !== null) drawBoard(board);
+
+        // draw hud
+        context.fillStyle = "#000";
+        context.font = "16px monospace";
+        context.fillText(`Score: ${stats.score}`, 10, 20);
+        context.fillText(`Lines: ${stats.cleared_rows}`, 10, 40);
+        context.fillText(`Level: ${stats.level}`, 10, 60);
     }
 
     let lastFrameTime = 0;
@@ -131,7 +138,7 @@
         }
         if (currentMove == null || tick > currentMove.path.length) {
             currentMove = simulator.step();
-            clearedLines = simulator.cleared_rows;
+            stats = simulator.stats();
             tick = tickRate;
             board = nextBoard;
             nextBoard = simulator.board_data();
@@ -153,25 +160,30 @@
 </script>
 
 <h1>Tetris AI</h1>
-<canvas bind:this={canvas} id="game" width="320" height="640"></canvas>
+<div class="panels">
+    <canvas bind:this={canvas} id="game" width="320" height="640"></canvas>
 
-<div>
-    <p>Cleared {clearedLines} lines</p>
-    <h2>Controls</h2>
-    <input
-        id="speed-input"
-        type="range"
-        bind:value={tickRate}
-        min="1"
-        max="1000"
-    />
-    <label for="speed-input">{tickRate} ticks per second</label>
-    <WeightsControl {onWeightsChange} />
+    <div>
+        <input
+            id="speed-input"
+            type="range"
+            bind:value={tickRate}
+            min="1"
+            max="1000"
+        />
+        <label for="speed-input">{tickRate} t/s</label>
+        <WeightsControl {onWeightsChange} />
+    </div>
 </div>
 
 <style>
     canvas {
         border: 2px solid #444;
         background-color: #ddd;
+    }
+    .panels {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
     }
 </style>

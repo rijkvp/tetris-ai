@@ -3,8 +3,8 @@ use crate::{board::Board, piece::Piece, r#move::Move};
 #[derive(Clone)]
 pub struct State {
     pub board: Board,
-    pub cleared_rows: usize,
-    pub score: usize,
+    pub cleared_rows: u64,
+    pub score: u64,
     pub delta: Option<Delta>,
 }
 
@@ -17,7 +17,7 @@ pub struct Delta {
     pub cleared: Vec<usize>,
 }
 
-const POINTS_PER_CLEARED_ROWS: [usize; 5] = [0, 40, 100, 300, 1200];
+const POINTS_PER_CLEARED_ROWS: [u64; 5] = [0, 40, 100, 300, 1200];
 
 impl State {
     pub fn new(board: Board) -> Self {
@@ -29,7 +29,7 @@ impl State {
         }
     }
 
-    pub fn level(&self) -> usize {
+    pub fn level(&self) -> u64 {
         (self.cleared_rows / 10) + 1
     }
 
@@ -69,7 +69,7 @@ impl State {
                 #[cfg(test)]
                 cleared: cleared_rows,
             }),
-            cleared_rows: self.cleared_rows + cleared,
+            cleared_rows: self.cleared_rows + cleared as u64,
             score: self.score + POINTS_PER_CLEARED_ROWS[cleared] * (self.level() + 1),
         }
     }

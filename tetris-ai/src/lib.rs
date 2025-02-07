@@ -23,7 +23,7 @@ fn random_piece() -> Piece {
 pub struct Simulator {
     #[wasm_bindgen(skip)]
     pub state: State,
-    pub steps: u64,
+    steps: u64,
     weights: Weights,
 }
 
@@ -31,6 +31,14 @@ pub struct Simulator {
 pub struct MoveResult {
     pub piece_idx: usize,
     pub path: Vec<Move>,
+}
+
+#[wasm_bindgen]
+pub struct Stats {
+    pub steps: u64,
+    pub lines: u64,
+    pub score: u64,
+    pub level: u64,
 }
 
 #[wasm_bindgen]
@@ -48,9 +56,13 @@ impl Simulator {
         self.weights = weights;
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn cleared_rows(&self) -> usize {
-        self.state.cleared_rows
+    pub fn stats(&self) -> Stats {
+        Stats {
+            steps: self.steps,
+            lines: self.state.cleared_rows,
+            score: self.state.score,
+            level: self.state.level(),
+        }
     }
 
     pub fn step(&mut self) -> Option<MoveResult> {
