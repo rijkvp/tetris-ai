@@ -10,7 +10,7 @@ fn main() {
     println!(
         "moves: {}, cleared_rows: {}, score: {}, level: {}, elapsed: {:.2}s, moves/sec: {:.0}",
         stats.steps,
-        stats.cleared_rows,
+        stats.lines,
         stats.score,
         stats.level,
         elapsed.as_secs_f64(),

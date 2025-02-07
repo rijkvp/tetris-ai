@@ -119,7 +119,7 @@
         context.fillStyle = "#000";
         context.font = "16px monospace";
         context.fillText(`Score: ${stats.score}`, 10, 20);
-        context.fillText(`Lines: ${stats.cleared_rows}`, 10, 40);
+        context.fillText(`Lines: ${stats.lines}`, 10, 40);
         context.fillText(`Level: ${stats.level}`, 10, 60);
     }
 

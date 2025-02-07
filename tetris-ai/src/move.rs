@@ -141,7 +141,7 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Vec<Move>> {
             destinations.push(current);
         }
         for next in next_moves(current, piece, &board).into_iter() {
-            let new_cost = if next.row != current.row || next.col != current.col {
+            let new_cost = if next.row != current.row {
                 current_cost + 1
             } else {
                 current_cost
