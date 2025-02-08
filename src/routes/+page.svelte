@@ -21,7 +21,7 @@
         <input
             id="speed-input"
             type="range"
-            min="2"
+            min="0"
             max="16"
             bind:value={tickRateExp}
             oninput={() => tetris.setSpeed(1 / tickRate)}
