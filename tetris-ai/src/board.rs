@@ -179,6 +179,11 @@ impl Board {
         &self.data
     }
 
+    pub(crate) fn get_raw_data(&self) -> &[[u8; BOARD_WIDTH]; BOARD_HEIGHT] {
+        // SAFETY: Cell is repr(transparent)
+        unsafe { std::mem::transmute(&self.data) }
+    }
+
     #[cfg(test)]
     pub(crate) fn fill_cell(&mut self, row: usize, col: usize) {
         self.data[row][col] = Cell::new(1);

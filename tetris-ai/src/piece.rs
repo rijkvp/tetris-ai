@@ -1,18 +1,19 @@
 use crate::board::Cell;
+#[cfg(feature="wasm")]
 use wasm_bindgen::prelude::*;
 
 /// A rotatable tetromino piece.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Piece(usize);
 
-#[wasm_bindgen(getter_with_clone)]
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
 pub struct WasmPattern {
     pub data: Vec<u8>,
     pub size: usize,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn get_piece_rotation(piece_idx: usize, rotation: usize) -> WasmPattern {
     let pattern = Piece::from_index(piece_idx).rotation(rotation);
     let mut data = Vec::with_capacity(pattern.rows() * pattern.cols());
@@ -219,7 +220,7 @@ const PIECE_DATA: [PieceData; N_PIECES] = [
     },
 ];
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Pattern(&'static [&'static [bool]]);
 

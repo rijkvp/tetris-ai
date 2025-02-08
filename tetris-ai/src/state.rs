@@ -1,6 +1,6 @@
 use crate::{board::Board, piece::Piece, r#move::Move};
 
-#[derive(Clone)]
+#[derive(Default, Clone)]
 pub struct State {
     pub board: Board,
     pub cleared_rows: u64,

@@ -8,10 +8,16 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 rand = { version = "0.8.5" }
-getrandom = { version = "0.2.15", features = ["js"] }
-wasm-bindgen = "0.2.100"
-serde = "1.0.217"
-serde-wasm-bindgen = "0.6.5"
+getrandom = { version = "0.2.15" }
+serde = { version = "1.0.217", features = ["derive"] }
+
+# wasm
+wasm-bindgen = { version = "0.2.100", optional = true }
+serde-wasm-bindgen = { version = "0.6.5", optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[features]
+wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:console_error_panic_hook", "getrandom/js"]
 
 [dev-dependencies]
 criterion = "0.5.1"

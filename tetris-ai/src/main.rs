@@ -3,8 +3,8 @@ use tetris_ai::Simulator;
 
 fn main() {
     let start = Instant::now();
-    let mut simulator = Simulator::new();
-    while simulator.step().is_some() {}
+    let mut simulator = Simulator::with_preset_weights();
+    simulator.run();
     let elapsed = start.elapsed();
     let stats = simulator.stats();
     println!(
@@ -16,5 +16,5 @@ fn main() {
         elapsed.as_secs_f64(),
         stats.steps as f64 / elapsed.as_secs_f64()
     );
-    println!("{}", simulator.state.board);
+    println!("{}", simulator.board());
 }

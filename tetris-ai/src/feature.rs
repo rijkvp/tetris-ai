@@ -3,13 +3,23 @@ use crate::{
     state::State,
 };
 use std::cmp::{max, min};
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Debug, Copy, Clone)]
 pub struct Weights([(fn(&State) -> usize, f64); 6]);
 
 const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
+    (row_trans, 0.0),
+    (col_trans, 0.0),
+    (cuml_wells, 0.0),
+    (pits, 0.0),
+    (landing_height, 0.0),
+    (eroded_cells, 0.0),
+];
+
+const PRESET_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
     (row_trans, -2.700),
     (col_trans, -6.786),
     (cuml_wells, -0.396),
@@ -24,13 +34,13 @@ impl Default for Weights {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct WeightInfo {
     name: &'static str,
     pub default_value: f64,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl WeightInfo {
     fn new(name: &'static str, default_value: f64) -> Self {
         Self {
@@ -39,32 +49,36 @@ impl WeightInfo {
         }
     }
 
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn name(&self) -> String {
         self.name.to_string()
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Weights {
     pub fn defaults() -> Self {
-        Self::default()
+        Weights(DEFAULT_WEIGHTS)
+    }
+
+    pub fn preset() -> Self {
+        Weights(PRESET_WEIGHTS)
     }
 
     pub fn info() -> Box<[WeightInfo]> {
         vec![
-            WeightInfo::new("row_trans", DEFAULT_WEIGHTS[0].1),
-            WeightInfo::new("col_trans", DEFAULT_WEIGHTS[1].1),
-            WeightInfo::new("cuml_wells", DEFAULT_WEIGHTS[2].1),
-            WeightInfo::new("pits", DEFAULT_WEIGHTS[3].1),
-            WeightInfo::new("landing_height", DEFAULT_WEIGHTS[4].1),
-            WeightInfo::new("eroded_cells", DEFAULT_WEIGHTS[5].1),
+            WeightInfo::new("row_trans", PRESET_WEIGHTS[0].1),
+            WeightInfo::new("col_trans", PRESET_WEIGHTS[1].1),
+            WeightInfo::new("cuml_wells", PRESET_WEIGHTS[2].1),
+            WeightInfo::new("pits", PRESET_WEIGHTS[3].1),
+            WeightInfo::new("landing_height", PRESET_WEIGHTS[4].1),
+            WeightInfo::new("eroded_cells", PRESET_WEIGHTS[5].1),
         ]
         .into()
     }
 
     pub fn from_values(values: Box<[f64]>) -> Self {
-        let mut weights = DEFAULT_WEIGHTS;
+        let mut weights = PRESET_WEIGHTS;
         for (i, value) in values.iter().enumerate() {
             weights[i].1 = *value;
         }
@@ -78,10 +92,6 @@ impl Weights {
             .collect::<Vec<_>>()
             .into()
     }
-}
-
-pub fn evaluate_default(state: &State) -> f64 {
-    evaluate(state, &Weights::default())
 }
 
 pub fn evaluate(state: &State, weights: &Weights) -> f64 {
