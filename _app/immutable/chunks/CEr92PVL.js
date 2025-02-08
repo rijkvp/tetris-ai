@@ -1,1 +1,0 @@
-import{c as o,l as e,a as r,b as u}from"./CKMq1a7r.js";function l(t){throw new Error("https://svelte.dev/e/lifecycle_outside_component")}function c(t){o===null&&l(),e&&o.l!==null?s(o).m.push(t):r(()=>{const n=u(t);if(typeof n=="function")return n})}function s(t){var n=t.l;return n.u??(n.u={a:[],b:[],m:[]})}export{c as o};
