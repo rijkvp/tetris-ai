@@ -1,5 +1,5 @@
 use crate::board::Cell;
-#[cfg(feature="wasm")]
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
 /// A rotatable tetromino piece.
@@ -30,7 +30,7 @@ pub fn get_piece_rotation(piece_idx: usize, rotation: usize) -> WasmPattern {
 
 impl Piece {
     pub fn from_index(index: usize) -> Self {
-        assert!(index < PIECE_DATA.len());
+        assert!(index < N_PIECES);
         Piece(index)
     }
 

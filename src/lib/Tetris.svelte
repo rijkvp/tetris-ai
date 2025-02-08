@@ -1,10 +1,12 @@
 <script lang="ts">
     import { Simulator, Weights } from "tetris-ai";
-    import type { GameState } from "$lib/types.ts";
+    import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import { onMount } from "svelte";
 
     let simulator: Simulator = new Simulator();
+
+    export let onGameOver: (stats: Stats) => void;
 
     let tetrisBoard: TetrisBoard;
     let isRunning = false;
@@ -17,17 +19,33 @@
     let tickTimer = 0;
     let tickInterval = 1 / 8;
 
-    function calcNext() {
+    function calcNext(): boolean {
         state = next;
         if (!simulator.step()) {
             // game over
+            onGameOver(state.stats);
             isRunning = false;
+            return false;
         }
         next = simulator.state;
+        return true;
     }
 
     function step() {
         calcNext();
+        tetrisBoard.display(state);
+    }
+
+    function run() {
+        isRunning = true;
+        const start = performance.now();
+        while (calcNext()) {
+            if (performance.now() - start > 1000) {
+                console.warn("Run took too long, stopping");
+                isRunning = false;
+                break;
+            }
+        }
         tetrisBoard.display(state);
     }
 
@@ -102,8 +120,9 @@
             >{isRunning ? "Pause" : "Play"}</button
         >
         <button on:click={() => step()} disabled={isRunning}>Step</button>
+        <button on:click={() => run()} disabled={isRunning}>Run</button>
         <button on:click={() => reset()} disabled={isRunning}>Reset</button>
         <input id="enable-animation" type="checkbox" bind:checked={animate} />
-        <label for="enable-animation">Animate</label>
+        <label for="enable-animation">Anim.</label>
     </div>
 </div>

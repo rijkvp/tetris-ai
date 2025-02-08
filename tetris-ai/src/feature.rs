@@ -20,12 +20,12 @@ const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
 ];
 
 const PRESET_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
-    (row_trans, -2.700),
-    (col_trans, -6.786),
-    (cuml_wells, -0.396),
-    (pits, -12.668),
-    (landing_height, -3.383),
-    (eroded_cells, -9.277),
+    (row_trans, -2.4),
+    (col_trans, -8.4),
+    (cuml_wells, -3.3),
+    (pits, -10.0),
+    (landing_height, -10.0),
+    (eroded_cells, -10.0),
 ];
 
 impl Default for Weights {

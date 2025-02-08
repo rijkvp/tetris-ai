@@ -1,8 +1,10 @@
 <script lang="ts">
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Tetris from "$lib/Tetris.svelte";
+    import Scoreboard from "$lib/Scoreboard.svelte";
 
     let tetris: Tetris;
+    let scoreboard: Scoreboard;
 
     let tickRateExp = $state(3);
     let tickRate = $derived(Math.pow(2, tickRateExp));
@@ -10,7 +12,10 @@
 
 <h1>Tetris AI</h1>
 <div class="panels">
-    <Tetris bind:this={tetris} />
+    <Tetris
+        bind:this={tetris}
+        onGameOver={(stats) => scoreboard.addEntry(stats)}
+    />
     <div>
         <h2>Speed</h2>
         <input
@@ -25,6 +30,7 @@
         <WeightsControl
             onWeightsChange={(weights) => tetris.setWeights(weights)}
         />
+        <Scoreboard bind:this={scoreboard} />
     </div>
 </div>
 

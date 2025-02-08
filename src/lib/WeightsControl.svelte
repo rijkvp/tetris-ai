@@ -1,8 +1,10 @@
 <script lang="ts">
+    import { onMount, onDestroy } from "svelte";
     import { Weights } from "tetris-ai";
 
     let weightValues: Float64Array = Weights.defaults().values();
     let weightsInfo = Weights.info();
+    let cheatActive = false;
 
     export let onWeightsChange: (weights: Weights) => void;
 
@@ -10,6 +12,21 @@
         const weights = Weights.from_values(weightValues);
         onWeightsChange(weights);
     }
+
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.ctrlKey && event.key === "y") {
+            event.preventDefault();
+            cheatActive = !cheatActive;
+        }
+    }
+
+    onMount(() => {
+        window.addEventListener("keydown", handleKeydown);
+    });
+
+    onDestroy(() => {
+        window.removeEventListener("keydown", handleKeydown);
+    });
 </script>
 
 <div>
@@ -21,6 +38,7 @@
         }}>Reset</button
     >
     <button
+        style:display={cheatActive ? "inline" : "none"}
         on:click={() => {
             weightValues = Weights.preset().values();
             updateWeights();

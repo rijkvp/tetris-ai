@@ -16,10 +16,6 @@ pub mod test;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-fn random_piece() -> Piece {
-    Piece::from_index(rand::thread_rng().gen_range(0..7))
-}
-
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Default)]
 pub struct Simulator {
@@ -59,7 +55,7 @@ impl Simulator {
 
     pub fn with_preset_weights() -> Self {
         Self {
-            weights: Weights::default(),
+            weights: Weights::preset(),
             ..Self::default()
         }
     }
@@ -86,7 +82,7 @@ impl Simulator {
     }
 
     #[cfg(not(feature = "wasm"))]
-    pub fn board(&self) -> Board {
+    pub fn board(&self) -> board::Board {
         self.state.board
     }
 
@@ -95,7 +91,7 @@ impl Simulator {
     }
 
     pub fn step(&mut self) -> bool {
-        let piece = random_piece();
+        let piece = gen_random_piece(self.state.delta.as_ref().map(|d| d.piece.index()));
 
         let mut best = None;
         let mut best_score = f64::NEG_INFINITY;
@@ -137,6 +133,17 @@ impl Simulator {
     pub fn state(&self) -> JsValue {
         serde_wasm_bindgen::to_value(&self.game_state()).unwrap()
     }
+}
+
+// Based on how NES Tetris generates pieces
+fn gen_random_piece(previous: Option<usize>) -> Piece {
+    let first_roll = rand::thread_rng().gen_range(0..=piece::N_PIECES);
+    if first_roll == piece::N_PIECES || previous == Some(first_roll) {
+        // reroll if the first roll is the same as the previous piece
+        // or if the 'reroll' number is hit
+        return Piece::from_index(rand::thread_rng().gen_range(0..piece::N_PIECES));
+    }
+    Piece::from_index(first_roll)
 }
 
 #[cfg(all(target_arch = "wasm32", feature = "wasm"))]
