@@ -66,7 +66,7 @@
     }
 
     function reset() {
-        simulator = new Simulator();
+        simulator.reset();
         state = simulator.state;
         simulator.step();
         next = simulator.state;

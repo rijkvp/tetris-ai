@@ -64,6 +64,12 @@ impl Simulator {
         }
     }
 
+    pub fn reset(&mut self) {
+        self.state = State::default();
+        self.steps = 0;
+        self.move_result = None;
+    }
+
     #[inline]
     fn stats_inner(&self) -> Stats {
         Stats {
