@@ -13,10 +13,26 @@
             box-sizing: border-box;
             font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
         }
+        :root {
+            --bg0: #ccc;
+            --bg1: #bbb;
+            --text0: #000;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg0: #111;
+                --bg1: #444;
+                --text0: #eee;
+            }
+        }
+
 
         html {
             font-size: 18px;
             border-radius: 0;
+            background: var(--bg0);
+            color: var(--text0);
         }
         h2 {
             font-size: 1.5rem;
@@ -32,9 +48,11 @@
 
         input, button {
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: 1px solid --bg1;
+            border-radius: 0;
         }
         button {
+            outline: none;
             padding: 2px 4px;
         }
         input[type=range] {
@@ -42,7 +60,7 @@
             opacity: 0.7;
             transition: opacity .2s;
             border-radius: 0px;
-            background: #999;
+            /* background: #999; */
         }
         input[type=range]:hover {
             opacity: 1;

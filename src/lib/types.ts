@@ -9,6 +9,7 @@ export type Stats = {
     lines: bigint;
     score: bigint;
     level: bigint;
+    tetrises: bigint;
 };
 
 export type MoveResult = {

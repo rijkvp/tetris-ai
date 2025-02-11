@@ -44,6 +44,7 @@ pub struct Stats {
     pub lines: u64,
     pub score: u64,
     pub level: u64,
+    pub tetrises: u64,
 }
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
@@ -73,6 +74,7 @@ impl Simulator {
             lines: self.state.cleared_rows,
             score: self.state.score,
             level: self.state.level(),
+            tetrises: self.state.tetrises,
         }
     }
 

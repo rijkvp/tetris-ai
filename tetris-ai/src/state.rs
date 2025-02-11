@@ -5,6 +5,7 @@ pub struct State {
     pub board: Board,
     pub cleared_rows: u64,
     pub score: u64,
+    pub tetrises: u64,
     pub delta: Option<Delta>,
 }
 
@@ -26,6 +27,7 @@ impl State {
             cleared_rows: 0,
             delta: None,
             score: 0,
+            tetrises: 0,
         }
     }
 
@@ -71,6 +73,7 @@ impl State {
             }),
             cleared_rows: self.cleared_rows + cleared as u64,
             score: self.score + POINTS_PER_CLEARED_ROWS[cleared] * (self.level() + 1),
+            tetrises: self.tetrises + if cleared == 4 { 1 } else { 0 },
         }
     }
 }

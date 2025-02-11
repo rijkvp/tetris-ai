@@ -50,6 +50,7 @@
                 const px = (col + c) * CELL_SIZE;
                 const py = (row + r) * CELL_SIZE;
                 context.fillRect(px, py, CELL_SIZE, CELL_SIZE);
+                context.strokeStyle = "#333";
                 context.lineWidth = 2;
                 context.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
             }
@@ -57,11 +58,12 @@
     }
 
     function displayHud(stats: Stats) {
-        context.fillStyle = "#000";
+        context.fillStyle = "#fff";
         context.font = "16px monospace";
         context.fillText(`Score: ${stats.score}`, 10, 20);
         context.fillText(`Lines: ${stats.lines}`, 10, 40);
         context.fillText(`Level: ${stats.level}`, 10, 60);
+        context.fillText(`Tetrises: ${stats.tetrises}`, 10, 80);
     }
 
     let canvas: HTMLCanvasElement;
@@ -69,6 +71,15 @@
 
     export const clear = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        for (let r = 0; r < BOARD_HEIGHT; r++) {
+            for (let c = 0; c < BOARD_WIDTH; c++) {
+                const px = c * CELL_SIZE;
+                const py = r * CELL_SIZE;
+                context.lineWidth = 2;
+                context.strokeStyle = "#333";
+                context.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
+            }
+        }
     };
 
     export const display = (state: GameState) => {
@@ -109,7 +120,8 @@
 
 <style>
     canvas {
-        border: 2px solid #444;
-        background-color: #ddd;
+        border: 3px solid #fff;
+        border-radius: 16px;
+        background-color: #070707;
     }
 </style>

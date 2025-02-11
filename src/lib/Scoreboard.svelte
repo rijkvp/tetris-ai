@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import type { Stats } from "./types";
 
     type Entry = {
@@ -8,17 +9,64 @@
 
     let entries: Entry[] = $state([]);
 
+    type OrderCategory = {
+        label: string;
+        key: (a: Entry) => bigint;
+    };
+
+    const ORDER_CATEGORIES: OrderCategory[] = [
+        { label: "Score", key: (a: Entry) => a.stats.score },
+        { label: "Lines", key: (a: Entry) => a.stats.lines },
+        { label: "Level", key: (a: Entry) => a.stats.level },
+        { label: "Tetrises", key: (a: Entry) => a.stats.tetrises },
+    ];
+
+    let orderCategoryIdx = $state(0);
+
+    $effect(() => {
+        if (entries.length > 0) {
+            localStorage.setItem("scores", JSON.stringify(entries));
+        }
+    });
+
+    onMount(() => {
+        const json = localStorage.getItem("scores");
+        entries = json ? JSON.parse(json) : [];
+    });
+
+    function reorder() {
+        const order = ORDER_CATEGORIES[orderCategoryIdx];
+        entries.sort((a, b) => (order.key(b) < order.key(a) ? -1 : 1));
+    }
+
     export const addEntry = (entry: Stats) => {
-        console.log("Adding entry", entry);
+        if (entry.score == BigInt(0)) {
+            return;
+        }
         entries.forEach((e) => (e.latest = false));
         entries.push({ stats: entry, latest: true });
-        entries.sort((a, b) => (b.stats.score < a.stats.score ? -1 : 1));
-        entries = entries.slice(0, 10);
+        reorder();
     };
+
+    function setOrder(idx: number) {
+        orderCategoryIdx = idx;
+        reorder();
+    }
 </script>
 
 <div>
     <h2>Scoreboard</h2>
+
+    <div>
+        {#each ORDER_CATEGORIES as order, idx}
+            <button
+                onclick={() => setOrder(idx)}
+                disabled={idx === orderCategoryIdx}
+            >
+                {order.label}
+            </button>
+        {/each}
+    </div>
     <table>
         <thead>
             <tr>
@@ -26,6 +74,7 @@
                 <th>Score</th>
                 <th>Lines</th>
                 <th>Level</th>
+                <th>Tetrises</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +84,7 @@
                     <td>{entry.stats.score}</td>
                     <td>{entry.stats.lines}</td>
                     <td>{entry.stats.level}</td>
+                    <td>{entry.stats.tetrises}</td>
                 </tr>
             {/each}
         </tbody>
