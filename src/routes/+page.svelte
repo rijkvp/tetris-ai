@@ -2,6 +2,7 @@
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Tetris from "$lib/Tetris.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
+    import type { Stats } from "$lib/types";
 
     let tetris: Tetris;
     let scoreboard: Scoreboard;
@@ -14,7 +15,7 @@
 <div class="panels">
     <Tetris
         bind:this={tetris}
-        onGameOver={(stats) => scoreboard.addEntry(stats)}
+        onGameOver={(stats: Stats) => scoreboard.addEntry(stats)}
     />
     <div>
         <h2>Speed</h2>
@@ -22,7 +23,7 @@
             id="speed-input"
             type="range"
             min="0"
-            max="16"
+            max="20"
             bind:value={tickRateExp}
             oninput={() => tetris.setSpeed(1 / tickRate)}
         />

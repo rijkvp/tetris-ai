@@ -6,62 +6,57 @@
 
     let simulator: Simulator = new Simulator();
 
-    export let onGameOver: (stats: Stats) => void;
+    let { onGameOver }: { onGameOver: (stats: Stats) => void } = $props();
 
     let tetrisBoard: TetrisBoard;
-    let isRunning = false;
-    let animate = true;
+    let isRunning = $state(false);
+    let gameOver = $state(false);
 
-    let state: GameState, next: GameState;
+    let curr: GameState, next: GameState;
 
     let lastFrameTime = 0;
     let tick = 0;
     let tickTimer = 0;
     let tickInterval = 1 / 8;
 
+    let displayMoves = $state(0);
+    let moves = 0;
+    let lastMoves = 0;
+
+    setInterval(() => {
+        displayMoves = moves - lastMoves;
+        lastMoves = moves;
+    }, 1000);
+
     function calcNext(): boolean {
-        state = next;
+        curr = next;
         if (!simulator.step()) {
             // game over
-            onGameOver(state.stats);
+            gameOver = true;
+            onGameOver(curr.stats);
             isRunning = false;
             return false;
         }
+        moves++;
         next = simulator.state;
         return true;
     }
 
     function step() {
         calcNext();
-        tetrisBoard.display(state);
+        tetrisBoard.display(curr);
     }
 
-    function run() {
-        isRunning = true;
-        const start = performance.now();
-        while (calcNext()) {
-            if (performance.now() - start > 1000) {
-                console.warn("Run took too long, stopping");
-                isRunning = false;
-                break;
-            }
-        }
-        tetrisBoard.display(state);
-    }
-
-    function animateFrame(currentTime: number) {
+    function animateFrame(deltaTime: number) {
         // check if frame is over
         if (tick > next.move.path.length) {
             calcNext();
             tick = 0;
             tickTimer = 0;
-            lastFrameTime = currentTime;
         }
 
         // update tick timers
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
-        const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
-        lastFrameTime = currentTime;
         tickTimer += deltaTime;
         while (tickTimer >= tickInterval) {
             tickTimer -= tickInterval;
@@ -69,15 +64,29 @@
         }
         const tickProgress = tickTimer / tickInterval; // progress from 0 to 1 within a tick
 
-        tetrisBoard.displayTransition(state, next, tick, tickProgress);
+        tetrisBoard.displayTransition(curr, next, tick, tickProgress);
     }
 
+    const targetFPS = 60;
+    const maxFrameDuration = 1 / targetFPS / 2; // divide by 2 to allow time for drawing
+
     function gameLoop(currentTime: number) {
+        const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
+        lastFrameTime = currentTime;
+        console.log(`Delta time: ${deltaTime}, FPS: ${1 / deltaTime}`);
         if (isRunning) {
-            if (!animate) {
-                step();
+            if (tickInterval * next.move.path.length < deltaTime) {
+                let timeSpent = 0;
+                while (timeSpent < maxFrameDuration) {
+                    // TODO: This makes no sense
+                    timeSpent += tickInterval * next.move.path.length;
+                    if (!calcNext()) {
+                        break;
+                    }
+                }
+                tetrisBoard.display(curr);
             } else {
-                animateFrame(currentTime);
+                animateFrame(deltaTime);
             }
             requestAnimationFrame(gameLoop);
         }
@@ -85,10 +94,11 @@
 
     function reset() {
         simulator.reset();
-        state = simulator.state;
+        curr = simulator.state;
         simulator.step();
         next = simulator.state;
         tetrisBoard.clear();
+        gameOver = false;
     }
 
     function togglePaused() {
@@ -113,16 +123,23 @@
     });
 </script>
 
-<div class="tetris">
-    <TetrisBoard bind:this={tetrisBoard} />
+<div>
     <div class="tetris-controls">
-        <button on:click={() => togglePaused()}
+        <button onclick={() => reset()} disabled={isRunning}>Reset</button>
+        <button onclick={() => togglePaused()} disabled={gameOver}
             >{isRunning ? "Pause" : "Play"}</button
         >
-        <button on:click={() => step()} disabled={isRunning}>Step</button>
-        <button on:click={() => run()} disabled={isRunning}>Run</button>
-        <button on:click={() => reset()} disabled={isRunning}>Reset</button>
-        <input id="enable-animation" type="checkbox" bind:checked={animate} />
-        <label for="enable-animation">Anim.</label>
+        <button onclick={() => step()} disabled={isRunning}>Step</button>
+        <span>Moves/second: {displayMoves}</span>
     </div>
+    <TetrisBoard bind:this={tetrisBoard} />
 </div>
+
+<style>
+    .tetris-controls {
+        justify-content: center;
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+</style>
