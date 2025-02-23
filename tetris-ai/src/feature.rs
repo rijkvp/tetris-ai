@@ -11,21 +11,21 @@ use wasm_bindgen::prelude::wasm_bindgen;
 pub struct Weights([(fn(&State) -> usize, f64); 6]);
 
 const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
-    (row_trans, 0.0),
     (col_trans, 0.0),
-    (cuml_wells, 0.0),
+    (row_trans, 0.0),
     (pits, 0.0),
     (landing_height, 0.0),
     (eroded_cells, 0.0),
+    (cuml_wells, 0.0),
 ];
 
 const PRESET_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
-    (row_trans, -2.4),
     (col_trans, -8.4),
-    (cuml_wells, -3.3),
+    (row_trans, -2.4),
     (pits, -10.0),
     (landing_height, -10.0),
     (eroded_cells, -10.0),
+    (cuml_wells, -3.3),
 ];
 
 impl Default for Weights {
@@ -67,30 +67,26 @@ impl Weights {
 
     pub fn info() -> Box<[WeightInfo]> {
         vec![
-            WeightInfo::new("row_trans", PRESET_WEIGHTS[0].1),
-            WeightInfo::new("col_trans", PRESET_WEIGHTS[1].1),
-            WeightInfo::new("cuml_wells", PRESET_WEIGHTS[2].1),
-            WeightInfo::new("pits", PRESET_WEIGHTS[3].1),
-            WeightInfo::new("landing_height", PRESET_WEIGHTS[4].1),
-            WeightInfo::new("eroded_cells", PRESET_WEIGHTS[5].1),
+            WeightInfo::new("col_trans", PRESET_WEIGHTS[0].1),
+            WeightInfo::new("row_trans", PRESET_WEIGHTS[1].1),
+            WeightInfo::new("pits", PRESET_WEIGHTS[2].1),
+            WeightInfo::new("landing_height", PRESET_WEIGHTS[3].1),
+            WeightInfo::new("eroded_cells", PRESET_WEIGHTS[4].1),
+            WeightInfo::new("cuml_wells", PRESET_WEIGHTS[5].1),
         ]
         .into()
     }
 
-    pub fn from_values(values: Box<[f64]>) -> Self {
-        let mut weights = PRESET_WEIGHTS;
+    pub fn from_values(values: Vec<f64>) -> Self {
+        let mut weights = DEFAULT_WEIGHTS;
         for (i, value) in values.iter().enumerate() {
             weights[i].1 = *value;
         }
         Weights(weights)
     }
 
-    pub fn values(self) -> Box<[f64]> {
-        self.0
-            .into_iter()
-            .map(|(_, weight)| weight)
-            .collect::<Vec<_>>()
-            .into()
+    pub fn values(self) -> Vec<f64> {
+        self.0.into_iter().map(|(_, weight)| weight).collect()
     }
 }
 

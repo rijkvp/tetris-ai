@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "$lib/translations";
     import { onMount } from "svelte";
     import type { Stats } from "./types";
 
@@ -10,15 +11,15 @@
     let entries: Entry[] = $state([]);
 
     type OrderCategory = {
-        label: string;
+        tkey: string;
         key: (a: Entry) => bigint;
     };
 
     const ORDER_CATEGORIES: OrderCategory[] = [
-        { label: "Score", key: (a: Entry) => a.stats.score },
-        { label: "Lines", key: (a: Entry) => a.stats.lines },
-        { label: "Level", key: (a: Entry) => a.stats.level },
-        { label: "Tetrises", key: (a: Entry) => a.stats.tetrises },
+        { tkey: "score.score", key: (a: Entry) => a.stats.score },
+        { tkey: "score.lines", key: (a: Entry) => a.stats.lines },
+        { tkey: "score.level", key: (a: Entry) => a.stats.level },
+        { tkey: "score.tetrises", key: (a: Entry) => a.stats.tetrises },
     ];
 
     let orderCategoryIdx = $state(0);
@@ -55,7 +56,7 @@
 </script>
 
 <div>
-    <h2>Scoreboard</h2>
+    <h2>{$t("scoreboard")}</h2>
 
     <div>
         {#each ORDER_CATEGORIES as order, idx}
@@ -63,7 +64,7 @@
                 onclick={() => setOrder(idx)}
                 disabled={idx === orderCategoryIdx}
             >
-                {order.label}
+                {$t(order.tkey)}
             </button>
         {/each}
     </div>
@@ -71,10 +72,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Score</th>
-                <th>Lines</th>
-                <th>Level</th>
-                <th>Tetrises</th>
+                <th>{$t("score.score")}</th>
+                <th>{$t("score.lines")}</th>
+                <th>{$t("score.level")}</th>
+                <th>{$t("score.tetrises")}</th>
             </tr>
         </thead>
         <tbody>

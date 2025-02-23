@@ -32,8 +32,6 @@
         context.fillRect(px, py, CELL_SIZE, CELL_SIZE);
 
         context.lineWidth = OUTLINE;
-
-        context.strokeStyle = "#000";
         // left
         context.strokeStyle = `hsl(${color[0]}, ${color[1]}%, ${color[2] - 8}%)`;
         context.beginPath();
@@ -60,6 +58,19 @@
         context.stroke();
     }
 
+    function displayCellOutline(col: number, row: number) {
+        context.strokeStyle = "#f7fc76";
+        context.lineWidth = OUTLINE;
+        const px = col * CELL_SIZE;
+        const py = row * CELL_SIZE;
+        context.strokeRect(
+            px + OUTLINE / 2,
+            py + OUTLINE / 2,
+            CELL_SIZE,
+            CELL_SIZE,
+        );
+    }
+
     function displayBoard(board: Uint8Array[]) {
         for (let row = 0; row < BOARD_HEIGHT; row++) {
             for (let col = 0; col < BOARD_WIDTH; col++) {
@@ -73,10 +84,7 @@
     }
 
     function displayPiece(pieceIdx: number, move: Move) {
-        const rot = move.rot;
-        const col = move.col;
-        const row = move.row;
-        const pattern = get_piece_rotation(pieceIdx, rot);
+        const pattern = get_piece_rotation(pieceIdx, move.rot);
 
         for (let r = 0; r < pattern.size; r++) {
             for (let c = 0; c < pattern.size; c++) {
@@ -84,7 +92,20 @@
                 if (!pattern.data[idx]) {
                     continue;
                 }
-                displayCell(col + c, row + r, pieceIdx);
+                displayCell(move.col + c, move.row + r, pieceIdx);
+            }
+        }
+    }
+
+    function displayOutline(pieceIdx: number, move: Move) {
+        const pattern = get_piece_rotation(pieceIdx, move.rot);
+        for (let r = 0; r < pattern.size; r++) {
+            for (let c = 0; c < pattern.size; c++) {
+                const idx = r * pattern.size + c;
+                if (!pattern.data[idx]) {
+                    continue;
+                }
+                displayCellOutline(move.col + c, move.row + r);
             }
         }
     }
@@ -129,13 +150,16 @@
 
         const currentMove = next.move;
         if (currentMove != null) {
-            const tickIndex = Math.min(tick, currentMove.path.length - 1);
-            const tickPath = currentMove.path[tickIndex];
-            const tickPathIdx = Math.min(
-                Math.floor(tickProgress * tickPath.length),
-                tickPath.length - 1,
+            const currentPath = currentMove.path[tick];
+            const currentPathIndex = Math.min(
+                Math.floor(tickProgress * currentPath.length),
+                currentPath.length - 1,
             );
-            displayPiece(currentMove.piece_idx, tickPath[tickPathIdx]);
+            displayPiece(currentMove.piece_idx, currentPath[currentPathIndex]);
+            // Uncomment to display outline of target position
+            // const lastPath = currentMove.path[next.move.path.length - 1];
+            // const lastMove = lastPath[lastPath.length - 1];
+            // displayOutline(currentMove.piece_idx, lastMove);
         }
 
         statsPanel.update(state.stats);
