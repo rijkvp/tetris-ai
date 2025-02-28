@@ -20,7 +20,7 @@
     ];
 
     let canvas: HTMLCanvasElement;
-    let statsPanel: StatsPanel;
+    let { statsPanel = $bindable() }: { statsPanel: StatsPanel } = $props();
     let context: CanvasRenderingContext2D;
 
     function displayCell(col: number, row: number, pieceIdx: number) {
@@ -170,17 +170,9 @@
     });
 </script>
 
-<div class="board">
-    <StatsPanel bind:this={statsPanel} />
-    <canvas bind:this={canvas} width="320" height="640"></canvas>
-</div>
+<canvas bind:this={canvas} width="320" height="640"></canvas>
 
 <style>
-    .board {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-    }
     canvas {
         border: 2px solid #fff;
         border-radius: 0px;

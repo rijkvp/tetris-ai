@@ -16,6 +16,7 @@
         :root {
             --bg0: #ccc;
             --bg1: #bbb;
+            --bg2: #888;
             --text0: #000;
         }
 
@@ -23,6 +24,7 @@
             :root {
                 --bg0: #111;
                 --bg1: #444;
+                --bg2: #666;
                 --text0: #eee;
             }
         }
@@ -46,13 +48,24 @@
         }
 
         input, button {
+            background: var(--bg1);
+            color: var(--text0);
+            box-shadow: none;
             font-size: 1rem;
-            border: 1px solid --bg1;
             border-radius: 0;
-        }
-        button {
             outline: none;
             padding: 2px 4px;
+            border: 3px solid var(--bg2);
+            /* align text vertically */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background: var(--bg2);
+        }
+        button:active {
+            background: var(--bg1);
         }
         input[type=range] {
             outline: none;
@@ -60,6 +73,11 @@
             transition: opacity .2s;
             border-radius: 0px;
             /* background: #999; */
+        }
+        button[disabled], input[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--bg1);
         }
         input[type=range]:hover {
             opacity: 1;

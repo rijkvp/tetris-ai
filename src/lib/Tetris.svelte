@@ -2,13 +2,16 @@
     import { Simulator, Weights } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
-    import { onMount } from "svelte";
+    import StatsPanel from "$lib/StatsPanel.svelte";
 
+    import { onMount } from "svelte";
     let simulator: Simulator = new Simulator();
 
     let { onGameOver }: { onGameOver: (stats: Stats) => void } = $props();
 
     let tetrisBoard: TetrisBoard;
+    let statsPanel: StatsPanel = $state()!;
+
     let isRunning = $state(false);
     let gameOver = $state(false);
 
@@ -136,23 +139,51 @@
     });
 </script>
 
-<div>
-    <div class="tetris-controls">
-        <button onclick={() => reset()} disabled={isRunning}>Reset</button>
-        <button onclick={() => togglePaused()} disabled={gameOver}
-            >{isRunning ? "Pause" : "Play"}</button
-        >
-        <button onclick={() => step()} disabled={isRunning}>Step</button>
-        <span>Moves/second: {displayMoves}</span>
+<div class="grid">
+    <div class="stats">
+        <StatsPanel bind:this={statsPanel} />
     </div>
-    <TetrisBoard bind:this={tetrisBoard} />
+    <div class="controls">
+        <button onclick={() => reset()} disabled={isRunning}>⭯ </button>
+        <button onclick={() => togglePaused()} disabled={gameOver}
+            >{isRunning ? "⏸ " : "▶ "}</button
+        >
+        <button onclick={() => step()} disabled={isRunning}>» </button>
+        <!-- <span>Moves/second: {displayMoves}</span> -->
+    </div>
+    <div class="board">
+        <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
+    </div>
 </div>
 
 <style>
-    .tetris-controls {
+    .grid {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: 1rem auto;
+        gap: 16px;
+    }
+    .board {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    .stats {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    .controls {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
         justify-content: center;
         display: flex;
         gap: 8px;
         margin-bottom: 8px;
+    }
+    .controls button {
+        width: 2rem;
+        height: 1.5rem;
+        line-height: 1.5rem; /* center text vertically */
+        font-size: 1.2rem;
     }
 </style>
