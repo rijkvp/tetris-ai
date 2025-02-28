@@ -101,7 +101,7 @@
     th,
     td {
         padding: 4px 8px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--fg1);
     }
 
     th {
@@ -109,6 +109,6 @@
     }
 
     .latest {
-        background-color: #ddd;
+        background-color: var(--bg1);
     }
 </style>

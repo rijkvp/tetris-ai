@@ -51,6 +51,7 @@
     >
     <div class="weights-grid">
         {#each weightValues as weight, n}
+            <input type="checkbox">
             <input
                 type="range"
                 bind:value={weightValues[n]}
@@ -79,7 +80,7 @@
 <style>
     .weights-grid {
         display: grid;
-        grid-template-columns: 200px auto 20px 20px;
+        grid-template-columns: 1rem 200px auto 20px 20px;
         gap: 1rem;
     }
     dialog {
@@ -88,6 +89,8 @@
         width: 500px;
         padding: 1rem;
         border: none;
+        background: var(--bg0);
+        color: var(--fg0);
     }
     dialog::backdrop {
         backdrop-filter: blur(6px);

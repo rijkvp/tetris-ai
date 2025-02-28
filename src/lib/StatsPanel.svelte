@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "$lib/translations";
     import type { Stats } from "./types";
 
     let stats: Stats = $state({
@@ -16,19 +17,19 @@
 
 <div class="stats">
     <div class="item">
-        <div class="label">Score</div>
+        <div class="label">{$t("score.score")}</div>
         <div class="value">{stats.score}</div>
     </div>
     <div class="item">
-        <div class="label">Lines</div>
+        <div class="label">{$t("score.lines")}</div>
         <div class="value">{stats.lines}</div>
     </div>
     <div class="item">
-        <div class="label">Level</div>
+        <div class="label">{$t("score.level")}</div>
         <div class="value">{stats.level}</div>
     </div>
     <div class="item">
-        <div class="label">Tetrises</div>
+        <div class="label">{$t("score.tetrises")}</div>
         <div class="value">{stats.tetrises}</div>
     </div>
 </div>

@@ -14,6 +14,12 @@ const config: Config = {
                 level: 'Level',
                 tetrises: 'Tetrises',
             },
+            controls: {
+                play: "Play",
+                pause: "Pause",
+                reset: "Reset",
+                step: "Step",
+            },
             feature: {
                 col_trans: {
                     name: 'Column transitions',
@@ -51,6 +57,12 @@ const config: Config = {
                 lines: 'Regels',
                 level: 'Level',
                 tetrises: 'Tetrissen',
+            },
+            controls: {
+                play: "Start",
+                pause: "Pauze",
+                reset: "Opnieuw",
+                step: "Stap vooruit"
             },
             feature: {
                 col_trans: {

@@ -16,6 +16,16 @@
 </script>
 
 <h1>Tetris AI</h1>
+<select
+    onchange={(e) => {
+        const vaule = (e.target as HTMLSelectElement).value;
+        setLocale(vaule);
+    }}
+>
+    {#each $locales as lc}
+        <option value={lc} selected={lc === $locale}>{lc}</option>
+    {/each}
+</select>
 <div class="panels">
     <Tetris
         bind:this={tetris}
@@ -23,19 +33,6 @@
     />
     <div>
         <h2>{$t("speed")}</h2>
-        <p>
-            {$t("test")}
-        </p>
-        <select
-            onchange={(e) => {
-                const vaule = (e.target as HTMLSelectElement).value;
-                setLocale(vaule);
-            }}
-        >
-            {#each $locales as lc}
-                <option value={lc} selected={lc === $locale}>{lc}</option>
-            {/each}
-        </select>
         <input
             id="speed-input"
             type="range"

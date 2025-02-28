@@ -25,9 +25,9 @@ const PRESET_WEIGHTS: [(FeatureFn, f64); 6] = [
     (col_trans, -8.4),
     (row_trans, -2.4),
     (pits, -10.0),
-    (landing_height, -10.0),
-    (eroded_cells, -10.0),
-    (cuml_wells, -3.3),
+    (landing_height, -5.0),
+    (eroded_cells, 10.0),
+    (cuml_wells, -3.5),
 ];
 
 impl Default for Weights {

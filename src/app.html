@@ -17,7 +17,8 @@
             --bg0: #ccc;
             --bg1: #bbb;
             --bg2: #888;
-            --text0: #000;
+            --fg0: #000;
+            --fg1: #666;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -25,7 +26,8 @@
                 --bg0: #111;
                 --bg1: #444;
                 --bg2: #666;
-                --text0: #eee;
+                --fg0: #eee;
+                --fg1: #aaa;
             }
         }
 
@@ -34,7 +36,7 @@
             font-size: 18px;
             border-radius: 0;
             background: var(--bg0);
-            color: var(--text0);
+            color: var(--fg0);
         }
         h2 {
             font-size: 1.5rem;
@@ -47,19 +49,15 @@
             margin-right: auto;
         }
 
-        input, button {
+        input, button, select {
             background: var(--bg1);
-            color: var(--text0);
+            color: var(--fg0);
             box-shadow: none;
             font-size: 1rem;
             border-radius: 0;
             outline: none;
             padding: 2px 4px;
             border: 3px solid var(--bg2);
-            /* align text vertically */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         button:hover {
             background: var(--bg2);

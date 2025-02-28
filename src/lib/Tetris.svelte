@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "$lib/translations";
     import { Simulator, Weights } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
@@ -144,12 +145,24 @@
         <StatsPanel bind:this={statsPanel} />
     </div>
     <div class="controls">
-        <button onclick={() => reset()} disabled={isRunning}>⭯ </button>
-        <button onclick={() => togglePaused()} disabled={gameOver}
+        <button
+            onclick={() => reset()}
+            disabled={isRunning}
+            title={$t("controls.reset")}
+            >⭯
+        </button>
+        <button
+            onclick={() => togglePaused()}
+            disabled={gameOver}
+            title={isRunning ? $t("controls.pause") : $t("controls.play")}
             >{isRunning ? "⏸ " : "▶ "}</button
         >
-        <button onclick={() => step()} disabled={isRunning}>» </button>
-        <!-- <span>Moves/second: {displayMoves}</span> -->
+        <button
+            onclick={() => step()}
+            disabled={isRunning}
+            title={$t("controls.step")}
+            >»
+        </button>
     </div>
     <div class="board">
         <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
@@ -183,7 +196,10 @@
     .controls button {
         width: 2rem;
         height: 1.5rem;
-        line-height: 1.5rem; /* center text vertically */
         font-size: 1.2rem;
+        /* align text vertically */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
