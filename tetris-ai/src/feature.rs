@@ -6,11 +6,13 @@ use std::cmp::{max, min};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
+type FeatureFn = fn(&State) -> usize;
+
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Debug, Copy, Clone)]
-pub struct Weights([(fn(&State) -> usize, f64); 6]);
+pub struct Weights([(FeatureFn, f64); 6]);
 
-const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
+const DEFAULT_WEIGHTS: [(FeatureFn, f64); 6] = [
     (col_trans, 0.0),
     (row_trans, 0.0),
     (pits, 0.0),
@@ -19,7 +21,7 @@ const DEFAULT_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
     (cuml_wells, 0.0),
 ];
 
-const PRESET_WEIGHTS: [(fn(&State) -> usize, f64); 6] = [
+const PRESET_WEIGHTS: [(FeatureFn, f64); 6] = [
     (col_trans, -8.4),
     (row_trans, -2.4),
     (pits, -10.0),
@@ -141,7 +143,7 @@ fn wells(state: &State) -> [i64; BOARD_WIDTH] {
 /// The sum from 1 to wells.
 // Computed using the formula for the sum of natural numbers.
 fn cuml_wells(state: &State) -> usize {
-    wells(&state)
+    wells(state)
         .into_iter()
         .map(|x| x * (x + 1) / 2)
         .sum::<i64>() as usize
@@ -186,7 +188,7 @@ mod tests {
 
     const TEST_ITERATIONS: usize = 100;
 
-    const TEST_FEATURES: &[(&'static str, fn(&State) -> usize)] = &[
+    const TEST_FEATURES: &[(&str, fn(&State) -> usize)] = &[
         ("row_trans", row_trans),
         ("col_trans", col_trans),
         ("cuml_wells", cuml_wells),

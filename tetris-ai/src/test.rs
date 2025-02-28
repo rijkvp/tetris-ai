@@ -25,10 +25,8 @@ pub fn random_board() -> Board {
     // make some cells empty
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH {
-            if board[(r, c)].filled() {
-                if rng.gen_bool(0.05) {
-                    board.clear_cell(r, c);
-                }
+            if board[(r, c)].filled() && rng.gen_bool(0.05) {
+                board.clear_cell(r, c);
             }
         }
     }
@@ -57,9 +55,9 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
     let board_data = state
         .board
         .get_data()
-        .into_iter()
+        .iter()
         .map(|row| {
-            row.into_iter()
+            row.iter()
                 .map(|cell| cell.filled())
                 .collect::<Vec<bool>>()
         })
@@ -107,9 +105,9 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
     let board_data = state
         .board
         .get_data()
-        .into_iter()
+        .iter()
         .map(|row| {
-            row.into_iter()
+            row.iter()
                 .map(|cell| cell.filled())
                 .collect::<Vec<bool>>()
         })
@@ -136,7 +134,7 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
         let py_zoid = py_mod
             .call_method(
                 "import_zoid",
-                PyTuple::new(py, &[piece.index()]).unwrap(),
+                PyTuple::new(py, [piece.index()]).unwrap(),
                 None,
             )
             .unwrap();

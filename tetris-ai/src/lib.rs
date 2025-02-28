@@ -115,13 +115,14 @@ impl Simulator {
             });
             return true;
         }
-        return false;
+        false
     }
 
     pub fn update_weights(&mut self, weights: Weights) {
         self.weights = weights;
     }
 
+    #[cfg(feature = "wasm")]
     fn game_state(&self) -> GameState<'_> {
         GameState {
             board: self.state.board.get_raw_data(),

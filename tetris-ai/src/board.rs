@@ -53,7 +53,7 @@ pub struct Board {
 impl Board {
     /// Returns the height of the given column.
     pub(crate) fn height(&self, col: usize) -> usize {
-        return self.heights[col];
+        self.heights[col]
     }
 
     pub(crate) fn heights(&self) -> &[usize; BOARD_WIDTH] {
@@ -63,7 +63,7 @@ impl Board {
     /// Imprints the given matrix onto the board at the given row and column.
     pub(crate) fn imprint(&mut self, pattern: Pattern, row: isize, col: isize, cell: Cell) {
         for (r_offset, p_row) in pattern.iter_rows().enumerate() {
-            for (c_offset, filled) in p_row.into_iter().enumerate() {
+            for (c_offset, filled) in p_row.iter().enumerate() {
                 let r = row + r_offset as isize;
                 let c = col + c_offset as isize;
                 if *filled
@@ -87,20 +87,20 @@ impl Board {
             return true; // out of bounds
         }
         for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, filled) in p_row.into_iter().enumerate() {
+            for (c, filled) in p_row.iter().enumerate() {
                 if *filled && self.data[row + r][col + c].filled() {
                     return true;
                 }
             }
         }
-        return false;
+        false
     }
 
     /// Returns true if the move overlaps with the board.
     pub(crate) fn overlaps_move(&self, piece: Piece, r#move: Move) -> bool {
         let pattern = piece.rotation(r#move.rot);
         for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, filled) in p_row.into_iter().enumerate() {
+            for (c, filled) in p_row.iter().enumerate() {
                 if !*filled {
                     continue;
                 }
@@ -118,7 +118,7 @@ impl Board {
                 }
             }
         }
-        return false;
+        false
     }
 
     /// Clears the full rows and returns the indices of rows cleared.
@@ -175,10 +175,12 @@ impl Board {
         rows
     }
 
+    #[cfg(test)]
     pub(crate) fn get_data(&self) -> &[[Cell; BOARD_WIDTH]; BOARD_HEIGHT] {
         &self.data
     }
 
+    #[cfg(feature = "wasm")]
     pub(crate) fn get_raw_data(&self) -> &[[u8; BOARD_WIDTH]; BOARD_HEIGHT] {
         // SAFETY: Cell is repr(transparent)
         unsafe { std::mem::transmute(&self.data) }
@@ -312,7 +314,7 @@ mod tests {
             assert_eq!(board.clear_full(), range.rev().collect::<Vec<_>>());
             for r in 0..BOARD_HEIGHT {
                 for c in 0..BOARD_WIDTH {
-                    assert_eq!(board[(r, c)].empty(), true);
+                    assert!(board[(r, c)].empty());
                 }
             }
             assert_eq!(board.heights(), &[0; BOARD_WIDTH]);

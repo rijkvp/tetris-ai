@@ -31,7 +31,9 @@ impl Path {
             }
         }
         moves_per_tick.push(current_tick);
-        Self { moves: moves_per_tick }
+        Self {
+            moves: moves_per_tick,
+        }
     }
 
     pub fn final_move(&self) -> Move {
@@ -192,7 +194,7 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Path> {
             if new_tick_moves >= MAX_MOVES_PER_TICK {
                 continue;
             }
-            if cost.get(&next).is_none() || new_cost < cost[&next] {
+            if !cost.contains_key(&next) || new_cost < cost[&next] {
                 cost.insert(next, new_cost);
                 to_visit.push(Node {
                     r#move: next,
