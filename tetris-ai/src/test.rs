@@ -56,11 +56,7 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
         .board
         .get_data()
         .iter()
-        .map(|row| {
-            row.iter()
-                .map(|cell| cell.filled())
-                .collect::<Vec<bool>>()
-        })
+        .map(|row| row.iter().map(|cell| cell.filled()).collect::<Vec<bool>>())
         .collect::<Vec<_>>();
     Python::with_gil(|py| {
         let py_mod = PyModule::from_code(
@@ -106,11 +102,7 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
         .board
         .get_data()
         .iter()
-        .map(|row| {
-            row.iter()
-                .map(|cell| cell.filled())
-                .collect::<Vec<bool>>()
-        })
+        .map(|row| row.iter().map(|cell| cell.filled()).collect::<Vec<bool>>())
         .collect::<Vec<_>>();
     Python::with_gil(|py| {
         let py_mod = PyModule::from_code(

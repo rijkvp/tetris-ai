@@ -78,7 +78,7 @@ impl Simulator {
         }
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(not(feature = "wasm"))]
     pub fn stats(&self) -> Stats {
         self.stats_inner()
     }
@@ -95,18 +95,27 @@ impl Simulator {
     pub fn step(&mut self) -> bool {
         let piece = gen_random_piece(self.state.delta.as_ref().map(|d| d.piece.index()));
 
-        let mut best = None;
+        // Use resivoir sampling to ramdomly select one of the best possible moves
+        let mut chosen = None;
         let mut best_score = f64::NEG_INFINITY;
+        let mut count = 0;
+        let mut rng = rand::thread_rng();
         for path in r#move::move_dijkstra(self.state.board, piece) {
             let future = self.state.future(piece, path.final_move());
             let score = feature::evaluate(&future, &self.weights);
             if score > best_score {
-                best = Some((future, path));
                 best_score = score;
+                chosen = Some((future, path));
+                count = 1;
+            } else if score == best_score {
+                count += 1;
+                if rng.gen_range(0..count) == 0 {
+                    chosen = Some((future, path));
+                }
             }
         }
 
-        if let Some((next, path)) = best {
+        if let Some((next, path)) = chosen {
             self.state = next; // update state
             self.steps += 1;
             self.move_result = Some(MoveResult {

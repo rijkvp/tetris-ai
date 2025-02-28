@@ -47,10 +47,19 @@
               };
 
               # TODO: fix
-              # git-hooks.hooks = {
-              #   rustfmt.enable = true;
-              #   clippy.enable = true;
-              # };
+              git-hooks.hooks = {
+                rustfmt = {
+                  enable = true;
+                  settings.manifest-path = "./tetris-ai/Cargo.toml";
+                };
+                clippy = {
+                  enable = true;
+                  settings = {
+                    denyWarnings = true;
+                    extraArgs = "--manifest-path ./tetris-ai/Cargo.toml";
+                  };
+                };
+              };
 
               env.LD_LIBRARY_PATH =
                 with pkgs;
