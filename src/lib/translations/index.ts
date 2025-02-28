@@ -8,6 +8,10 @@ const config: Config = {
             weights: 'Weights',
             speed: 'Speed',
             scoreboard: 'Scoreboard',
+            locale: {
+                en: 'English',
+                nl: 'Dutch',
+            },
             score: {
                 score: 'Score',
                 lines: 'Lines',
@@ -52,6 +56,10 @@ const config: Config = {
             weights: 'Gewichten',
             speed: 'Snelheid',
             scoreboard: 'Scorebord',
+            locale: {
+                en: 'Engels',
+                nl: 'Nederlands',
+            },
             score: {
                 score: 'Score',
                 lines: 'Regels',

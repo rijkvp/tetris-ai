@@ -25,12 +25,11 @@
     const BASE_SPEED = 1 / 8; // base interval between ticks in seconds
     let tickInterval = BASE_SPEED;
 
-    let displayMoves = $state(0);
     let moves = 0;
     let lastMoves = 0;
 
     setInterval(() => {
-        displayMoves = moves - lastMoves;
+        statsPanel.setMoves(moves - lastMoves);
         lastMoves = moves;
     }, 1000);
 
@@ -71,13 +70,13 @@
     }
 
     const targetFPS = 60; // TODO: measure exact time spent on rendering
-    const maxFrameDuration = 1 / targetFPS / 2; // divide by 2 to allow time for drawing
+    const maxFrameDuration = 1 / targetFPS; // maximum time to spend on rendering a frame
 
     function gameLoop(currentTime: number) {
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
         const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
         lastFrameTime = currentTime;
-        console.log(`Delta time: ${deltaTime}, FPS: ${1 / deltaTime}`);
+        // console.log(`Delta time: ${deltaTime}, FPS: ${1 / deltaTime}`);
         if (isRunning) {
             // if the complete animation of the move takes less than the frame duration
             if (tickInterval * next.move.path.length < deltaTime) {
@@ -96,7 +95,7 @@
                         break;
                     }
                 }
-                console.log(`${ticksSpent} ticks spent of ${ticksGoal}`);
+                // console.log(`${ticksSpent} ticks spent of ${ticksGoal}`);
                 if (ticksSpent >= ticksGoal) {
                     console.warn("Exceeded ticks goal");
                 }

@@ -1,11 +1,10 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import { onMount, onDestroy } from "svelte";
     import { Weights } from "tetris-ai";
+    import { localState } from "$lib/stores.svelte.ts";
 
     let weightValues = $state([...Weights.defaults().values()]);
     let weightsInfo = Weights.info();
-    let cheatActive = $state(false);
 
     let { onWeightsChange }: { onWeightsChange: (weights: Weights) => void } =
         $props();
@@ -14,21 +13,6 @@
         const weights = Weights.from_values(new Float64Array(weightValues));
         onWeightsChange(weights);
     }
-
-    function handleKeydown(event: KeyboardEvent) {
-        if (event.ctrlKey && event.key === "y") {
-            event.preventDefault();
-            cheatActive = !cheatActive;
-        }
-    }
-
-    onMount(() => {
-        window.addEventListener("keydown", handleKeydown);
-    });
-
-    onDestroy(() => {
-        window.removeEventListener("keydown", handleKeydown);
-    });
 
     let selectedWeight: string = $state("");
     let infoDialog: HTMLDialogElement;
@@ -42,7 +26,7 @@
             updateWeights();
         }}>Reset</button
     >
-    <div style:display={cheatActive ? "inline" : "none"}>
+    <div style:display={localState.cheatMode ? "inline" : "none"}>
         <h2>Cheat mode</h2>
         <button
             onclick={() => {
