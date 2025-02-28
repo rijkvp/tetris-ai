@@ -30,6 +30,15 @@ const PRESET_WEIGHTS: [(FeatureFn, f64); 6] = [
     (cuml_wells, -3.5),
 ];
 
+const PRESET2_WEIGHTS: [(FeatureFn, f64); 6] = [
+    (col_trans, -6.8),
+    (row_trans, -2.7),
+    (pits, -12.7),
+    (landing_height, -3.8),
+    (eroded_cells, -10.0),
+    (cuml_wells, -0.4),
+];
+
 impl Default for Weights {
     fn default() -> Self {
         Weights(DEFAULT_WEIGHTS)
@@ -65,6 +74,10 @@ impl Weights {
 
     pub fn preset() -> Self {
         Weights(PRESET_WEIGHTS)
+    }
+
+    pub fn preset2() -> Self {
+        Weights(PRESET2_WEIGHTS)
     }
 
     pub fn info() -> Box<[WeightInfo]> {

@@ -79,13 +79,13 @@
             </tr>
         </thead>
         <tbody>
-            {#each entries as entry, n}
+            {#each entries.slice(0, 10) as entry, n}
                 <tr class={{ latest: entry.latest }}>
                     <td>{n + 1}</td>
-                    <td>{entry.stats.score}</td>
-                    <td>{entry.stats.lines}</td>
-                    <td>{entry.stats.level}</td>
-                    <td>{entry.stats.tetrises}</td>
+                    <td>{entry.stats.score.toLocaleString()}</td>
+                    <td>{entry.stats.lines.toLocaleString()}</td>
+                    <td>{entry.stats.level.toLocaleString()}</td>
+                    <td>{entry.stats.tetrises.toLocaleString()}</td>
                 </tr>
             {/each}
         </tbody>
@@ -96,6 +96,7 @@
     table {
         width: 100%;
         border-collapse: collapse;
+        font-size: 0.9em;
     }
 
     th,

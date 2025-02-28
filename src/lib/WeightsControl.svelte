@@ -42,16 +42,24 @@
             updateWeights();
         }}>Reset</button
     >
-    <button
-        style:display={cheatActive ? "inline" : "none"}
-        onclick={() => {
-            weightValues = [...Weights.preset().values()];
-            updateWeights();
-        }}>Preset</button
-    >
+    <div style:display={cheatActive ? "inline" : "none"}>
+        <h2>Cheat mode</h2>
+        <button
+            onclick={() => {
+                weightValues = [...Weights.preset().values()];
+                updateWeights();
+            }}>Preset 1</button
+        >
+        <button
+            onclick={() => {
+                weightValues = [...Weights.preset2().values()];
+                updateWeights();
+            }}>Preset 2</button
+        >
+    </div>
     <div class="weights-grid">
         {#each weightValues as weight, n}
-            <input type="checkbox">
+            <input type="checkbox" />
             <input
                 type="range"
                 bind:value={weightValues[n]}

@@ -18,19 +18,24 @@
 <div class="stats">
     <div class="item">
         <div class="label">{$t("score.score")}</div>
-        <div class="value">{stats.score}</div>
+        <div
+            class="value"
+            style:font-size={stats.score > 999999 ? "0.8em" : "1.2em"}
+        >
+            {stats.score.toLocaleString()}
+        </div>
     </div>
     <div class="item">
         <div class="label">{$t("score.lines")}</div>
-        <div class="value">{stats.lines}</div>
+        <div class="value">{stats.lines.toLocaleString()}</div>
     </div>
     <div class="item">
         <div class="label">{$t("score.level")}</div>
-        <div class="value">{stats.level}</div>
+        <div class="value">{stats.level.toLocaleString()}</div>
     </div>
     <div class="item">
         <div class="label">{$t("score.tetrises")}</div>
-        <div class="value">{stats.tetrises}</div>
+        <div class="value">{stats.tetrises.toLocaleString()}</div>
     </div>
 </div>
 
