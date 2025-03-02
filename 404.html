@@ -5,14 +5,17 @@
 		<link rel="icon" href="/tetris-ai/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.-yDk3ZD9.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/1xJDnU6d.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BCmHvqUz.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BLpv-G27.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.B_LqEc6S.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/faFNyoRy.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/vFpc2qgS.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/D1Yc9mcb.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.BLoXTOQW.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/-0GsY7rq.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Bp96OqRL.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/D5J0YgpT.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/CisfrD8M.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.CGHqi0dZ.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Czf0LZQW.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BwbAZO_5.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Dm_UfXp4.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/DkEc4e7m.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/DALfYaJd.js">
 	</head>
     <style>
         * {
@@ -21,14 +24,33 @@
             box-sizing: border-box;
             font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
         }
+        :root {
+            --bg0: #ccc;
+            --bg1: #bbb;
+            --bg2: #888;
+            --fg0: #000;
+            --fg1: #666;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg0: #111;
+                --bg1: #444;
+                --bg2: #666;
+                --fg0: #eee;
+                --fg1: #aaa;
+            }
+        }
+
 
         html {
             font-size: 18px;
             border-radius: 0;
+            background: var(--bg0);
+            color: var(--fg0);
         }
         h2 {
             font-size: 1.5rem;
-            margin-top: 1rem;
         }
 
         body {
@@ -38,29 +60,53 @@
             margin-right: auto;
         }
 
-        input, button {
+        input, button, select {
+            background: var(--bg1);
+            color: var(--fg0);
+            box-shadow: none;
             font-size: 1rem;
-            border: 1px solid #ccc;
-        }
-        button {
+            border-radius: 0;
+            outline: none;
             padding: 2px 4px;
+            border: 3px solid var(--bg2);
+            cursor: pointer;
+        }
+        button:hover {
+            background: var(--bg2);
+        }
+        button:active {
+            background: var(--bg1);
         }
         input[type=range] {
             outline: none;
             opacity: 0.7;
             transition: opacity .2s;
             border-radius: 0px;
-            background: #999;
+            /* background: #999; */
+        }
+        button[disabled], input[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--bg1);
         }
         input[type=range]:hover {
             opacity: 1;
+        }
+        a:link, a:visited {
+            color: inherit;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover, a:visited {
+            color: inherit;
+            text-decoration: underline;
         }
     </style>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">
 			<script>
 				{
-					__sveltekit_a9efy5 = {
+					__sveltekit_19tbl96 = {
 						base: "/tetris-ai",
 						assets: "/tetris-ai"
 					};
@@ -68,8 +114,8 @@
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/tetris-ai/_app/immutable/entry/start.-yDk3ZD9.js"),
-						import("/tetris-ai/_app/immutable/entry/app.B_LqEc6S.js")
+						import("/tetris-ai/_app/immutable/entry/start.BLoXTOQW.js"),
+						import("/tetris-ai/_app/immutable/entry/app.CGHqi0dZ.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});

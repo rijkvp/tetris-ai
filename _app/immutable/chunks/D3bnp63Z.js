@@ -1,0 +1,1 @@
+const e=[{key:"level1",name:"Level 1",description:"This is the first level",goals:{lines:10,score:0,level:0,tetrises:0},features:["col_trans","row_trans"]},{key:"level2",name:"Level 2",description:"This is the second level",goals:{lines:10,score:1e3,level:1,tetrises:1},features:["col_trans","row_trans"]}];export{e as l};
