@@ -4,6 +4,9 @@
     import Tetris from "$lib/Tetris.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
     import type { Stats } from "$lib/types";
+    import type { Level } from "./levels";
+
+    const { level }: { level: Level } = $props();
 
     let tetris: Tetris;
     let scoreboard: Scoreboard;
@@ -14,6 +17,22 @@
     ];
     let speedMultiplier = $derived(SPEED_MUTIPLIER[speedIndex]);
 </script>
+
+<h1>{level.name}</h1>
+<p>{level.description}</p>
+
+{#if level.goals}
+    <div>
+        <h2>Goals</h2>
+        <ul>
+            {#each Object.entries(level.goals) as [name, amount]}
+                {#if amount > 0}
+                    <li>{name}: {amount}</li>
+                {/if}
+            {/each}
+        </ul>
+    </div>
+{/if}
 
 <div class="panels">
     <Tetris
@@ -34,7 +53,7 @@
         <WeightsControl
             onWeightsChange={(weights) => tetris.setWeights(weights)}
         />
-        <Scoreboard bind:this={scoreboard} />
+        <Scoreboard key={level.key} bind:this={scoreboard} />
     </div>
 </div>
 

@@ -3,6 +3,8 @@
     import { onMount } from "svelte";
     import type { Stats } from "./types";
 
+    let { key }: { key: string } = $props();
+
     type Entry = {
         stats: Stats;
         latest: boolean;
@@ -26,12 +28,12 @@
 
     $effect(() => {
         if (entries.length > 0) {
-            localStorage.setItem("scores", JSON.stringify(entries));
+            localStorage.setItem(`scores-${key}`, JSON.stringify(entries));
         }
     });
 
     onMount(() => {
-        const json = localStorage.getItem("scores");
+        const json = localStorage.getItem(`scores-${key}`);
         entries = json ? JSON.parse(json) : [];
     });
 
@@ -56,7 +58,7 @@
 </script>
 
 <div>
-    <h2>{$t("scoreboard")}</h2>
+    <h2>{$t("scoreboard")} ({key})</h2>
 
     <div>
         {#each ORDER_CATEGORIES as order, idx}

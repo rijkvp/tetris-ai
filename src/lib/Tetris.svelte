@@ -1,5 +1,6 @@
 <script lang="ts">
     import { t } from "$lib/translations";
+    import { onDestroy } from "svelte";
     import { Simulator, Weights } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
@@ -28,10 +29,14 @@
     let moves = 0;
     let lastMoves = 0;
 
-    setInterval(() => {
+    const moveTimer = setInterval(() => {
         statsPanel.setMoves(moves - lastMoves);
         lastMoves = moves;
     }, 1000);
+
+    onDestroy(() => {
+        clearInterval(moveTimer);
+    });
 
     function calcNext(): boolean {
         curr = next;

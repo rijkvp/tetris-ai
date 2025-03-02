@@ -2,7 +2,7 @@
     import { locale } from "$lib/translations";
     import LangSwitcher from "$lib/LangSwitcher.svelte";
     import { onMount, onDestroy } from "svelte";
-    import { localState } from "$lib/stores.svelte.ts";
+    import { localState } from "$lib/stores.svelte";
 
     let { children } = $props();
 
