@@ -124,14 +124,17 @@ fn next_moves(current: Move, piece: Piece, board: &Board) -> Vec<Move> {
         .collect()
 }
 
+const MIN_MOVES: u64 = 5; // minimum number of moves to perform in total
+const MAX_MOVES: u64 = 12; // maximum number of moves to perform in total
 const MAX_MOVES_PER_TICK: u64 = 3; // maximum number of moves to perform per tick
-                                   // this makes the AI more realistic
+                                   // lower settings makes the AI more realistic
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct Node {
     r#move: Move,
-    cost: u64,
-    tick_moves: u64,
+    cost: u64,       // How many ticks it takes to reach this node
+    moves: u64,      // How many moves have been made
+    tick_moves: u64, // How many moves have been made in the current tick
 }
 
 impl Ord for Node {
@@ -157,11 +160,17 @@ fn touches_ground(piece: Piece, r#move: Move, board: &Board) -> bool {
     )
 }
 
-pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Path> {
+pub fn move_dijkstra(board: Board, piece: Piece, level: u64) -> Vec<Path> {
     let mut cost = HashMap::<Move, u64>::new();
     let mut parent = HashMap::<Move, Move>::new();
     let mut to_visit = BinaryHeap::new();
     let mut destinations = Vec::new();
+
+    let speed: f64 = level as f64 / 30.0; // speed cap at level 30
+
+    // linearly decrease with speed
+    let max_moves = MIN_MOVES + ((1.0 - speed) * (MAX_MOVES - MIN_MOVES) as f64).round() as u64;
+    let max_tick_moves = 1 + ((1.0 - speed) * (MAX_MOVES_PER_TICK - 1) as f64).round() as u64;
 
     let start_move = spawn_position(piece);
     if board.overlaps_move(piece, start_move) {
@@ -171,12 +180,14 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Path> {
     to_visit.push(Node {
         r#move: start_move,
         cost: 0,
+        moves: 0,
         tick_moves: 0,
     });
 
     while let Some(Node {
         r#move: current,
         cost: current_cost,
+        moves: current_moves,
         tick_moves: current_tick_moves,
     }) = to_visit.pop()
     {
@@ -185,13 +196,13 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Path> {
         }
         for next in next_moves(current, piece, &board).into_iter() {
             // staying on the same row, i.e. the same tick does not cost anything
-            // but is limited by MAX_MOVES_PER_TICK
-            let (new_cost, new_tick_moves) = if next.row == current.row {
-                (current_cost, current_tick_moves + 1)
+            // but is limited by max_moves and max_tick_moves
+            let (new_cost, new_moves, new_tick_moves) = if next.row == current.row {
+                (current_cost, current_moves + 1, current_tick_moves + 1)
             } else {
-                (current_cost + 1, 0)
+                (current_cost + 1, current_moves, 0)
             };
-            if new_tick_moves >= MAX_MOVES_PER_TICK {
+            if new_moves > max_moves || new_tick_moves > max_tick_moves {
                 continue;
             }
             if !cost.contains_key(&next) || new_cost < cost[&next] {
@@ -199,6 +210,7 @@ pub fn move_dijkstra(board: Board, piece: Piece) -> Vec<Path> {
                 to_visit.push(Node {
                     r#move: next,
                     cost: new_cost,
+                    moves: new_moves,
                     tick_moves: new_tick_moves,
                 });
                 parent.insert(next, current);

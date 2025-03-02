@@ -100,7 +100,7 @@ impl Simulator {
         let mut best_score = f64::NEG_INFINITY;
         let mut count = 0;
         let mut rng = rand::thread_rng();
-        for path in r#move::move_dijkstra(self.state.board, piece) {
+        for path in r#move::move_dijkstra(self.state.board, piece, self.state.level()) {
             let future = self.state.future(piece, path.final_move());
             let score = feature::evaluate(&future, &self.weights);
             if score > best_score {

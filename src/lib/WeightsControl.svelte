@@ -1,13 +1,18 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { Weights } from "tetris-ai";
-    import { localState } from "$lib/stores.svelte.ts";
+    import { localState } from "$lib/stores.svelte";
 
     let weightValues = $state([...Weights.defaults().values()]);
     let weightsInfo = Weights.info();
 
-    let { onWeightsChange }: { onWeightsChange: (weights: Weights) => void } =
-        $props();
+    let {
+        onWeightsChange,
+        availableFeatures,
+    }: {
+        onWeightsChange: (weights: Weights) => void;
+        availableFeatures: string[] | undefined;
+    } = $props();
 
     function updateWeights() {
         const weights = Weights.from_values(new Float64Array(weightValues));
@@ -43,23 +48,25 @@
     </div>
     <div class="weights-grid">
         {#each weightValues as weight, n}
-            <input type="checkbox" />
-            <input
-                type="range"
-                bind:value={weightValues[n]}
-                min="-10.0"
-                max="10.0"
-                step="0.1"
-                onchange={() => updateWeights()}
-            />
-            <span>{$t(`feature.${weightsInfo[n].name}.name`)}</span>
-            <span>{weight}</span>
-            <button
-                onclick={() => {
-                    selectedWeight = weightsInfo[n].name;
-                    infoDialog.showModal();
-                }}>?</button
-            >
+            {#if !availableFeatures || availableFeatures.includes(weightsInfo[n].name)}
+                <input type="checkbox" />
+                <input
+                    type="range"
+                    bind:value={weightValues[n]}
+                    min="-10.0"
+                    max="10.0"
+                    step="0.1"
+                    onchange={() => updateWeights()}
+                />
+                <span>{$t(`feature.${weightsInfo[n].name}.name`)}</span>
+                <span>{weight}</span>
+                <button
+                    onclick={() => {
+                        selectedWeight = weightsInfo[n].name;
+                        infoDialog.showModal();
+                    }}>?</button
+                >
+            {/if}
         {/each}
     </div>
 </div>

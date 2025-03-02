@@ -52,6 +52,7 @@
         <label for="speed-input">{speedMultiplier.toLocaleString()}x</label>
         <WeightsControl
             onWeightsChange={(weights) => tetris.setWeights(weights)}
+            enabledFeatures={level.features}
         />
         <Scoreboard key={level.key} bind:this={scoreboard} />
     </div>
