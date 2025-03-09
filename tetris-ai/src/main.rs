@@ -3,7 +3,7 @@ use tetris_ai::Simulator;
 
 fn main() {
     let start = Instant::now();
-    let mut simulator = Simulator::with_preset_weights();
+    let mut simulator = Simulator::new_with_preset("score");
     simulator.run();
     let elapsed = start.elapsed();
     let stats = simulator.stats();

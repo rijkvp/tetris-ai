@@ -2,115 +2,114 @@ use crate::{
     board::{BOARD_HEIGHT, BOARD_WIDTH},
     state::State,
 };
-use std::cmp::{max, min};
+use std::{
+    cmp::{max, min},
+    collections::BTreeMap,
+};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
 type FeatureFn = fn(&State) -> usize;
 
+const PRESET_MAP: [(&str, &[(&str, f64)]); 2] = [
+    (
+        "infinite",
+        &[
+            ("col_trans", -8.4),
+            ("row_trans", -2.4),
+            ("pits", -10.0),
+            ("landing_height", -5.0),
+            ("eroded_cells", 10.0),
+            ("cuml_wells", -3.5),
+        ],
+    ),
+    (
+        "score",
+        &[
+            ("col_trans", -6.8),
+            ("row_trans", -2.7),
+            ("pits", -12.7),
+            ("landing_height", -3.8),
+            ("eroded_cells", -10.0),
+            ("cuml_wells", -0.4),
+        ],
+    ),
+];
+
+const FEATURE_LOOKUP: [(&str, FeatureFn); 6] = [
+    ("col_trans", col_trans),
+    ("row_trans", row_trans),
+    ("pits", pits),
+    ("landing_height", landing_height),
+    ("eroded_cells", eroded_cells),
+    ("cuml_wells", cuml_wells),
+];
+
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Debug, Copy, Clone)]
-pub struct Weights([(FeatureFn, f64); 6]);
+#[derive(Debug, Clone)]
+pub struct WeightsMap(Vec<(String, f64)>);
 
-const DEFAULT_WEIGHTS: [(FeatureFn, f64); 6] = [
-    (col_trans, 0.0),
-    (row_trans, 0.0),
-    (pits, 0.0),
-    (landing_height, 0.0),
-    (eroded_cells, 0.0),
-    (cuml_wells, 0.0),
-];
-
-const PRESET_WEIGHTS: [(FeatureFn, f64); 6] = [
-    (col_trans, -8.4),
-    (row_trans, -2.4),
-    (pits, -10.0),
-    (landing_height, -5.0),
-    (eroded_cells, 10.0),
-    (cuml_wells, -3.5),
-];
-
-const PRESET2_WEIGHTS: [(FeatureFn, f64); 6] = [
-    (col_trans, -6.8),
-    (row_trans, -2.7),
-    (pits, -12.7),
-    (landing_height, -3.8),
-    (eroded_cells, -10.0),
-    (cuml_wells, -0.4),
-];
-
-impl Default for Weights {
+impl Default for WeightsMap {
     fn default() -> Self {
-        Weights(DEFAULT_WEIGHTS)
+        WeightsMap(
+            FEATURE_LOOKUP
+                .iter()
+                .map(|(name, _)| (name.to_string(), 0.0))
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub struct WeightInfo {
-    name: &'static str,
-    pub default_value: f64,
+impl WeightsMap {
+    #[cfg(feature = "wasm")]
+    pub fn from_js(val: JsValue) -> Self {
+        let map: BTreeMap<String, f64> = serde_wasm_bindgen::from_value(val).unwrap();
+        WeightsMap::from_iter(map.into_iter())
+    }
+
+    pub fn map(self) -> BTreeMap<String, f64> {
+        BTreeMap::from_iter(self.0)
+    }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
-impl WeightInfo {
-    fn new(name: &'static str, default_value: f64) -> Self {
-        Self {
-            name,
-            default_value,
+impl From<WeightsMap> for Weights {
+    fn from(map: WeightsMap) -> Self {
+        Self::from_iter(map.0.iter().map(|(name, weight)| (name.as_str(), *weight)))
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct Weights(Vec<(FeatureFn, f64)>);
+
+impl Weights {
+    pub fn from_preset(preset: &str) -> Self {
+        if let Some((_, weight_map)) = PRESET_MAP.iter().find(|(name, _)| name == &preset) {
+            Weights::from_iter(weight_map.iter().copied())
+        } else {
+            panic!("Unknown preset: {}", preset);
         }
     }
 
-    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
-    pub fn name(&self) -> String {
-        self.name.to_string()
-    }
-}
-
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
-impl Weights {
-    pub fn defaults() -> Self {
-        Weights(DEFAULT_WEIGHTS)
-    }
-
-    pub fn preset() -> Self {
-        Weights(PRESET_WEIGHTS)
-    }
-
-    pub fn preset2() -> Self {
-        Weights(PRESET2_WEIGHTS)
-    }
-
-    pub fn info() -> Box<[WeightInfo]> {
-        vec![
-            WeightInfo::new("col_trans", PRESET_WEIGHTS[0].1),
-            WeightInfo::new("row_trans", PRESET_WEIGHTS[1].1),
-            WeightInfo::new("pits", PRESET_WEIGHTS[2].1),
-            WeightInfo::new("landing_height", PRESET_WEIGHTS[3].1),
-            WeightInfo::new("eroded_cells", PRESET_WEIGHTS[4].1),
-            WeightInfo::new("cuml_wells", PRESET_WEIGHTS[5].1),
-        ]
-        .into()
-    }
-
-    pub fn from_values(values: Vec<f64>) -> Self {
-        let mut weights = DEFAULT_WEIGHTS;
-        for (i, value) in values.iter().enumerate() {
-            weights[i].1 = *value;
+    fn from_iter<'a>(iter: impl Iterator<Item = (&'a str, f64)>) -> Self {
+        let mut weights = Vec::with_capacity(FEATURE_LOOKUP.len());
+        for (name, weight) in iter.into_iter() {
+            if let Some((_, feature)) = FEATURE_LOOKUP.iter().find(|(n, _)| n == &name) {
+                weights.push((*feature, weight));
+            } else {
+                panic!("Unknown feature: {}", name);
+            }
         }
         Weights(weights)
     }
 
-    pub fn values(self) -> Vec<f64> {
-        self.0.into_iter().map(|(_, weight)| weight).collect()
+    pub fn evaluate(&self, state: &State) -> f64 {
+        let mut score = 0.0;
+        for (feature, weight) in self.0.iter() {
+            score += feature(state) as f64 * weight;
+        }
+        score
     }
-}
-
-pub fn evaluate(state: &State, weights: &Weights) -> f64 {
-    let mut score = 0.0;
-    for (feature, weight) in weights.0.iter() {
-        score += feature(state) as f64 * weight;
-    }
-    score
 }
 
 /// The number of times that two adjacent cells in the same row mismatch.
@@ -201,7 +200,7 @@ mod tests {
 
     const TEST_ITERATIONS: usize = 100;
 
-    const TEST_FEATURES: &[(&str, fn(&State) -> usize)] = &[
+    const TEST_FEATURES: &[(&str, FeatureFn)] = &[
         ("col_trans", col_trans),
         ("row_trans", row_trans),
         ("pits", pits),

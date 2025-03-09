@@ -32,7 +32,7 @@ impl State {
     }
 
     pub fn level(&self) -> u64 {
-        (self.cleared_rows / 10) + 1
+        self.cleared_rows / 10
     }
 
     /// Computes the new 'future' state after a piece has been moved.

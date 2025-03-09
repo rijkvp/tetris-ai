@@ -1,5 +1,5 @@
 use board::{BOARD_HEIGHT, BOARD_WIDTH};
-use feature::Weights;
+use feature::{Weights, WeightsMap};
 use piece::Piece;
 use r#move::Move;
 use rand::Rng;
@@ -54,9 +54,9 @@ impl Simulator {
         Self::default()
     }
 
-    pub fn with_preset_weights() -> Self {
+    pub fn new_with_preset(preset: &str) -> Self {
         Self {
-            weights: Weights::preset(),
+            weights: Weights::from_preset(preset),
             ..Self::default()
         }
     }
@@ -102,7 +102,7 @@ impl Simulator {
         let mut rng = rand::thread_rng();
         for path in r#move::move_dijkstra(self.state.board, piece, self.state.level()) {
             let future = self.state.future(piece, path.final_move());
-            let score = feature::evaluate(&future, &self.weights);
+            let score = self.weights.evaluate(&future);
             if score > best_score {
                 best_score = score;
                 chosen = Some((future, path));
@@ -127,8 +127,8 @@ impl Simulator {
         false
     }
 
-    pub fn update_weights(&mut self, weights: Weights) {
-        self.weights = weights;
+    pub fn update_weights(&mut self, weights_map: WeightsMap) {
+        self.weights = weights_map.into();
     }
 
     #[cfg(feature = "wasm")]
