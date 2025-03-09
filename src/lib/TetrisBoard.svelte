@@ -110,6 +110,16 @@
         }
     }
 
+    function displayGameOver() {
+        context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#fff";
+        context.font = "bold 24px monospace";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+    }
+
     export const clear = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.lineWidth = 1;
@@ -133,10 +143,13 @@
         }
     };
 
-    export const display = (state: GameState) => {
+    export const display = (state: GameState, gameOver: boolean) => {
         clear();
         displayBoard(state.board);
         statsPanel.update(state.stats);
+        if (gameOver) {
+            displayGameOver();
+        }
     };
 
     export const displayTransition = (
@@ -144,11 +157,13 @@
         next: GameState,
         tick: number,
         tickProgress: number,
+        gameOver: boolean,
     ) => {
         clear();
         displayBoard(state.board);
 
         const currentMove = next.move;
+
         if (currentMove != null) {
             const currentPath = currentMove.path[tick];
             const currentPathIndex = Math.min(
@@ -162,6 +177,9 @@
             // displayOutline(currentMove.piece_idx, lastMove);
         }
 
+        if (gameOver) {
+            displayGameOver();
+        }
         statsPanel.update(state.stats);
     };
 

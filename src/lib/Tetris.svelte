@@ -54,7 +54,7 @@
 
     function step() {
         calcNext();
-        tetrisBoard.display(curr);
+        tetrisBoard.display(curr, gameOver);
     }
 
     function animateFrame(deltaTime: number) {
@@ -71,7 +71,7 @@
             tickTimer = 0;
         }
         const tickProgress = tickTimer / tickInterval; // progress from 0 to 1 within a tick
-        tetrisBoard.displayTransition(curr, next, tick, tickProgress);
+        tetrisBoard.displayTransition(curr, next, tick, tickProgress, gameOver);
     }
 
     const targetFPS = 60; // TODO: measure exact time spent on rendering
@@ -104,7 +104,7 @@
                 if (ticksSpent >= ticksGoal) {
                     console.warn("Exceeded ticks goal");
                 }
-                tetrisBoard.display(curr); // finally display the final state
+                tetrisBoard.display(curr, gameOver); // finally display the final state
             } else {
                 animateFrame(deltaTime);
             }
