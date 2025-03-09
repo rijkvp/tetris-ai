@@ -2,12 +2,9 @@ use crate::{
     board::{BOARD_HEIGHT, BOARD_WIDTH},
     state::State,
 };
-use std::{
-    cmp::{max, min},
-    collections::BTreeMap,
-};
+use std::cmp::{max, min};
 #[cfg(feature = "wasm")]
-use wasm_bindgen::prelude::wasm_bindgen;
+use wasm_bindgen::prelude::{wasm_bindgen, JsValue};
 
 type FeatureFn = fn(&State) -> usize;
 
@@ -63,13 +60,32 @@ impl Default for WeightsMap {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl WeightsMap {
     #[cfg(feature = "wasm")]
-    pub fn from_js(val: JsValue) -> Self {
-        let map: BTreeMap<String, f64> = serde_wasm_bindgen::from_value(val).unwrap();
-        WeightsMap::from_iter(map.into_iter())
+    pub fn defaults() -> Self {
+        Self::default()
     }
 
-    pub fn map(self) -> BTreeMap<String, f64> {
-        BTreeMap::from_iter(self.0)
+    #[cfg(feature = "wasm")]
+    pub fn preset(preset: &str) -> Self {
+        if let Some((_, weight_map)) = PRESET_MAP.iter().find(|(name, _)| name == &preset) {
+            Self(
+                weight_map
+                    .iter()
+                    .map(|(name, weight)| (name.to_string(), *weight))
+                    .collect(),
+            )
+        } else {
+            panic!("Unknown preset: {}", preset);
+        }
+    }
+
+    #[cfg(feature = "wasm")]
+    pub fn from_js(val: wasm_bindgen::JsValue) -> Self {
+        Self(serde_wasm_bindgen::from_value(val).unwrap())
+    }
+
+    #[cfg(feature = "wasm")]
+    pub fn into_js(self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.0).unwrap()
     }
 }
 

@@ -1,22 +1,29 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import { Weights } from "tetris-ai";
+    import { WeightsMap } from "tetris-ai";
     import { localState } from "$lib/stores.svelte";
 
-    let weightValues = $state([...Weights.defaults().values()]);
-    let weightsInfo = Weights.info();
+    let weights: [string, number][] = $state(WeightsMap.defaults().into_js());
+    let enabledWeights: boolean[] = $state(
+        Array(WeightsMap.defaults().into_js().length).fill(true),
+    );
 
     let {
         onWeightsChange,
         availableFeatures,
     }: {
-        onWeightsChange: (weights: Weights) => void;
+        onWeightsChange: (weights: [string, number][]) => void;
         availableFeatures: string[] | undefined;
     } = $props();
 
     function updateWeights() {
-        const weights = Weights.from_values(new Float64Array(weightValues));
-        onWeightsChange(weights);
+        const actualWeights = WeightsMap.defaults().into_js();
+        for (let i = 0; i < weights.length; i++) {
+            if (enabledWeights[i]) {
+                actualWeights[i][1] = weights[i][1];
+            }
+        }
+        onWeightsChange(actualWeights);
     }
 
     let selectedWeight: string = $state("");
@@ -27,42 +34,60 @@
     <h2>{$t("weights")}</h2>
     <button
         onclick={() => {
-            weightValues = [...Weights.defaults().values()];
+            weights = WeightsMap.defaults().into_js();
+            enabledWeights = Array(weights.length).fill(true);
             updateWeights();
         }}>Reset</button
+    >
+    <button
+        onclick={() => {
+            weights.forEach((_, i) => {
+                if (enabledWeights[i]) {
+                    weights[i][1] = parseFloat(
+                        (Math.random() * 20 - 10).toFixed(1),
+                    );
+                }
+            });
+            updateWeights();
+        }}>Randomize</button
     >
     <div style:display={localState.cheatMode ? "inline" : "none"}>
         <h2>Cheat mode</h2>
         <button
             onclick={() => {
-                weightValues = [...Weights.preset().values()];
+                weights = WeightsMap.preset("infinite").into_js();
                 updateWeights();
-            }}>Preset 1</button
+            }}>Preset (infinite)</button
         >
         <button
             onclick={() => {
-                weightValues = [...Weights.preset2().values()];
+                weights = WeightsMap.preset("score").into_js();
                 updateWeights();
-            }}>Preset 2</button
+            }}>Preset (score)</button
         >
     </div>
     <div class="weights-grid">
-        {#each weightValues as weight, n}
-            {#if !availableFeatures || availableFeatures.includes(weightsInfo[n].name)}
-                <input type="checkbox" />
+        {#each weights as [key, value], i}
+            {#if !availableFeatures || availableFeatures.includes(key)}
+                <input
+                    type="checkbox"
+                    bind:checked={enabledWeights[i]}
+                    onchange={() => updateWeights()}
+                />
                 <input
                     type="range"
-                    bind:value={weightValues[n]}
+                    bind:value={weights[i][1]}
+                    disabled={!enabledWeights[i]}
                     min="-10.0"
                     max="10.0"
                     step="0.1"
-                    onchange={() => updateWeights()}
+                    oninput={() => updateWeights()}
                 />
-                <span>{$t(`feature.${weightsInfo[n].name}.name`)}</span>
-                <span>{weight}</span>
+                <span>{value}</span>
+                <span>{$t(`feature.${key}.name`)}</span>
                 <button
                     onclick={() => {
-                        selectedWeight = weightsInfo[n].name;
+                        selectedWeight = key;
                         infoDialog.showModal();
                     }}>?</button
                 >
@@ -79,7 +104,7 @@
 <style>
     .weights-grid {
         display: grid;
-        grid-template-columns: 1rem 200px auto 20px 20px;
+        grid-template-columns: 1rem 200px 3rem 180px 2rem;
         gap: 1rem;
     }
     dialog {

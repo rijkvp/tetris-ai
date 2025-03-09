@@ -1,7 +1,7 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { onDestroy } from "svelte";
-    import { Simulator, Weights } from "tetris-ai";
+    import { Simulator, WeightsMap } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
@@ -135,8 +135,8 @@
         tickInterval = (1 / speedMultiplier) * BASE_SPEED;
     };
 
-    export const setWeights = (weights: Weights) => {
-        simulator.update_weights(weights);
+    export const setWeights = (weights: [string, number][]) => {
+        simulator.update_weights(WeightsMap.from_js(weights));
     };
 
     onMount(() => {
