@@ -5,12 +5,12 @@
 		<link rel="icon" href="/tetris-ai/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.BLoXTOQW.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/-0GsY7rq.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.BuVmrmFP.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/uT6aD3Jl.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Bp96OqRL.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/D5J0YgpT.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/CisfrD8M.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.CGHqi0dZ.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.Cu-3dk_1.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Czf0LZQW.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BwbAZO_5.js">
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Dm_UfXp4.js">
@@ -18,11 +18,13 @@
 		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/DALfYaJd.js">
 	</head>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+            font-family: "Jersey 10", sans-serif;
+            /* font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif; */
         }
         :root {
             --bg0: #ccc;
@@ -37,20 +39,25 @@
                 --bg0: #111;
                 --bg1: #444;
                 --bg2: #666;
-                --fg0: #eee;
+                --fg0: #ddd;
                 --fg1: #aaa;
             }
         }
 
 
         html {
-            font-size: 18px;
+            font-size: 20px;
             border-radius: 0;
             background: var(--bg0);
             color: var(--fg0);
         }
-        h2 {
+        h1 {
             font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
         }
 
         body {
@@ -106,7 +113,7 @@
 		<div style="display: contents">
 			<script>
 				{
-					__sveltekit_19tbl96 = {
+					__sveltekit_1hixwu0 = {
 						base: "/tetris-ai",
 						assets: "/tetris-ai"
 					};
@@ -114,8 +121,8 @@
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/tetris-ai/_app/immutable/entry/start.BLoXTOQW.js"),
-						import("/tetris-ai/_app/immutable/entry/app.CGHqi0dZ.js")
+						import("/tetris-ai/_app/immutable/entry/start.BuVmrmFP.js"),
+						import("/tetris-ai/_app/immutable/entry/app.Cu-3dk_1.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});

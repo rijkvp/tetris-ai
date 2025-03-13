@@ -1,0 +1,1 @@
+import"../chunks/BwbAZO_5.js";import"../chunks/B8RxqAOf.js";import{G as e}from"../chunks/jZSMIUvc.js";function t(o){e(o,{level:{key:"sandbox",name:"Sandbox",description:"Play around with all the features."}})}export{t as component};
