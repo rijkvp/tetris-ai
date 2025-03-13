@@ -66,31 +66,33 @@
             }}>Preset (score)</button
         >
     </div>
-    <div class="weights-grid">
+    <div class="weights-list">
         {#each weights as [key, value], i}
             {#if !availableFeatures || availableFeatures.includes(key)}
-                <input
-                    type="checkbox"
-                    bind:checked={enabledWeights[i]}
-                    onchange={() => updateWeights()}
-                />
-                <input
-                    type="range"
-                    bind:value={weights[i][1]}
-                    disabled={!enabledWeights[i]}
-                    min="-10.0"
-                    max="10.0"
-                    step="0.1"
-                    oninput={() => updateWeights()}
-                />
-                <span>{value}</span>
-                <span>{$t(`feature.${key}.name`)}</span>
-                <button
-                    onclick={() => {
-                        selectedWeight = key;
-                        infoDialog.showModal();
-                    }}>?</button
-                >
+                <div class="weight-item">
+                    <input
+                        type="checkbox"
+                        bind:checked={enabledWeights[i]}
+                        onchange={() => updateWeights()}
+                    />
+                    <input
+                        type="range"
+                        bind:value={weights[i][1]}
+                        disabled={!enabledWeights[i]}
+                        min="-10.0"
+                        max="10.0"
+                        step="0.1"
+                        oninput={() => updateWeights()}
+                    />
+                    <span class="weight-value">{value}</span>
+                    <span class="weight-name">{$t(`feature.${key}.name`)}</span>
+                    <button
+                        onclick={() => {
+                            selectedWeight = key;
+                            infoDialog.showModal();
+                        }}>?</button
+                    >
+                </div>
             {/if}
         {/each}
     </div>
@@ -102,10 +104,24 @@
 </dialog>
 
 <style>
-    .weights-grid {
-        display: grid;
-        grid-template-columns: 1rem 200px 3rem 180px 2rem;
+    .weights-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        margin: 0.5rem 0;
+    }
+    .weight-item {
+        display: flex;
         gap: 1rem;
+    }
+    .weight-item input[type="range"] {
+        width: 150px;
+    }
+    .weight-value {
+        width: 1rem;
+    }
+    .weight-name {
+        flex-grow: 1;
     }
     dialog {
         inset: 50%;

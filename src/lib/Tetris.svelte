@@ -28,9 +28,14 @@
     let lastFrameTime = 0;
     let tick = 0;
     let tickTimer = 0;
-    let speedMultiplier = 1;
     const BASE_SPEED = 1 / 8; // base interval between ticks in seconds
     let tickInterval = BASE_SPEED;
+
+    let speedIndex = $state(2);
+    let speedMultiplier = $state(1);
+    const SPEED_MUTIPLIER = [
+        0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
+    ];
 
     let moves = 0;
     let lastMoves = 0;
@@ -137,10 +142,10 @@
         }
     }
 
-    export const setSpeed = (multiplier: number) => {
-        speedMultiplier = multiplier;
+    function updateSpeed() {
+        speedMultiplier = SPEED_MUTIPLIER[speedIndex];
         tickInterval = (1 / speedMultiplier) * BASE_SPEED;
-    };
+    }
 
     export const setWeights = (weights: [string, number][]) => {
         simulator.update_weights(WeightsMap.from_js(weights));
@@ -156,24 +161,40 @@
         <StatsPanel bind:this={statsPanel} />
     </div>
     <div class="controls">
-        <button
-            onclick={() => reset()}
-            disabled={isRunning}
-            title={$t("controls.reset")}
-            >⭯
-        </button>
-        <button
-            onclick={() => togglePaused()}
-            disabled={gameOver}
-            title={isRunning ? $t("controls.pause") : $t("controls.play")}
-            >{isRunning ? "⏸ " : "▶ "}</button
-        >
-        <button
-            onclick={() => step()}
-            disabled={isRunning}
-            title={$t("controls.step")}
-            >»
-        </button>
+        <div>
+            <input
+                class="speed-input"
+                title={$t("speed")}
+                type="range"
+                min="0"
+                max={SPEED_MUTIPLIER.length - 1}
+                bind:value={speedIndex}
+                oninput={() => updateSpeed()}
+            />
+            <span class="speed-display"
+                >{speedMultiplier.toLocaleString()}x</span
+            >
+        </div>
+        <div>
+            <button
+                onclick={() => reset()}
+                disabled={isRunning}
+                title={$t("controls.reset")}
+                >⭯
+            </button>
+            <button
+                onclick={() => togglePaused()}
+                disabled={gameOver}
+                title={isRunning ? $t("controls.pause") : $t("controls.play")}
+                >{isRunning ? "⏸ " : "▶ "}</button
+            >
+            <button
+                onclick={() => step()}
+                disabled={isRunning}
+                title={$t("controls.step")}
+                >»
+            </button>
+        </div>
     </div>
     <div class="board">
         <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
@@ -184,7 +205,7 @@
     .grid {
         display: grid;
         grid-template-columns: auto auto;
-        grid-template-rows: 1rem auto;
+        grid-template-rows: min-content auto;
         gap: 16px;
     }
     .board {
@@ -198,11 +219,23 @@
     .controls {
         grid-column: 2;
         grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        /* gap: 8px; */
+        /* margin-bottom: 8px; */
+    }
+    .controls > div {
         width: 100%;
         justify-content: center;
         display: flex;
-        gap: 8px;
-        margin-bottom: 8px;
+        gap: 12px;
+        height: fit-content;
+    }
+    .speed-input {
+        width: 80%;
+    }
+    .speed-display {
+        width: 20%;
     }
     .controls button {
         width: 2rem;

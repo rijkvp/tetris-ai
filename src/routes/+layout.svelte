@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { locale } from "$lib/translations";
+    import { t, locale } from "$lib/translations";
     import LangSwitcher from "$lib/LangSwitcher.svelte";
     import { onMount, onDestroy } from "svelte";
     import { localState } from "$lib/stores.svelte";
@@ -25,8 +25,8 @@
 <h1>Tetris AI</h1>
 <header>
     <nav>
-        <a href="/{$locale}">Levels</a>
-        <a href="/{$locale}/sandbox">Sandbox</a>
+        <a href="/{$locale}">{$t("nav.levels")}</a>
+        <a href="/{$locale}/sandbox">{$t("nav.sandbox")}</a>
     </nav>
     <LangSwitcher />
 </header>

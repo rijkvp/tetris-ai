@@ -7,11 +7,13 @@
 		%sveltekit.head%
 	</head>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+            font-family: "Jersey 10", sans-serif;
+            /* font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif; */
         }
         :root {
             --bg0: #ccc;
@@ -26,20 +28,25 @@
                 --bg0: #111;
                 --bg1: #444;
                 --bg2: #666;
-                --fg0: #eee;
+                --fg0: #ddd;
                 --fg1: #aaa;
             }
         }
 
 
         html {
-            font-size: 18px;
+            font-size: 20px;
             border-radius: 0;
             background: var(--bg0);
             color: var(--fg0);
         }
-        h2 {
+        h1 {
             font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
         }
 
         body {

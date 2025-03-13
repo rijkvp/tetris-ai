@@ -12,6 +12,10 @@ const config: Config = {
                 en: 'English',
                 nl: 'Dutch',
             },
+            nav: {
+                levels: 'Levels',
+                sandbox: 'Sandbox',
+            },
             score: {
                 score: 'Score',
                 lines: 'Lines',
@@ -67,6 +71,10 @@ const config: Config = {
             locale: {
                 en: 'Engels',
                 nl: 'Nederlands',
+            },
+            nav: {
+                levels: 'Levels',
+                sandbox: 'Zandbak',
             },
             score: {
                 score: 'Score',
