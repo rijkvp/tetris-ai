@@ -3,10 +3,10 @@ export type Level = {
     name: string;
     description: string;
     goals?: {
-        lines: number;
-        score: number;
-        level: number;
-        tetrises: number;
+        lines?: number;
+        score?: number;
+        level?: number;
+        tetrises?: number;
     },
     features?: string[]
 };
@@ -15,12 +15,9 @@ export const levels: Level[] = [
     {
         key: "level1",
         name: "Level 1",
-        description: "This is the first level",
+        description: "Try to clear 100 lines using the column transitions and row transitions features",
         goals: {
-            lines: 10,
-            score: 0,
-            level: 0,
-            tetrises: 0
+            lines: 100,
         },
         features: [
             "col_trans",
@@ -30,16 +27,14 @@ export const levels: Level[] = [
     {
         key: "level2",
         name: "Level 2",
-        description: "This is the second level",
+        description: "Try to get 4 tetrises using the extra feature landing height",
         goals: {
-            lines: 10,
-            score: 1000,
-            level: 1,
-            tetrises: 1
+            tetrises: 4
         },
         features: [
             "col_trans",
-            "row_trans"
+            "row_trans",
+            "landing_height"
         ]
     }
 ];

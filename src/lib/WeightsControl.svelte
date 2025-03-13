@@ -37,7 +37,7 @@
             weights = WeightsMap.defaults().into_js();
             enabledWeights = Array(weights.length).fill(true);
             updateWeights();
-        }}>Reset</button
+        }}>{$t("feature_control.reset")}</button
     >
     <button
         onclick={() => {
@@ -49,7 +49,7 @@
                 }
             });
             updateWeights();
-        }}>Randomize</button
+        }}>{$t("feature_control.randomize")}</button
     >
     <div style:display={localState.cheatMode ? "inline" : "none"}>
         <h2>Cheat mode</h2>

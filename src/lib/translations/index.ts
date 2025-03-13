@@ -24,6 +24,14 @@ const config: Config = {
                 reset: "Reset",
                 step: "Step",
             },
+            goals: {
+                goals: 'Goals',
+                completed: 'All goals completed!',
+            },
+            feature_control: {
+                reset: "Reset",
+                randomize: "Randomize",
+            },
             feature: {
                 col_trans: {
                     name: 'Column transitions',
@@ -66,11 +74,19 @@ const config: Config = {
                 level: 'Level',
                 tetrises: 'Tetrissen',
             },
-            controls: {
+            goals: {
+                goals: 'Doelen',
+                completed: 'Alle doelen voltooid!',
+            },
+            control: {
                 play: "Start",
                 pause: "Pauze",
                 reset: "Opnieuw",
                 step: "Stap vooruit"
+            },
+            feature_control: {
+                reset: "Herstel",
+                randomize: "Willekeurig",
             },
             feature: {
                 col_trans: {

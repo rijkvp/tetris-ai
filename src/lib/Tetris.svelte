@@ -9,7 +9,13 @@
     import { onMount } from "svelte";
     let simulator: Simulator = new Simulator();
 
-    let { onGameOver }: { onGameOver: (stats: Stats) => void } = $props();
+    let {
+        onNewStats,
+        onGameOver,
+    }: {
+        onNewStats: (stats: Stats) => void;
+        onGameOver: (stats: Stats) => void;
+    } = $props();
 
     let tetrisBoard: TetrisBoard;
     let statsPanel: StatsPanel = $state()!;
@@ -40,6 +46,7 @@
 
     function calcNext(): boolean {
         curr = next;
+        onNewStats(curr.stats);
         if (!simulator.step()) {
             // game over
             gameOver = true;
