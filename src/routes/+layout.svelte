@@ -2,6 +2,7 @@
     import { t, locale } from "$lib/translations";
     import LangSwitcher from "$lib/LangSwitcher.svelte";
     import { onMount, onDestroy } from "svelte";
+    import { base } from "$app/paths";
     import { localState } from "$lib/stores.svelte";
 
     let { children } = $props();
@@ -25,8 +26,8 @@
 <h1>Tetris AI</h1>
 <header>
     <nav>
-        <a href="/{$locale}">{$t("nav.levels")}</a>
-        <a href="/{$locale}/sandbox">{$t("nav.sandbox")}</a>
+        <a href="{base}/{$locale}">{$t("nav.levels")}</a>
+        <a href="{base}/{$locale}/sandbox">{$t("nav.sandbox")}</a>
     </nav>
     <LangSwitcher />
 </header>

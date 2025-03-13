@@ -9,7 +9,10 @@
     onchange={(e) => {
         const lang = (e.target as HTMLSelectElement).value;
         setLocale(lang);
-        const path = page.url.pathname.replace(/^\/[a-zA-Z]+/, "");
+
+        let appPath = page.url.pathname;
+        appPath = appPath.substring(base.length); // remove base
+        const path = appPath.replace(/^\/[a-zA-Z]+/, ""); // remove lang
         goto(`${base}/${lang}${path}`);
     }}
 >
