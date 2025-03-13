@@ -21,9 +21,9 @@ export const load: LayoutLoad = async ({ url }) => {
         await loadTranslations("nl", "");
     } else if (appPath === "/") {
         if (navigator.language.startsWith("nl")) {
-            return redirect(302, "/nl");
+            return redirect(302, `${base}/nl`);
         } else {
-            return redirect(302, "/en");
+            return redirect(302, `${base}/en`);
         }
     } else {
         const lang = navigator.language.startsWith("nl") ? "nl" : "en";
