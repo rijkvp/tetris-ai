@@ -11,15 +11,15 @@ export const load: LayoutLoad = async ({ url }) => {
     await init();
     console.info("Tetris AI initialized");
 
-    let { pathname } = url;
-    if (pathname.startsWith(base)) {
-        pathname = pathname.substring(base.length);
-    }
-    if (pathname.startsWith("/en")) {
+    const { pathname } = url;
+
+    let appPath = pathname.substring(base.length);
+
+    if (appPath.startsWith("/en")) {
         await loadTranslations("en", "");
-    } else if (pathname.startsWith("/nl")) {
+    } else if (appPath.startsWith("/nl")) {
         await loadTranslations("nl", "");
-    } else if (pathname === "/") {
+    } else if (appPath === "/") {
         if (navigator.language.startsWith("nl")) {
             return redirect(302, "/nl");
         } else {
@@ -27,7 +27,7 @@ export const load: LayoutLoad = async ({ url }) => {
         }
     } else {
         const lang = navigator.language.startsWith("nl") ? "nl" : "en";
-        return redirect(302, `/${lang}${pathname}`);
+        return redirect(302, `${base}/${lang}${pathname}`);
     }
 
     return {};
