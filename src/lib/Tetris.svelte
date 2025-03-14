@@ -180,19 +180,26 @@
                 onclick={() => reset()}
                 disabled={isRunning}
                 title={$t("controls.reset")}
-                >⭯
+            >
+                <img src="/icons/reset.png" alt="Reset" />
             </button>
             <button
                 onclick={() => togglePaused()}
                 disabled={gameOver}
                 title={isRunning ? $t("controls.pause") : $t("controls.play")}
-                >{isRunning ? "⏸ " : "▶ "}</button
             >
+                {#if isRunning}
+                    <img src="/icons/pause.png" alt="Pause" />
+                {:else}
+                    <img src="/icons/play.png" alt="Play" />
+                {/if}
+            </button>
             <button
                 onclick={() => step()}
                 disabled={isRunning}
                 title={$t("controls.step")}
-                >»
+            >
+                <img src="/icons/skip.png" alt="Step" />
             </button>
         </div>
     </div>
@@ -245,5 +252,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    img {
+        image-rendering: optimizeSpeed;
+        image-rendering: -o-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
     }
 </style>
