@@ -49,19 +49,26 @@
             {#if level.goals}
                 <div class="goals">
                     <h2>{$t("goals.goals")}</h2>
-                    {#each goals as item}
-                        {#if item.goal > 0}
-                            <div
-                                class="goal-item"
-                                class:goal-complete={item.progress >= item.goal}
-                            >
-                                {$t(`score.${item.key}`)}: {item.progress}/{item.goal}
-                            </div>
-                        {/if}
-                    {/each}
+                    <ul>
+                        {#each goals as item}
+                            {#if item.goal > 0}
+                                <li
+                                    class="goal-item"
+                                    class:goal-complete={item.progress >=
+                                        item.goal}
+                                >
+                                    {$t(`score.${item.key}`)}: {item.progress}/{item.goal}
+                                </li>
+                            {/if}
+                        {/each}
+                    </ul>
                     {#if goalsComlete}
                         <div class="goals-complete-text">
-                            All goals complete!
+                            {$t("goals.complete")}
+                        </div>
+                    {:else}
+                        <div class="goals-info-text">
+                            {$t("goals.info")}
                         </div>
                     {/if}
                 </div>
@@ -101,15 +108,23 @@
         margin-top: 1rem;
     }
     .goal-item {
+        font-size: 1.1rem;
         margin-bottom: 5px;
+    }
+    .goal-item:not(.goal-complete) {
+        font-weight: bold;
+        text-decoration: underline;
     }
     .goal-complete {
         text-decoration: line-through;
         opacity: 0.8;
     }
+    .goals-info-text {
+        font-weight: bold;
+        color: red;
+    }
     .goals-complete-text {
         font-weight: bold;
-        font-size: 1.2em;
         color: green;
     }
 </style>

@@ -30,7 +30,8 @@ const config: Config = {
             },
             goals: {
                 goals: 'Goals',
-                completed: 'All goals completed!',
+                complete: 'Level complete! You reached all goals.',
+                info: 'Complete all goals to finish the level.',
             },
             feature_control: {
                 reset: "Reset",
@@ -90,7 +91,8 @@ const config: Config = {
             },
             goals: {
                 goals: 'Doelen',
-                completed: 'Alle doelen voltooid!',
+                complete: 'Level voltooid! Je hebt alle doelen bereikt.',
+                info: 'Behaal alle doelen om dit level te halen.',
             },
             control: {
                 play: "Start",
