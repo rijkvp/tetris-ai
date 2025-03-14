@@ -6,6 +6,7 @@
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { onMount } from "svelte";
+    import { base } from "$app/paths";
 
     const SPEED_MUTIPLIER = [
         0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
@@ -183,7 +184,7 @@
                 disabled={isRunning}
                 title={$t("controls.reset")}
             >
-                <img src="/icons/reset.png" alt="Reset" />
+                <img src="{base}/icons/reset.png" alt="Reset" />
             </button>
             <button
                 onclick={() => togglePaused()}
@@ -191,9 +192,9 @@
                 title={isRunning ? $t("controls.pause") : $t("controls.play")}
             >
                 {#if isRunning}
-                    <img src="/icons/pause.png" alt="Pause" />
+                    <img src="{base}/icons/pause.png" alt="Pause" />
                 {:else}
-                    <img src="/icons/play.png" alt="Play" />
+                    <img src="{base}/icons/play.png" alt="Play" />
                 {/if}
             </button>
             <button
