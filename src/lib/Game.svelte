@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t } from "$lib/translations";
+    import { t, locale } from "$lib/translations";
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Tetris from "$lib/Tetris.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
@@ -44,8 +44,8 @@
     />
     <div class="panel">
         <div>
-            <h1>{level.name}</h1>
-            <p>{level.description}</p>
+            <h1>{level.name[$locale]}</h1>
+            <p>{level.description[$locale]}</p>
             {#if level.goals}
                 <div class="goals">
                     <h2>{$t("goals.goals")}</h2>

@@ -92,7 +92,7 @@ const config: Config = {
             goals: {
                 goals: 'Doelen',
                 complete: 'Level voltooid! Je hebt alle doelen bereikt.',
-                info: 'Behaal alle doelen om dit level te halen.',
+                info: 'Behaal alle doelen om dit level te voltooien.',
             },
             control: {
                 play: "Start",

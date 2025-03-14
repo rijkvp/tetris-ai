@@ -8,7 +8,7 @@
 <ul>
     {#each levels as level}
         <li>
-            <a href="{$locale}/{level.key}">{level.name}</a>
+            <a href="{$locale}/{level.key}">{level.name[$locale]}</a>
         </li>
     {/each}
 </ul>
