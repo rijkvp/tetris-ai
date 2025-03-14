@@ -2,6 +2,7 @@
     import { t } from "$lib/translations";
     import { WeightsMap } from "tetris-ai";
     import { localState } from "$lib/stores.svelte";
+    import ExampleBoard from "./ExampleBoard.svelte";
 
     let {
         onWeightsChange,
@@ -38,6 +39,7 @@
 
     let selectedWeight: string = $state("");
     let infoDialog: HTMLDialogElement;
+    let exampleBoard: ExampleBoard;
 </script>
 
 <div>
@@ -98,6 +100,7 @@
                     <button
                         onclick={() => {
                             selectedWeight = key;
+                            exampleBoard.display(key);
                             infoDialog.showModal();
                         }}>?</button
                     >
@@ -107,9 +110,17 @@
     </div>
 </div>
 <dialog bind:this={infoDialog}>
-    <h2>{$t(`feature.${selectedWeight}.name`)}</h2>
+    <h1>{$t(`feature.${selectedWeight}.name`)}</h1>
     <p>{$t(`feature.${selectedWeight}.description`)}</p>
-    <button onclick={() => infoDialog.close()}>Close</button>
+    <div class="example">
+        <h2>Example:</h2>
+        <div class="example-board">
+            <ExampleBoard bind:this={exampleBoard} />
+        </div>
+    </div>
+    <button class="close-button" onclick={() => infoDialog.close()}
+        >Close</button
+    >
 </dialog>
 
 <style>
@@ -122,6 +133,7 @@
     .weight-item {
         display: flex;
         gap: 1rem;
+        justify-content: center;
     }
     .weight-item input[type="range"] {
         width: 150px;
@@ -140,6 +152,17 @@
         border: none;
         background: var(--bg0);
         color: var(--fg0);
+    }
+    .example {
+        margin: 1rem 0;
+    }
+    .example-board {
+        margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+    }
+    .close-button {
+        float: right;
     }
     dialog::backdrop {
         backdrop-filter: blur(6px);

@@ -52,7 +52,7 @@
         clearInterval(moveTimer);
     });
 
-    function calcNext(): boolean {
+    function simulateNext(): boolean {
         curr = next;
         onNewStats(curr.stats);
         if (!simulator.step()) {
@@ -68,7 +68,7 @@
     }
 
     function step() {
-        calcNext();
+        simulateNext();
         tetrisBoard.display(curr, gameOver);
     }
 
@@ -81,7 +81,7 @@
         }
         // check if move is complete
         if (tick >= next.move.path.length) {
-            calcNext();
+            simulateNext();
             tick = 0;
             tickTimer = 0;
         }
@@ -103,7 +103,7 @@
                 const ticksGoal = Math.floor(maxFrameDuration / tickInterval); // ideally, we want to complete about many ticks to reach the ticks/second goal
                 let ticksSpent = next.move.path.length;
                 while (ticksSpent < ticksGoal) {
-                    if (!calcNext()) {
+                    if (!simulateNext()) {
                         break;
                     }
                     ticksSpent += next.move.path.length;

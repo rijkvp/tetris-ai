@@ -56,7 +56,7 @@ const config: Config = {
                 },
                 eroded_cells: {
                     name: 'Cleared cells',
-                    description: 'The number of cells that are cleared as a result of the move.',
+                    description: 'The number of cells that are cleared from the tetromino itself as a result of the move.',
                 },
                 cuml_wells: {
                     name: 'Cumulative wells',
@@ -106,11 +106,11 @@ const config: Config = {
             },
             feature: {
                 col_trans: {
-                    name: 'Kolomtransities',
+                    name: 'Kolomovergangen',
                     description: 'Het aantal keren dat twee hokjes naast elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg).',
                 },
                 row_trans: {
-                    name: 'Rijtransities',
+                    name: 'Rijovergangen',
                     description: 'Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg).',
                 },
                 pits: {
@@ -123,7 +123,7 @@ const config: Config = {
                 },
                 eroded_cells: {
                     name: 'Gewiste hokjes',
-                    description: 'Het aantal hokjes dat wordt gewist als gevolg van de zet.',
+                    description: 'Het aantal hokjes dat wordt gewist van de tetromino zelf als gevolg van de zet.',
                 },
                 cuml_wells: {
                     name: 'Cumulatieve putten',

@@ -47,7 +47,7 @@ impl State {
         let cleared_rows = board.clear_full();
         let cleared = cleared_rows.len();
 
-        // count the number of cells that were cleared by the move.
+        // count the number of cells in the piece that were cleared by the move (eroded cells)
         let mut eroded = 0;
         for row in cleared_rows.iter().copied() {
             let pattern = piece.rotation(r#move.rot);

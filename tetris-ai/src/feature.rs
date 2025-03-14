@@ -212,7 +212,7 @@ fn eroded_cells(state: &State) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::test;
+    use crate::{piece::Piece, r#move::Move, state::Delta, test};
 
     const TEST_ITERATIONS: usize = 100;
 
@@ -269,5 +269,24 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn test_landing_heigt() {
+        let lh = landing_height(&State {
+            delta: Some(Delta {
+                piece: Piece::from_index(0),
+                r#move: Move {
+                    row: 13,
+                    col: 4,
+                    rot: 1,
+                },
+                eroded: 0,       // does not matter for this test
+                cleared: vec![], // does not matter for this test
+            }),
+            ..Default::default()
+        });
+        // 3 rows from the bottom of the board
+        assert_eq!(lh, 3);
     }
 }

@@ -9,6 +9,12 @@ use std::{fmt::Display, ops::Index, str::FromStr};
 #[repr(transparent)]
 pub struct Cell(u8);
 
+impl From<u8> for Cell {
+    fn from(inner: u8) -> Self {
+        Self(inner)
+    }
+}
+
 impl Cell {
     pub const fn new(inner: u8) -> Self {
         Self(inner)
@@ -51,6 +57,20 @@ pub struct Board {
 }
 
 impl Board {
+    #[allow(clippy::needless_range_loop)]
+    pub(crate) fn from_data(data: [[Cell; BOARD_WIDTH]; BOARD_HEIGHT]) -> Self {
+        let mut heights = [0; BOARD_WIDTH];
+        for c in 0..BOARD_WIDTH {
+            for r in 0..BOARD_HEIGHT {
+                if data[r][c].filled() {
+                    heights[c] = BOARD_HEIGHT - r;
+                    break;
+                }
+            }
+        }
+        Board { data, heights }
+    }
+
     /// Returns the height of the given column.
     pub(crate) fn height(&self, col: usize) -> usize {
         self.heights[col]
@@ -237,13 +257,11 @@ impl FromStr for Board {
         let lines = s.trim().lines().collect::<Vec<_>>();
         assert!(lines.len() == BOARD_HEIGHT);
         let mut data = [[Cell::default(); BOARD_WIDTH]; BOARD_HEIGHT];
-        let mut heights = [0; BOARD_WIDTH];
         for (r, line) in lines.iter().enumerate() {
             assert!(line.len() == BOARD_WIDTH);
             for (c, ch) in line.chars().enumerate() {
                 if ch == '#' {
                     data[r][c] = Cell::new(1);
-                    heights[c] = heights[c].max(BOARD_HEIGHT - r);
                 } else if ch == '.' {
                     data[r][c] = Cell::default();
                 } else {
@@ -251,7 +269,7 @@ impl FromStr for Board {
                 }
             }
         }
-        Ok(Board { data, heights })
+        Ok(Board::from_data(data))
     }
 }
 
