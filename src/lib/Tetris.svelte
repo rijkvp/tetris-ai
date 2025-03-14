@@ -202,7 +202,7 @@
                 disabled={isRunning}
                 title={$t("controls.step")}
             >
-                <img src="/icons/skip.png" alt="Step" />
+                <img src="{base}/icons/skip.png" alt="Step" />
             </button>
         </div>
     </div>
