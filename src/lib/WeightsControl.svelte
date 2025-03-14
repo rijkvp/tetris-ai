@@ -37,9 +37,8 @@
         onWeightsChange(actualWeights);
     }
 
-    let selectedWeight: string = $state("");
+    let selectedFeature: string = $state("col_trans");
     let infoDialog: HTMLDialogElement;
-    let exampleBoard: ExampleBoard;
 </script>
 
 <div>
@@ -99,8 +98,7 @@
                     <span class="weight-name">{$t(`feature.${key}.name`)}</span>
                     <button
                         onclick={() => {
-                            selectedWeight = key;
-                            exampleBoard.display(key);
+                            selectedFeature = key;
                             infoDialog.showModal();
                         }}>?</button
                     >
@@ -110,12 +108,12 @@
     </div>
 </div>
 <dialog bind:this={infoDialog}>
-    <h1>{$t(`feature.${selectedWeight}.name`)}</h1>
-    <p>{$t(`feature.${selectedWeight}.description`)}</p>
+    <h1>{$t(`feature.${selectedFeature}.name`)}</h1>
+    <p>{$t(`feature.${selectedFeature}.description`)}</p>
     <div class="example">
         <h2>Example:</h2>
         <div class="example-board">
-            <ExampleBoard bind:this={exampleBoard} />
+            <ExampleBoard feature={selectedFeature} />
         </div>
     </div>
     <button class="close-button" onclick={() => infoDialog.close()}
