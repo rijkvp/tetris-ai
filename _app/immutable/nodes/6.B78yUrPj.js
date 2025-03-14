@@ -1,0 +1,1 @@
+import"../chunks/572c0_6E.js";import"../chunks/Cy4R_cVX.js";import{G as n}from"../chunks/BO_qE229.js";function a(e){n(e,{level:{key:"sandbox",name:{en:"Sandbox",nl:"Zandbak"},description:{en:"Play around with all the features.",nl:"Speel met alle kenmerken."}}})}export{a as component};

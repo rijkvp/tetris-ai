@@ -5,18 +5,18 @@
 		<link rel="icon" href="/tetris-ai/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.DLk5Sk-8.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/C0I5rvAN.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BaRRop2O.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BphxnYgW.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Dxkv2xkL.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Cwddwv5T.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.DxPEpuN5.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/Dr6dCWEC.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/DH7IJw4D.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/CBPPA1zw.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BWelR1Bz.js">
-		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BPv8Fxgz.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/start.BewXITDs.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/CntTfwZ3.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BtVhAOt3.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BJrhoeGI.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/ir-bTDDo.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/hVEHMVPj.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/entry/app.BYXq1v6O.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/LJXVBEae.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/572c0_6E.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/BRV6JBVO.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/swg19CYP.js">
+		<link rel="modulepreload" href="/tetris-ai/_app/immutable/chunks/ahoT1bUg.js">
 	</head>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
@@ -29,10 +29,11 @@
         }
         :root {
             --bg0: #ccc;
-            --bg1: #bbb;
+            --bg1: #aaa;
             --bg2: #888;
             --fg0: #000;
             --fg1: #666;
+            --border: #fff;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -42,6 +43,7 @@
                 --bg2: #666;
                 --fg0: #ddd;
                 --fg1: #aaa;
+                --border: #ddd;
             }
         }
 
@@ -95,7 +97,6 @@
             opacity: 0.7;
             transition: opacity .2s;
             border-radius: 0px;
-            /* background: #999; */
         }
         button[disabled], input[disabled] {
             opacity: 0.5;
@@ -118,12 +119,15 @@
             list-style-type: square;
             padding-left: 1rem;
         }
+        .border {
+            border: 3px solid var(--border);
+        }
     </style>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">
 			<script>
 				{
-					__sveltekit_1ju4trw = {
+					__sveltekit_i5o30x = {
 						base: "/tetris-ai",
 						assets: "/tetris-ai"
 					};
@@ -131,8 +135,8 @@
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/tetris-ai/_app/immutable/entry/start.DLk5Sk-8.js"),
-						import("/tetris-ai/_app/immutable/entry/app.DxPEpuN5.js")
+						import("/tetris-ai/_app/immutable/entry/start.BewXITDs.js"),
+						import("/tetris-ai/_app/immutable/entry/app.BYXq1v6O.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});
