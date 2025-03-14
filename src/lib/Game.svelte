@@ -41,6 +41,7 @@
         bind:this={tetris}
         onNewStats={(stats: Stats) => checkGoals(stats)}
         onGameOver={(stats: Stats) => scoreboard.addEntry(stats)}
+        maxSpeed={level.goals != null ? 8 : 12}
     />
     <div class="panel">
         <div>

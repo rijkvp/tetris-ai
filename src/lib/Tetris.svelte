@@ -5,18 +5,23 @@
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
-
     import { onMount } from "svelte";
-    let simulator: Simulator = new Simulator();
+
+    const SPEED_MUTIPLIER = [
+        0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
+    ];
 
     let {
         onNewStats,
         onGameOver,
+        maxSpeed = SPEED_MUTIPLIER.length - 1,
     }: {
         onNewStats: (stats: Stats) => void;
         onGameOver: (stats: Stats) => void;
+        maxSpeed: number;
     } = $props();
 
+    let simulator: Simulator = new Simulator();
     let tetrisBoard: TetrisBoard;
     let statsPanel: StatsPanel = $state()!;
 
@@ -33,9 +38,6 @@
 
     let speedIndex = $state(2);
     let speedMultiplier = $state(1);
-    const SPEED_MUTIPLIER = [
-        0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
-    ];
 
     let moves = 0;
     let lastMoves = 0;
@@ -167,7 +169,7 @@
                 title={$t("speed")}
                 type="range"
                 min="0"
-                max={SPEED_MUTIPLIER.length - 1}
+                max={Math.min(SPEED_MUTIPLIER.length - 1, maxSpeed)}
                 bind:value={speedIndex}
                 oninput={() => updateSpeed()}
             />
