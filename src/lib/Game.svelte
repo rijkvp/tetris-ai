@@ -31,7 +31,7 @@
 
     function checkGoals(stats: Stats) {
         for (const goal of goals) {
-            goal.progress = stats[goal.key];
+            goal.progress = stats[goal.key]!;
         }
     }
 </script>
@@ -82,6 +82,7 @@
 <style>
     .panels {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         gap: 2rem;
     }
@@ -91,7 +92,6 @@
         flex-shrink: 1;
         flex-basis: 0;
 
-        margin-top: 2rem;
         display: flex;
         flex-direction: column;
         flex-basis: min-content;

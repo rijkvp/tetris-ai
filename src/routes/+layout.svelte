@@ -23,8 +23,10 @@
     });
 </script>
 
-<h1>Tetris AI</h1>
 <header>
+    <h1>
+        <a href="{base}/{$locale}"> Tetris AI </a>
+    </h1>
     <nav>
         <a href="{base}/{$locale}">{$t("nav.levels")}</a>
         <a href="{base}/{$locale}/sandbox">{$t("nav.sandbox")}</a>
@@ -34,11 +36,20 @@
 {@render children()}
 
 <style>
-    header,
+    header {
+        display: flex;
+        align-items: stretch;
+        gap: 2rem;
+        margin-bottom: 1.2rem;
+    }
     nav {
         display: flex;
-        justify-content: space-between;
+        flex-grow: 1;
         align-items: center;
-        gap: 20px;
+        gap: 1rem;
+    }
+    header > h1 {
+        margin: 0;
+        font-size: 1.6rem;
     }
 </style>

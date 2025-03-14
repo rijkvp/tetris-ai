@@ -82,6 +82,12 @@ const config: Config = {
                 level: 'Level',
                 tetrises: 'Tetrissen',
             },
+            controls: {
+                play: "Start",
+                pause: "Pauze",
+                reset: "Opnieuw",
+                step: "Stap vooruit",
+            },
             goals: {
                 goals: 'Doelen',
                 completed: 'Alle doelen voltooid!',

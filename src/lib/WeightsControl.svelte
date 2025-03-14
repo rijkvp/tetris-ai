@@ -3,11 +3,6 @@
     import { WeightsMap } from "tetris-ai";
     import { localState } from "$lib/stores.svelte";
 
-    let weights: [string, number][] = $state(WeightsMap.defaults().into_js());
-    let enabledWeights: boolean[] = $state(
-        Array(WeightsMap.defaults().into_js().length).fill(true),
-    );
-
     let {
         onWeightsChange,
         availableFeatures,
@@ -15,6 +10,21 @@
         onWeightsChange: (weights: [string, number][]) => void;
         availableFeatures: string[] | undefined;
     } = $props();
+
+    let weights: [string, number][] = $state()!;
+    let enabledWeights: boolean[] = $state()!;
+
+    function reset() {
+        weights = WeightsMap.defaults().into_js();
+        enabledWeights = WeightsMap.defaults()
+            .into_js()
+            .map(
+                ([key, _]: [string, number]) =>
+                    availableFeatures?.includes(key) ?? true,
+            );
+    }
+
+    reset();
 
     function updateWeights() {
         const actualWeights = WeightsMap.defaults().into_js();
@@ -34,8 +44,7 @@
     <h2>{$t("weights")}</h2>
     <button
         onclick={() => {
-            weights = WeightsMap.defaults().into_js();
-            enabledWeights = Array(weights.length).fill(true);
+            reset();
             updateWeights();
         }}>{$t("feature_control.reset")}</button
     >
