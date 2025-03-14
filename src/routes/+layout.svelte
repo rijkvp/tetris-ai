@@ -30,6 +30,7 @@
     <nav>
         <a href="{base}/{$locale}">{$t("nav.levels")}</a>
         <a href="{base}/{$locale}/sandbox">{$t("nav.sandbox")}</a>
+        <a href="{base}/{$locale}/guide">{$t("nav.guide")}</a>
     </nav>
     <LangSwitcher />
 </header>

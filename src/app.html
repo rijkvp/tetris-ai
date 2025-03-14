@@ -17,10 +17,11 @@
         }
         :root {
             --bg0: #ccc;
-            --bg1: #bbb;
+            --bg1: #aaa;
             --bg2: #888;
             --fg0: #000;
             --fg1: #666;
+            --border: #fff;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -30,6 +31,7 @@
                 --bg2: #666;
                 --fg0: #ddd;
                 --fg1: #aaa;
+                --border: #ddd;
             }
         }
 
@@ -83,7 +85,6 @@
             opacity: 0.7;
             transition: opacity .2s;
             border-radius: 0px;
-            /* background: #999; */
         }
         button[disabled], input[disabled] {
             opacity: 0.5;
@@ -105,6 +106,9 @@
         ul {
             list-style-type: square;
             padding-left: 1rem;
+        }
+        .border {
+            border: 3px solid var(--border);
         }
     </style>
 	<body data-sveltekit-preload-data="hover">

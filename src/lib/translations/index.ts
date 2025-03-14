@@ -4,7 +4,14 @@ import i18n from 'sveltekit-i18n';
 const config = {
     translations: {
         en: {
-            test: 'This is a test',
+            general: {
+                close: 'Close',
+                example: 'Example',
+            },
+            level_select: {
+                title: 'Select level',
+                description: 'Select a level to play.',
+            },
             weights: 'Weights',
             speed: 'Speed',
             scoreboard: 'Scoreboard',
@@ -15,6 +22,19 @@ const config = {
             nav: {
                 levels: 'Levels',
                 sandbox: 'Sandbox',
+                guide: 'Guide',
+            },
+            guide: {
+                title: 'Guide',
+                text: `This tool lets you control an AI playing Tetris, a classic game. There are different levels with different goals that you can play so you can learn how the AI works. Sandbox mode lets you experiment with all the features. Have fun!
+
+<h2>How do I control the AI?</h2>
+
+At the top of the Tetris board, there are buttons that allow you to play, pause, reset, or step through the game. You can also adjust the speed of the game and the weights of the features. On the left, you can see the stats of the current game played by the AI. It shows the score (the more lines cleared, the higher the score), the number of lines cleared, the current level (every 10 lines is a level), and the number of tetrises you have made (clearing 4 rows at once). The goals show the objectives you need to complete to finish the level.
+
+<h2>How does the AI work?</h2>
+
+The AI calculates all possible positions and rotations where it can be placed for every tetromino it has to play. Then, it evaluates them using a set of features. The AI then chooses the move with the highest score. You can adjust the importance of different features using the sliders to meet the goals. The weights of these features determine how important they are in the evaluation. For example, if you think a feature is very important, you can increase its weight to make the AI prioritize it. Or, if you think a feature should be avoided, you can decrease its weight.`,
             },
             score: {
                 score: 'Score',
@@ -65,7 +85,14 @@ const config = {
             },
         },
         nl: {
-            test: 'Dit is een test',
+            general: {
+                close: 'Sluiten',
+                example: 'Voorbeeld',
+            },
+            level_select: {
+                title: 'Level selecteren',
+                description: 'Kies een level om te spelen.',
+            },
             weights: 'Gewichten',
             speed: 'Snelheid',
             scoreboard: 'Scorebord',
@@ -75,7 +102,24 @@ const config = {
             },
             nav: {
                 levels: 'Levels',
-                sandbox: 'Zandbak',
+                sandbox: 'Sandbox-modus',
+                guide: 'Uitleg',
+            },
+            guide: {
+                title: 'Uitleg',
+                text: `Met deze tool kun je een AI besturen die Tetris speelt, een klassieke videogame. Er zijn verschillende niveaus met verschillende doelen die je kunt spelen zodat je kunt leren hoe de AI werkt. In de Sandbox-modus kun je experimenteren met alle functies. Veel plezier!
+
+<h2>Wat is Tetris?</h2>
+
+Tetris is een klassieke videogame waarin je puzelstukjes, die tetromino's worden genoemd, moet plaatsen om rijen te vullen. Als je een rij vult, verdwijnt deze en krijg je punten. Het doel is om zoveel mogelijk rijen te vullen en zo lang mogelijk te overleven. Als de tetromino's tot aan de bovenkant van het bord komen, is het spel voorbij.
+
+<h2>Hoe bestuur ik de AI?</h2>
+
+Bovenaan het Tetris-bord vind je knoppen waarmee je het spel kunt spelen, pauzeren, resetten of doorlopen. Je kunt ook de snelheid van het spel en het gewicht van de kenmarken aanpassen. Links zie je de statistieken van het huidige spel dat door de AI wordt gespeeld. Je ziet de score (hoe meer rijen je hebt weggespeeld, hoe hoger de score), het aantal weggespeelde rijen, het huidige level (elke 10 rijen is een level) en het aantal tetrissen dat de AI heeft gemaakt (4 rijen tegelijk weggespeeld). De doelen tonen aan wat je moet doen om het level te voltooien. Om een uitleg te krijgen over een kernmerk, druk op de [?] knop.
+
+<h2>Hoe werkt de AI?</h2>
+
+De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst kan worden. Daarna telt hij aan de hand van een aantal kenmerken de score op die elke zet geeft. De AI kiest dan de zet met de hoogste score. Je kunt het belang van verschillende kenmerken aanpassen met de schuifregelaars om de doelen te bereiken. De gewichten van deze kenmerken bepalen hoe belangrijk ze zijn in de evaluatie. Als je bijvoorbeeld denkt dat een kenmerk erg belangrijk is, kun je het gewicht ervan verhogen zodat de AI er prioriteit aan geeft. Of als je denkt dat een kenmerk moet worden vermeden, kun je het gewicht verlagen.`,
             },
             score: {
                 score: 'Score',

@@ -20,11 +20,11 @@ export const levels: Level[] = [
         key: "level1",
         name: {
             en: "Level 1: 100 lines",
-            nl: "Level 1: 100 regels"
+            nl: "Level 1: 100 rijen"
         },
         description: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
-            nl: "Probeer honderd regels te halen door de kolomovergangen en rijovergangen aan te passen."
+            nl: "Probeer honderd rijen weg te spelen door de kolomovergangen en rijovergangen aan te passen."
         },
         goals: {
             lines: 100,

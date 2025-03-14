@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { locale } from "$lib/translations";
+    import { t, locale } from "$lib/translations";
     import { levels } from "$lib/levels";
 </script>
 
-<h2>Level selection</h2>
+<h2>{$t("level_select.title")}</h2>
+<p>{$t("level_select.description")}</p>
 
 <ul>
     {#each levels as level}

@@ -21,7 +21,7 @@
     };
 </script>
 
-<div class="stats">
+<div class="stats border">
     <div class="item">
         <div class="label">{$t("score.score")}</div>
         <div
@@ -58,7 +58,6 @@
         width: 100px;
 
         padding: 0.8rem 0.4rem;
-        border: 2px solid #fff;
         border-radius: 0px;
         box-shadow:
             0 4px 8px 0 rgba(0, 0, 0, 0.2),

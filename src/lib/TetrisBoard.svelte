@@ -110,11 +110,10 @@
     });
 </script>
 
-<canvas bind:this={canvas} width="320" height="640"></canvas>
+<canvas bind:this={canvas} class="border" width="320" height="640"></canvas>
 
 <style>
     canvas {
-        border: 2px solid #fff;
         border-radius: 0px;
         background-color: #bbb;
         box-shadow:

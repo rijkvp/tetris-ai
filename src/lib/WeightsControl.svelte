@@ -111,13 +111,13 @@
     <h1>{$t(`feature.${selectedFeature}.name`)}</h1>
     <p>{$t(`feature.${selectedFeature}.description`)}</p>
     <div class="example">
-        <h2>Example:</h2>
+        <h2>{$t("general.example")}:</h2>
         <div class="example-board">
             <ExampleBoard feature={selectedFeature} />
         </div>
     </div>
     <button class="close-button" onclick={() => infoDialog.close()}
-        >Close</button
+        >{$t("general.close")}</button
     >
 </dialog>
 

@@ -144,10 +144,4 @@
     });
 </script>
 
-<canvas bind:this={canvas} width="320" height="640"></canvas>
-
-<style>
-    canvas {
-        border: 2px solid #fff;
-    }
-</style>
+<canvas bind:this={canvas} class="border" width="320" height="640"></canvas>
