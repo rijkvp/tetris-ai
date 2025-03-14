@@ -1,7 +1,7 @@
+import type { Writable } from 'svelte/store';
 import i18n from 'sveltekit-i18n';
-import type Config from 'sveltekit-i18n';
 
-const config: Config = {
+const config = {
     translations: {
         en: {
             test: 'This is a test',
@@ -134,4 +134,7 @@ const config: Config = {
     },
 };
 
-export const { t, locale, locales, loading, setLocale, loadTranslations } = new i18n(config);
+const stores = new i18n(config);
+export const { t, locales, loading, loadTranslations } = stores;
+export const locale = stores.locale as unknown as Writable<"en" | "nl">;
+export const setLocale = stores.setLocale as (locale: "en" | "nl") => void;

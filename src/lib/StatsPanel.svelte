@@ -1,7 +1,7 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import type { Stats } from "./types";
-    import { localState } from "$lib/stores.svelte.ts";
+    import { localState } from "$lib/stores.svelte";
 
     let stats: Stats = $state({
         score: BigInt(0),
@@ -60,11 +60,15 @@
         padding: 0.8rem 0.4rem;
         border: 2px solid #fff;
         border-radius: 0px;
-        background-color: #070707;
-        color: #fff;
         box-shadow:
             0 4px 8px 0 rgba(0, 0, 0, 0.2),
             0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    @media (prefers-color-scheme: dark) {
+        .stats {
+            background-color: #070707;
+            color: #fff;
+        }
     }
     .item {
         margin: 0.2rem 0;

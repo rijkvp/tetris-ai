@@ -8,7 +8,7 @@
 <select
     onchange={(e) => {
         const lang = (e.target as HTMLSelectElement).value;
-        setLocale(lang);
+        if (lang === "nl" || lang === "en") setLocale(lang);
 
         let appPath = page.url.pathname;
         appPath = appPath.substring(base.length); // remove base

@@ -11,17 +11,18 @@
     let tetris: Tetris;
     let scoreboard: Scoreboard;
 
+    type GoalStat = "score" | "lines" | "level" | "tetrises";
     type GoalItem = {
-        key: string;
-        progress: number;
-        goal: number;
+        stat: GoalStat;
+        progress: bigint;
+        goal: bigint;
     };
 
     let goals: GoalItem[] = $state(
-        Object.entries(level.goals || {}).map(([key, goal]) => ({
-            key,
-            progress: 0,
-            goal,
+        Object.entries(level.goals || {}).map(([stat, goal]) => ({
+            stat: stat as GoalStat,
+            progress: BigInt(0),
+            goal: BigInt(goal),
         })),
     );
 
@@ -31,7 +32,7 @@
 
     function checkGoals(stats: Stats) {
         for (const goal of goals) {
-            goal.progress = stats[goal.key]!;
+            goal.progress = stats[goal.stat];
         }
     }
 </script>
@@ -58,7 +59,7 @@
                                     class:goal-complete={item.progress >=
                                         item.goal}
                                 >
-                                    {$t(`score.${item.key}`)}: {item.progress}/{item.goal}
+                                    {$t(`score.${item.stat}`)}: {item.progress}/{item.goal}
                                 </li>
                             {/if}
                         {/each}

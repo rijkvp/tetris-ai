@@ -4,7 +4,6 @@
     import type { GameState, Move } from "$lib/types.ts";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { clearBoard, displayBoard, displayCell } from "$lib/display";
-    import { prefersDarkMode } from "$lib/theme";
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;

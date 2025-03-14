@@ -1,4 +1,4 @@
-import { prefersDarkMode } from "$lib/theme";
+import { theme } from "$lib/theme.svelte";
 
 export const BOARD_WIDTH = 10;
 export const BOARD_HEIGHT = 20;
@@ -60,10 +60,10 @@ export function displayCell(ctx: CanvasRenderingContext2D, col: number, row: num
 
 function displayGrid(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = 1;
-    if (prefersDarkMode) {
+    if (theme.prefersDark) {
         ctx.strokeStyle = "#333";
     } else {
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = "#aaa";
     }
     // draw lines
     const width = BOARD_WIDTH * CELL_SIZE;
