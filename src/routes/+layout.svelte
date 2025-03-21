@@ -1,4 +1,5 @@
 <script lang="ts">
+    import "../app.css"; // global styles
     import { t, locale } from "$lib/translations";
     import LangSwitcher from "$lib/LangSwitcher.svelte";
     import { onMount, onDestroy } from "svelte";

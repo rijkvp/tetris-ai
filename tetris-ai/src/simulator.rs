@@ -168,7 +168,7 @@ impl Game {
         })
     }
 
-    pub fn move_down(&mut self) {
+    pub fn soft_drop(&mut self) {
         self.try_move(|mut m| {
             m.pos.row += 1;
             m

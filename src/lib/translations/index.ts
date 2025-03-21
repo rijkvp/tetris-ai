@@ -7,7 +7,7 @@ const config = {
             general: {
                 close: 'Close',
                 example: 'Example',
-                features: 'Weights',
+                features: 'Features',
                 speed: 'Speed',
                 scoreboard: 'Scoreboard',
             },

@@ -5,13 +5,13 @@ let prefersDark = $state(
 
 let modeName = $derived(() => prefersDark ? "dark" : "light");
 
-// TODO: this does not work
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    prefersDark = e.matches;
-});
-
-export const theme = {
-    prefersDark: prefersDark,
-    modeName: modeName,
+if (window) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        prefersDark = e.matches;
+    });
 }
 
+export const theme = {
+    get prefersDark() { return prefersDark },
+    get modeName() { return modeName }
+};

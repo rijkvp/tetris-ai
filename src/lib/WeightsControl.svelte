@@ -3,6 +3,7 @@
     import { WeightsMap } from "tetris-ai";
     import { localState } from "$lib/stores.svelte";
     import ExampleBoard from "./ExampleBoard.svelte";
+    import DynamicIcon from "./DynamicIcon.svelte";
 
     let {
         onWeightsChange,
@@ -43,24 +44,32 @@
 
 <div>
     <h2>{$t("general.features")}</h2>
-    <button
-        onclick={() => {
-            reset();
-            updateWeights();
-        }}>{$t("feature_control.reset")}</button
-    >
-    <button
-        onclick={() => {
-            weights.forEach((_, i) => {
-                if (enabledWeights[i]) {
-                    weights[i][1] = parseFloat(
-                        (Math.random() * 20 - 10).toFixed(1),
-                    );
-                }
-            });
-            updateWeights();
-        }}>{$t("feature_control.randomize")}</button
-    >
+    <div class="buttons">
+        <button
+            onclick={() => {
+                reset();
+                updateWeights();
+            }}
+        >
+            <DynamicIcon icon="reset" alt="Reset" />
+            {$t("feature_control.reset")}</button
+        >
+        <button
+            onclick={() => {
+                weights.forEach((_, i) => {
+                    if (enabledWeights[i]) {
+                        weights[i][1] = parseFloat(
+                            (Math.random() * 20 - 10).toFixed(1),
+                        );
+                    }
+                });
+                updateWeights();
+            }}
+        >
+            <DynamicIcon icon="shuffle" alt="Shuffle" />
+            {$t("feature_control.randomize")}</button
+        >
+    </div>
     <div style:display={localState.cheatMode ? "inline" : "none"}>
         <h2>Cheat mode</h2>
         <button
@@ -150,6 +159,16 @@
         border: none;
         background: var(--bg0);
         color: var(--fg0);
+    }
+    .buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .buttons > button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
     }
     .example {
         margin: 1rem 0;

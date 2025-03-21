@@ -13,25 +13,29 @@
     let gameOver = $state(false);
 
     let lastFrameTime = 0;
-    const FRAME_DURATION = 1 / 6;
-    let timer = FRAME_DURATION;
+    const TICK_DURATION = 0.4;
+    let timer = TICK_DURATION;
 
     function gameLoop(currentTime: number) {
+        if (!isRunning) return;
+
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
         const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
         lastFrameTime = currentTime;
-        if (isRunning) {
-            timer -= deltaTime;
-            if (timer <= 0) {
-                timer = FRAME_DURATION;
-                if (!game.step()) {
-                    gameOver = true;
-                    isRunning = false;
-                }
-                tetrisBoard.display(game.state, game.move ?? null);
+        requestAnimationFrame(gameLoop);
+
+        // update
+        timer -= deltaTime;
+        if (timer <= 0) {
+            if (!game.step()) {
+                gameOver = true;
+                isRunning = false;
             }
-            requestAnimationFrame(gameLoop);
+            timer = TICK_DURATION;
         }
+
+        // display
+        tetrisBoard.display(game.state, game.move ?? null);
     }
 
     function reset() {
@@ -50,15 +54,19 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
+        if (event.repeat) {
+            return;
+        }
         if (event.key === "l" || event.key === "ArrowRight") {
             game.move_right();
         } else if (event.key === "j" || event.key === "ArrowLeft") {
             game.move_left();
         } else if (event.key === "k" || event.key === "ArrowDown") {
-            game.move_down();
-        } else if (event.key === "i" || event.key === "ArrowUp") {
+            game.soft_drop();
+        } else if (event.key === "z" || event.key === "ArrowUp") {
             game.rotate();
-        } else if (event.key === "c") {
+        } else if (event.key === " ") {
+            event.preventDefault();
             game.hard_drop();
         }
     }
@@ -67,6 +75,7 @@
         window.addEventListener("keydown", handleKeydown);
         reset();
     });
+
     onDestroy(() => {
         window.removeEventListener("keydown", handleKeydown);
     });
@@ -132,11 +141,11 @@
         height: fit-content;
     }
     .controls button {
-        width: 4rem;
-        height: 1.5rem;
-        font-size: 1.2rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 4rem;
+        height: 1.5rem;
+        font-size: 1.2rem;
     }
 </style>

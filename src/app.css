@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+:root {
+    --bg0: #ccc;
+    --bg1: #aaa;
+    --bg2: #888;
+    --fg0: #000;
+    --fg1: #666;
+    --border: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg0: #111;
+        --bg1: #444;
+        --bg2: #666;
+        --fg0: #ddd;
+        --fg1: #aaa;
+        --border: #ddd;
+    }
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Jersey 10", sans-serif;
+    /* font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif; */
+}
+html {
+    font-size: 20px;
+    border-radius: 0;
+    background: var(--bg0);
+    color: var(--fg0);
+}
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+}
+h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+}
+
+body {
+    margin: 12px 32px;
+}
+
+@media (min-width: 950px) {
+    body {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+input, button, select {
+    background: var(--bg1);
+    color: var(--fg0);
+    box-shadow: none;
+    font-size: 1rem;
+    border-radius: 0;
+    outline: none;
+    padding: 2px 4px;
+    border: 3px solid var(--bg2);
+    cursor: pointer;
+}
+button:hover {
+    background: var(--bg2);
+}
+button:active {
+    background: var(--bg1);
+}
+input[type=range] {
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 0px;
+}
+button[disabled], input[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg1);
+}
+input[type=range]:hover {
+    opacity: 1;
+}
+a:link, a:visited {
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover, a:visited {
+    color: inherit;
+    text-decoration: underline;
+}
+ul {
+    list-style-type: square;
+    padding-left: 1rem;
+}
+.border {
+    border: 3px solid var(--border);
+}

@@ -8,6 +8,7 @@
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { onMount } from "svelte";
     import { base } from "$app/paths";
+    import DynamicIcon from "./DynamicIcon.svelte";
 
     const SPEED_MUTIPLIER = [
         0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
@@ -60,7 +61,6 @@
         onNewStats(curr.stats);
         if (!simulator.step()) {
             curr = simulator.state;
-            next = null;
             // game over
             gameOver = true;
             onGameOver(curr.stats);
@@ -72,7 +72,7 @@
         }
         moves++;
         next = simulator.state;
-        path = simulator.path;
+        path = simulator.path!;
         return true;
     }
 
@@ -142,7 +142,7 @@
         curr = simulator.state;
         simulator.step();
         next = simulator.state;
-        path = simulator.path;
+        path = simulator.path!;
         tetrisBoard.clear();
         gameOver = false;
     }
@@ -168,8 +168,6 @@
     onMount(() => {
         reset();
     });
-
-    let modeName2 = $derived(() => (theme.prefersDark ? "dark" : "light"));
 </script>
 
 <div class="grid">
@@ -197,7 +195,7 @@
                 disabled={isRunning}
                 title={$t("controls.reset")}
             >
-                <img src="{base}/icons/reset.png" alt="Reset" />
+                <DynamicIcon icon="reset" alt="Reset" />
                 {$t("controls.reset")}
             </button>
             <button
@@ -206,12 +204,10 @@
                 title={isRunning ? $t("controls.pause") : $t("controls.play")}
             >
                 {#if isRunning}
+                    <DynamicIcon icon="pause" alt="Pause" />
                     {$t("controls.pause")}
                 {:else}
-                    <img
-                        src={`${base}/icons/play-${theme.modeName}.png`}
-                        alt="Play"
-                    />
+                    <DynamicIcon icon="play" alt="Play" />
                     {$t("controls.play")}
                 {/if}
             </button>
@@ -220,7 +216,7 @@
                 disabled={isRunning}
                 title={$t("controls.step")}
             >
-                <img src="{base}/icons/skip.png" alt="Step" />
+                <DynamicIcon icon="skip" alt="Step" />
                 {$t("controls.step")}
             </button>
         </div>
@@ -273,6 +269,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 0.2rem;
     }
     img {
         image-rendering: optimizeSpeed;
