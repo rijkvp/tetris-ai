@@ -197,8 +197,8 @@ fn landing_height(state: &State) -> usize {
             .delta
             .as_ref()
             .map(|delta| {
-                let piece_height = delta.piece.rotation(delta.r#move.rot).rows();
-                delta.r#move.row.max(0) as usize + piece_height
+                let piece_height = delta.r#move.piece.rotation(delta.r#move.pos.rot).rows();
+                delta.r#move.pos.row.max(0) as usize + piece_height
             })
             .unwrap_or(0)
             .min(BOARD_HEIGHT)
@@ -212,7 +212,12 @@ fn eroded_cells(state: &State) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{piece::Piece, r#move::Move, state::Delta, test};
+    use crate::{
+        piece::Piece,
+        r#move::{Move, Position},
+        state::Delta,
+        test,
+    };
 
     const TEST_ITERATIONS: usize = 100;
 
@@ -255,7 +260,10 @@ mod tests {
                 let rust_output = feature(&state);
                 if py_output != rust_output {
                     if let Some(delta) = &state.delta {
-                        println!("Piece rotation: {}", delta.piece.rotation(delta.r#move.rot));
+                        println!(
+                            "Piece rotation: {}",
+                            delta.r#move.piece.rotation(delta.r#move.pos.rot)
+                        );
                     }
                     panic!(
                         "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}\nDelta: {:?}",
@@ -275,11 +283,13 @@ mod tests {
     fn test_landing_heigt() {
         let lh = landing_height(&State {
             delta: Some(Delta {
-                piece: Piece::from_index(0),
                 r#move: Move {
-                    row: 13,
-                    col: 4,
-                    rot: 1,
+                    piece: Piece::from_index(0),
+                    pos: Position {
+                        row: 13,
+                        col: 4,
+                        rot: 1,
+                    },
                 },
                 eroded: 0,       // does not matter for this test
                 cleared: vec![], // does not matter for this test

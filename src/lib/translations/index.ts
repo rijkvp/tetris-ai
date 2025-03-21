@@ -7,14 +7,14 @@ const config = {
             general: {
                 close: 'Close',
                 example: 'Example',
+                features: 'Weights',
+                speed: 'Speed',
+                scoreboard: 'Scoreboard',
             },
             level_select: {
                 title: 'Select level',
                 description: 'Select a level to play.',
             },
-            weights: 'Weights',
-            speed: 'Speed',
-            scoreboard: 'Scoreboard',
             locale: {
                 en: 'English',
                 nl: 'Dutch',
@@ -88,14 +88,14 @@ The AI calculates all possible positions and rotations where it can be placed fo
             general: {
                 close: 'Sluiten',
                 example: 'Voorbeeld',
+                features: 'Kenmerken',
+                speed: 'Snelheid',
+                scoreboard: 'Scorebord',
             },
             level_select: {
                 title: 'Level selecteren',
                 description: 'Kies een level om te spelen.',
             },
-            weights: 'Gewichten',
-            speed: 'Snelheid',
-            scoreboard: 'Scorebord',
             locale: {
                 en: 'Engels',
                 nl: 'Nederlands',
@@ -111,38 +111,32 @@ The AI calculates all possible positions and rotations where it can be placed fo
 
 <h2>Wat is Tetris?</h2>
 
-Tetris is een klassieke videogame waarin je puzelstukjes, die tetromino's worden genoemd, moet plaatsen om rijen te vullen. Als je een rij vult, verdwijnt deze en krijg je punten. Het doel is om zoveel mogelijk rijen te vullen en zo lang mogelijk te overleven. Als de tetromino's tot aan de bovenkant van het bord komen, is het spel voorbij.
+Tetris is een klassieke videogame waarin je puzelstukjes, die tetromino's worden genoemd, moet plaatsen om rijen te vullen. Als je een rij vult, verdwijnt deze en krijg je punten. Het doel is om zoveel mogelijk rijen te vullen en zo lang mogelijk te overleven. De meeste punten krijg je door een tetris te maken, door 4 rijen tegelijk weg te spelen. Als de tetromino's tot aan de bovenkant van het bord komen, is het spel voorbij.
 
 <h2>Hoe bestuur ik de AI?</h2>
 
-Bovenaan het Tetris-bord vind je knoppen waarmee je het spel kunt spelen, pauzeren, resetten of doorlopen. Je kunt ook de snelheid van het spel en het gewicht van de kenmarken aanpassen. Links zie je de statistieken van het huidige spel dat door de AI wordt gespeeld. Je ziet de score (hoe meer rijen je hebt weggespeeld, hoe hoger de score), het aantal weggespeelde rijen, het huidige level (elke 10 rijen is een level) en het aantal tetrissen dat de AI heeft gemaakt (4 rijen tegelijk weggespeeld). De doelen tonen aan wat je moet doen om het level te voltooien. Om een uitleg te krijgen over een kernmerk, druk op de [?] knop.
+Bovenaan het Tetris-bord vind je knoppen waarmee je de AI kunt starten en pauzeren of het bord herstellen. Je kunt ook de snelheid van het spel en de waardes van de kenmarken aanpassen. Links zie je de statistieken van het huidige spel dat door de AI wordt gespeeld. Je ziet de score (hoe meer rijen je hebt weggespeeld, hoe hoger de score), het aantal weggespeelde rijen, het huidige level (elke 10 rijen is een level) en het aantal tetrissen dat de AI heeft gemaakt (4 rijen tegelijk weggespeeld). De doelen tonen aan wat je moet doen om het level te voltooien. Om een uitleg te krijgen over een kernmerk, druk op de [?] knop.
 
 <h2>Hoe werkt de AI?</h2>
 
-De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst kan worden. Daarna telt hij aan de hand van een aantal kenmerken de score op die elke zet geeft. De AI kiest dan de zet met de hoogste score. Je kunt het belang van verschillende kenmerken aanpassen met de schuifregelaars om de doelen te bereiken. De gewichten van deze kenmerken bepalen hoe belangrijk ze zijn in de evaluatie. Als je bijvoorbeeld denkt dat een kenmerk erg belangrijk is, kun je het gewicht ervan verhogen zodat de AI er prioriteit aan geeft. Of als je denkt dat een kenmerk moet worden vermeden, kun je het gewicht verlagen.`,
+De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst kan worden. Daarna telt hij aan de hand van een aantal kenmerken de score op die elke zet geeft. De AI kiest dan de zet met de hoogste score. Je kunt het belang van verschillende kenmerken aanpassen met de schuifregelaars om de doelen te bereiken. De waardes van deze kenmerken bepalen hoe belangrijk ze zijn in de evaluatie. Als je bijvoorbeeld denkt dat een kenmerk erg belangrijk is, kun je het waarde ervan verhogen zodat de AI er prioriteit aan geeft. Of als je denkt dat een kenmerk moet worden vermeden, kun je het waarde verlagen.`,
             },
             score: {
-                score: 'Score',
-                lines: 'Regels',
+                score: 'Punten',
+                lines: 'Rijen',
                 level: 'Level',
                 tetrises: 'Tetrissen',
             },
             controls: {
                 play: "Start",
                 pause: "Pauze",
-                reset: "Opnieuw",
-                step: "Stap vooruit",
+                reset: "Herstel",
+                step: "Stap",
             },
             goals: {
                 goals: 'Doelen',
                 complete: 'Level voltooid! Je hebt alle doelen bereikt.',
                 info: 'Behaal alle doelen om dit level te voltooien.',
-            },
-            control: {
-                play: "Start",
-                pause: "Pauze",
-                reset: "Opnieuw",
-                step: "Stap vooruit"
             },
             feature_control: {
                 reset: "Herstel",
@@ -151,7 +145,7 @@ De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst 
             feature: {
                 col_trans: {
                     name: 'Kolomovergangen',
-                    description: 'Het aantal keren dat twee hokjes naast elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg).',
+                    description: 'Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg).',
                 },
                 row_trans: {
                     name: 'Rijovergangen',

@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use tetris_ai::Simulator;
+use tetris_ai::simulator::Simulator;
 
 fn benchmark(c: &mut Criterion) {
     let mut simulator = Simulator::new_with_preset("infinite");

@@ -1,7 +1,4 @@
-use crate::{
-    piece::{Pattern, Piece},
-    r#move::Move,
-};
+use crate::{piece::Pattern, r#move::Move};
 use std::{fmt::Display, ops::Index, str::FromStr};
 
 /// Represents a cell on the board.
@@ -117,15 +114,15 @@ impl Board {
     }
 
     /// Returns true if the move overlaps with the board.
-    pub(crate) fn overlaps_move(&self, piece: Piece, r#move: Move) -> bool {
-        let pattern = piece.rotation(r#move.rot);
+    pub(crate) fn overlaps_move(&self, r#move: Move) -> bool {
+        let pattern = r#move.pattern();
         for (r, p_row) in pattern.iter_rows().enumerate() {
             for (c, filled) in p_row.iter().enumerate() {
                 if !*filled {
                     continue;
                 }
-                let row = r as isize + r#move.row;
-                let col = c as isize + r#move.col;
+                let row = r as isize + r#move.pos.row;
+                let col = c as isize + r#move.pos.col;
                 if row >= BOARD_HEIGHT as isize || col < 0 || col >= BOARD_WIDTH as isize {
                     return true; // collision with the bottom or sides
                 } else if row >= 0 // in bounds of board

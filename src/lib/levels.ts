@@ -24,7 +24,7 @@ export const levels: Level[] = [
         },
         description: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
-            nl: "Probeer honderd rijen weg te spelen door de kolomovergangen en rijovergangen aan te passen."
+            nl: "Pas de waardes van de kenmerken zo aan zodat de AI honderd rijen weggespeelt."
         },
         goals: {
             lines: 100,
@@ -42,7 +42,7 @@ export const levels: Level[] = [
         },
         description: {
             en: "Try to get four tetrises (clearing four rows at once) by using the landing height.",
-            nl: "Probeer vier tetrissen te halen (vier rijen tegelijk vrijmaken) door de landingshoogte aan te passen."
+            nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
         },
         goals: {
             tetrises: 4

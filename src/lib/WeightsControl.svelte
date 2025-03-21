@@ -42,7 +42,7 @@
 </script>
 
 <div>
-    <h2>{$t("weights")}</h2>
+    <h2>{$t("general.features")}</h2>
     <button
         onclick={() => {
             reset();

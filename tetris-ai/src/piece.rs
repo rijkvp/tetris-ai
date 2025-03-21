@@ -1,32 +1,16 @@
-use crate::board::Cell;
+use crate::{
+    board::{Cell, BOARD_WIDTH},
+    r#move::{Move, Position},
+};
+use serde::Serialize;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
 /// A rotatable tetromino piece.
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(transparent)]
 pub struct Piece(usize);
-
-#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
-pub struct WasmPattern {
-    pub data: Vec<u8>,
-    pub size: usize,
-}
-
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn get_piece_rotation(piece_idx: usize, rotation: usize) -> WasmPattern {
-    let pattern = Piece::from_index(piece_idx).rotation(rotation);
-    let mut data = Vec::with_capacity(pattern.rows() * pattern.cols());
-    for row in pattern.iter_rows() {
-        for cell in row {
-            data.push(if *cell { 1 } else { 0 });
-        }
-    }
-    WasmPattern {
-        data,
-        size: pattern.rows(),
-    }
-}
 
 impl Piece {
     pub fn from_index(index: usize) -> Self {
@@ -57,6 +41,26 @@ impl Piece {
 
     pub fn spawn_offset(&self) -> (isize, isize) {
         PIECE_DATA[self.0].spawn_offset
+    }
+
+    pub fn into_start_move(self) -> Move {
+        let offset = self.spawn_offset();
+        Move {
+            piece: self,
+            pos: Position {
+                rot: 0,
+                row: 0 - offset.0,
+                col: (BOARD_WIDTH / 2) as isize - offset.1,
+            },
+        }
+    }
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+impl Piece {
+    #[cfg(feature = "wasm")]
+    pub fn get_index(&self) -> usize {
+        self.0
     }
 }
 
@@ -220,9 +224,14 @@ const PIECE_DATA: [PieceData; N_PIECES] = [
     },
 ];
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Pattern(&'static [&'static [bool]]);
+
+#[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+pub struct WasmPattern {
+    pub data: Vec<u8>,
+    pub size: usize,
+}
 
 impl Pattern {
     pub fn iter_rows(&self) -> impl Iterator<Item = &[bool]> {
@@ -239,6 +248,21 @@ impl Pattern {
 
     pub fn cols(&self) -> usize {
         self.0[0].len()
+    }
+
+    #[cfg(feature = "wasm")]
+    pub fn into_wasm(self) -> WasmPattern {
+        let mut data = Vec::with_capacity(self.rows() * self.cols());
+        for row in self.iter_rows() {
+            for cell in row {
+                data.push(if *cell { 1 } else { 0 });
+            }
+        }
+
+        WasmPattern {
+            data,
+            size: self.rows(),
+        }
     }
 }
 

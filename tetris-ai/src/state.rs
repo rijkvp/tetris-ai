@@ -1,21 +1,42 @@
-use crate::{board::Board, piece::Piece, r#move::Move};
+#[cfg(feature = "wasm")]
+use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
+use crate::{board::Board, r#move::Move};
+use serde::Serialize;
+#[cfg(feature = "wasm")]
+use wasm_bindgen::prelude::*;
 
-#[derive(Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize)]
+pub struct Stats {
+    pub steps: u64,
+    pub lines: u64,
+    pub score: u64,
+    pub level: u64,
+    pub tetrises: u64,
+}
+
+#[derive(Debug, Default, Clone)]
 pub struct State {
     pub board: Board,
+    pub steps: u64,
     pub cleared_rows: u64,
     pub score: u64,
     pub tetrises: u64,
     pub delta: Option<Delta>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone)]
 pub struct Delta {
-    pub piece: Piece,
     pub r#move: Move,
     pub eroded: usize,
     #[cfg(test)]
     pub cleared: Vec<usize>,
+}
+
+#[cfg(feature = "wasm")]
+#[derive(Serialize)]
+struct WasmState<'a> {
+    board: &'a [[u8; BOARD_WIDTH]; BOARD_HEIGHT],
+    stats: Stats,
 }
 
 const POINTS_PER_CLEARED_ROWS: [u64; 5] = [0, 40, 100, 300, 1200];
@@ -24,6 +45,7 @@ impl State {
     pub fn new(board: Board) -> Self {
         Self {
             board,
+            steps: 0,
             cleared_rows: 0,
             delta: None,
             score: 0,
@@ -36,13 +58,13 @@ impl State {
     }
 
     /// Computes the new 'future' state after a piece has been moved.
-    pub(crate) fn future(&self, piece: Piece, r#move: Move) -> Self {
+    pub(crate) fn future(&self, r#move: Move) -> Self {
         let mut board = self.board;
         board.imprint(
-            piece.rotation(r#move.rot),
-            r#move.row,
-            r#move.col,
-            piece.cell(),
+            r#move.piece.rotation(r#move.pos.rot),
+            r#move.pos.row,
+            r#move.pos.col,
+            r#move.piece.cell(),
         );
         let cleared_rows = board.clear_full();
         let cleared = cleared_rows.len();
@@ -50,9 +72,10 @@ impl State {
         // count the number of cells in the piece that were cleared by the move (eroded cells)
         let mut eroded = 0;
         for row in cleared_rows.iter().copied() {
-            let pattern = piece.rotation(r#move.rot);
-            if row as isize >= r#move.row && (row as isize) < r#move.row + pattern.cols() as isize {
-                if let Some(row) = pattern.get_row(row - r#move.row as usize) {
+            let pattern = r#move.pattern();
+            let pos = r#move.pos;
+            if row as isize >= pos.row && (row as isize) < pos.row + pattern.cols() as isize {
+                if let Some(row) = pattern.get_row(row - pos.row as usize) {
                     for filled in row {
                         if *filled {
                             eroded += 1;
@@ -64,8 +87,8 @@ impl State {
 
         Self {
             board,
+            steps: self.steps + 1,
             delta: Some(Delta {
-                piece,
                 r#move,
                 eroded,
                 #[cfg(test)]
@@ -75,5 +98,24 @@ impl State {
             score: self.score + POINTS_PER_CLEARED_ROWS[cleared] * (self.level() + 1),
             tetrises: self.tetrises + if cleared == 4 { 1 } else { 0 },
         }
+    }
+
+    pub fn stats(&self) -> Stats {
+        Stats {
+            steps: self.steps,
+            lines: self.cleared_rows,
+            score: self.score,
+            level: self.level(),
+            tetrises: self.tetrises,
+        }
+    }
+
+    #[cfg(feature = "wasm")]
+    pub fn js_value(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&WasmState {
+            board: self.board.get_raw_data(),
+            stats: self.stats(),
+        })
+        .unwrap()
     }
 }

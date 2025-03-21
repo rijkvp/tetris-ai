@@ -1,7 +1,8 @@
 <script lang="ts">
     import { t } from "$lib/translations";
+    import { theme } from "$lib/theme.svelte";
     import { onDestroy } from "svelte";
-    import { Simulator, WeightsMap } from "tetris-ai";
+    import { Simulator, WeightsMap, Path } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
@@ -30,6 +31,7 @@
     let gameOver = $state(false);
 
     let curr: GameState, next: GameState;
+    let path: Path;
 
     let lastFrameTime = 0;
     let tick = 0;
@@ -64,12 +66,13 @@
         }
         moves++;
         next = simulator.state;
+        path = simulator.path;
         return true;
     }
 
     function step() {
         simulateNext();
-        tetrisBoard.display(curr, gameOver);
+        tetrisBoard.display(curr, null, gameOver);
     }
 
     function animateFrame(deltaTime: number) {
@@ -80,13 +83,14 @@
             tick++;
         }
         // check if move is complete
-        if (tick >= next.move.path.length) {
+        if (tick >= path.length) {
             simulateNext();
             tick = 0;
             tickTimer = 0;
         }
         const tickProgress = tickTimer / tickInterval; // progress from 0 to 1 within a tick
-        tetrisBoard.displayTransition(curr, next, tick, tickProgress, gameOver);
+        const currentMove = path.transition_move(tick, tickProgress);
+        tetrisBoard.display(curr, currentMove, gameOver);
     }
 
     const targetFPS = 60; // TODO: measure exact time spent on rendering
@@ -99,14 +103,14 @@
         // console.log(`Delta time: ${deltaTime}, FPS: ${1 / deltaTime}`);
         if (isRunning) {
             // if the complete animation of the move takes less than the frame duration
-            if (tickInterval * next.move.path.length < deltaTime) {
+            if (tickInterval * path.length < deltaTime) {
                 const ticksGoal = Math.floor(maxFrameDuration / tickInterval); // ideally, we want to complete about many ticks to reach the ticks/second goal
-                let ticksSpent = next.move.path.length;
+                let ticksSpent = path.length;
                 while (ticksSpent < ticksGoal) {
                     if (!simulateNext()) {
                         break;
                     }
-                    ticksSpent += next.move.path.length;
+                    ticksSpent += path.length;
                     // if current update is taking longer than the max frame duration, break
                     if (
                         performance.now() - currentTime >
@@ -119,7 +123,7 @@
                 if (ticksSpent >= ticksGoal) {
                     console.warn("Exceeded ticks goal");
                 }
-                tetrisBoard.display(curr, gameOver); // finally display the final state
+                tetrisBoard.display(curr, null, gameOver); // finally display the final state
             } else {
                 animateFrame(deltaTime);
             }
@@ -132,6 +136,7 @@
         curr = simulator.state;
         simulator.step();
         next = simulator.state;
+        path = simulator.path;
         tetrisBoard.clear();
         gameOver = false;
     }
@@ -157,6 +162,8 @@
     onMount(() => {
         reset();
     });
+
+    let modeName2 = $derived(() => (theme.prefersDark ? "dark" : "light"));
 </script>
 
 <div class="grid">
@@ -185,6 +192,7 @@
                 title={$t("controls.reset")}
             >
                 <img src="{base}/icons/reset.png" alt="Reset" />
+                {$t("controls.reset")}
             </button>
             <button
                 onclick={() => togglePaused()}
@@ -192,9 +200,13 @@
                 title={isRunning ? $t("controls.pause") : $t("controls.play")}
             >
                 {#if isRunning}
-                    <img src="{base}/icons/pause.png" alt="Pause" />
+                    {$t("controls.pause")}
                 {:else}
-                    <img src="{base}/icons/play.png" alt="Play" />
+                    <img
+                        src={`${base}/icons/play-${theme.modeName}.png`}
+                        alt="Play"
+                    />
+                    {$t("controls.play")}
                 {/if}
             </button>
             <button
@@ -203,6 +215,7 @@
                 title={$t("controls.step")}
             >
                 <img src="{base}/icons/skip.png" alt="Step" />
+                {$t("controls.step")}
             </button>
         </div>
     </div>
@@ -248,10 +261,9 @@
         width: 20%;
     }
     .controls button {
-        width: 2rem;
+        width: 4rem;
         height: 1.5rem;
         font-size: 1.2rem;
-        /* align text vertically */
         display: flex;
         align-items: center;
         justify-content: center;

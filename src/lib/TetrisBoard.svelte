@@ -1,15 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { get_piece_rotation } from "tetris-ai";
-    import type { GameState, Move } from "$lib/types.ts";
+    import { Move } from "tetris-ai";
+    import type { GameState } from "$lib/types.ts";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { clearBoard, displayBoard, displayCell } from "$lib/display";
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
 
-    function displayPiece(pieceIdx: number, move: Move) {
-        const pattern = get_piece_rotation(pieceIdx, move.rot);
+    function displayMove(move: Move) {
+        const pattern = move.get_pattern();
 
         for (let r = 0; r < pattern.size; r++) {
             for (let c = 0; c < pattern.size; c++) {
@@ -17,7 +17,12 @@
                 if (!pattern.data[idx]) {
                     continue;
                 }
-                displayCell(ctx, move.col + c, move.row + r, pieceIdx);
+                displayCell(
+                    ctx,
+                    move.pos.col + c,
+                    move.pos.row + r,
+                    move.piece.get_index(),
+                );
             }
         }
     }
@@ -41,34 +46,22 @@
     };
 
     // the state that is currently being displayed
-    // TODO: Wrap inside a single object
-    let gameState = $state(null) as GameState | null;
-    let nextGameState = $state(null) as GameState | null;
-    let animate = $state(false);
-    let currTick = $state(0);
-    let currTickProgress = $state(0);
-    let currGameOver = $state(false);
-
-    export const display = (state: GameState, gameOver: boolean) => {
-        animate = false;
-        gameState = state;
-        nextGameState = null;
-        currGameOver = gameOver;
+    let boardState = $state({
+        state: null,
+        move: null,
+        gameOver: false,
+    }) as {
+        state: GameState | null;
+        move: Move | null;
+        gameOver: boolean;
     };
 
-    export const displayTransition = (
+    export const display = (
         state: GameState,
-        next: GameState,
-        tick: number,
-        tickProgress: number,
+        move: Move | null,
         gameOver: boolean,
     ) => {
-        animate = true;
-        gameState = state;
-        nextGameState = next;
-        currTick = tick;
-        currTickProgress = tickProgress;
-        currGameOver = gameOver;
+        boardState = { state, move, gameOver };
     };
 
     onMount(() => {
@@ -77,35 +70,16 @@
 
     $effect(() => {
         clearBoard(ctx, canvas);
-        if (gameState == null) {
+        if (boardState.state == null) {
             return;
         }
-        if (!animate) {
-            displayBoard(ctx, gameState.board);
-            statsPanel.update(gameState.stats);
-            if (currGameOver) {
-                displayGameOver();
-            }
-        } else if (nextGameState != null) {
-            displayBoard(ctx, gameState.board);
-
-            const currentMove = nextGameState.move;
-            if (currentMove != null) {
-                const currentPath = currentMove.path[currTick];
-                const currentPathIndex = Math.min(
-                    Math.floor(currTickProgress * currentPath.length),
-                    currentPath.length - 1,
-                );
-                displayPiece(
-                    currentMove.piece_idx,
-                    currentPath[currentPathIndex],
-                );
-            }
-
-            if (currGameOver) {
-                displayGameOver();
-            }
-            statsPanel.update(gameState.stats);
+        displayBoard(ctx, boardState.state.board);
+        statsPanel.update(boardState.state.stats);
+        if (boardState.move != null) {
+            displayMove(boardState.move);
+        }
+        if (boardState.gameOver) {
+            displayGameOver();
         }
     });
 </script>

@@ -58,7 +58,7 @@
 </script>
 
 <div>
-    <h2>{$t("scoreboard")} ({key})</h2>
+    <h2>{$t("general.scoreboard")} ({key})</h2>
 
     <div>
         {#each ORDER_CATEGORIES as order, idx}

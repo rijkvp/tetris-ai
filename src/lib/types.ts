@@ -1,7 +1,6 @@
 export type GameState = {
     board: Uint8Array[];
     stats: Stats;
-    move: MoveResult;
 };
 
 export type Stats = {
@@ -12,13 +11,18 @@ export type Stats = {
     tetrises: bigint;
 };
 
-export type MoveResult = {
-    piece_idx: number;
-    path: Move[][];
-};
-
-export type Move = {
-    col: number;
-    row: number;
-    rot: number;
-};
+// export type Path = {
+//     piece_idx: number;
+//     path: Pos[][];
+// };
+//
+// export type Move = {
+//     piece_idx: number;
+//     pos: Pos;
+// }
+//
+// export type Pos = {
+//     col: number;
+//     row: number;
+//     rot: number;
+// };

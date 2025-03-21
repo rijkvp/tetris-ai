@@ -1,7 +1,7 @@
 use crate::board::Board;
 use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
 use crate::piece::Piece;
-use crate::r#move::{move_drop, Move};
+use crate::r#move::{move_drop, Move, Position};
 use crate::state::State;
 use pyo3::ffi::c_str;
 use pyo3::types::{PyDict, PyTuple};
@@ -44,8 +44,8 @@ pub fn random_state() -> State {
         if possible_moves.is_empty() {
             break;
         }
-        let r#move = possible_moves[rng.gen_range(0..possible_moves.len())];
-        state = state.future(piece, r#move);
+        let pos = possible_moves[rng.gen_range(0..possible_moves.len())];
+        state = state.future(Move { piece, pos });
     }
     state
 }
@@ -69,11 +69,11 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
         let delta_dict = PyDict::new(py);
         if let Some(delta) = &state.delta {
             delta_dict
-                .set_item("piece_idx", delta.piece.index())
+                .set_item("piece_idx", delta.r#move.piece.index())
                 .unwrap();
-            delta_dict.set_item("rot", delta.r#move.rot).unwrap();
-            delta_dict.set_item("col", delta.r#move.col).unwrap();
-            delta_dict.set_item("row", delta.r#move.row).unwrap();
+            delta_dict.set_item("rot", delta.r#move.pos.rot).unwrap();
+            delta_dict.set_item("col", delta.r#move.pos.col).unwrap();
+            delta_dict.set_item("row", delta.r#move.pos.row).unwrap();
             delta_dict
                 .set_item("cleared", delta.cleared.clone())
                 .unwrap();
@@ -97,7 +97,7 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
 }
 
 /// Runs a Python move function, and collects the output into a Vec<Move>.
-pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
+pub fn run_py_move(state: &State, piece: Piece) -> Vec<Position> {
     let board_data = state
         .board
         .get_data()
@@ -141,7 +141,7 @@ pub fn run_py_move(state: &State, piece: Piece) -> Vec<Move> {
         let output = output.extract::<Vec<(usize, isize, isize)>>().unwrap();
         output
             .into_iter()
-            .map(|(rot, row, col)| Move { rot, row, col })
+            .map(|(rot, row, col)| Position { rot, row, col })
             .collect()
     })
 }

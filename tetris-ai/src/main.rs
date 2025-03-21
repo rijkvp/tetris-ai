@@ -1,5 +1,5 @@
 use std::time::Instant;
-use tetris_ai::Simulator;
+use tetris_ai::simulator::Simulator;
 
 fn main() {
     let start = Instant::now();
