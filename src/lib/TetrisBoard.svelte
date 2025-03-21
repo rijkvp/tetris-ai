@@ -49,19 +49,13 @@
     let boardState = $state({
         state: null,
         move: null,
-        gameOver: false,
     }) as {
         state: GameState | null;
         move: Move | null;
-        gameOver: boolean;
     };
 
-    export const display = (
-        state: GameState,
-        move: Move | null,
-        gameOver: boolean,
-    ) => {
-        boardState = { state, move, gameOver };
+    export const display = (state: GameState, move: Move | null) => {
+        boardState = { state, move };
     };
 
     onMount(() => {
@@ -78,7 +72,7 @@
         if (boardState.move != null) {
             displayMove(boardState.move);
         }
-        if (boardState.gameOver) {
+        if (boardState.state.game_over) {
             displayGameOver();
         }
     });

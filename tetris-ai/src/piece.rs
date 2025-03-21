@@ -1,5 +1,5 @@
 use crate::{
-    board::{Cell, BOARD_WIDTH},
+    board::{BOARD_WIDTH, Cell},
     r#move::{Move, Position},
 };
 use serde::Serialize;

@@ -5,7 +5,7 @@ use serde::Serialize;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone, Serialize)]
+#[derive(Debug, Default, Copy, Clone, Serialize)]
 pub struct Stats {
     pub steps: u64,
     pub lines: u64,
@@ -16,12 +16,10 @@ pub struct Stats {
 
 #[derive(Debug, Default, Clone)]
 pub struct State {
-    pub board: Board,
-    pub steps: u64,
-    pub cleared_rows: u64,
-    pub score: u64,
-    pub tetrises: u64,
-    pub delta: Option<Delta>,
+    board: Board,
+    stats: Stats,
+    game_over: bool,
+    delta: Option<Delta>,
 }
 
 #[derive(Debug, Clone)]
@@ -37,6 +35,7 @@ pub struct Delta {
 struct WasmState<'a> {
     board: &'a [[u8; BOARD_WIDTH]; BOARD_HEIGHT],
     stats: Stats,
+    game_over: bool,
 }
 
 const POINTS_PER_CLEARED_ROWS: [u64; 5] = [0, 40, 100, 300, 1200];
@@ -45,16 +44,28 @@ impl State {
     pub fn new(board: Board) -> Self {
         Self {
             board,
-            steps: 0,
-            cleared_rows: 0,
-            delta: None,
-            score: 0,
-            tetrises: 0,
+            ..Default::default()
         }
     }
 
-    pub fn level(&self) -> u64 {
-        self.cleared_rows / 10
+    pub fn board(&self) -> &Board {
+        &self.board
+    }
+
+    pub fn stats(&self) -> Stats {
+        self.stats
+    }
+
+    pub fn game_over(&self) -> bool {
+        self.game_over
+    }
+
+    pub fn set_game_over(&mut self) {
+        self.game_over = true;
+    }
+
+    pub fn delta(&self) -> Option<&Delta> {
+        self.delta.as_ref()
     }
 
     /// Computes the new 'future' state after a piece has been moved.
@@ -85,28 +96,23 @@ impl State {
             }
         }
 
+        let new_lines = self.stats.lines + cleared as u64;
         Self {
             board,
-            steps: self.steps + 1,
+            stats: Stats {
+                steps: self.stats.steps + 1,
+                lines: new_lines,
+                score: self.stats.score + POINTS_PER_CLEARED_ROWS[cleared] * (self.stats.level + 1),
+                level: new_lines / 10,
+                tetrises: self.stats.tetrises + if cleared == 4 { 1 } else { 0 },
+            },
+            game_over: false,
             delta: Some(Delta {
                 r#move,
                 eroded,
                 #[cfg(test)]
                 cleared: cleared_rows,
             }),
-            cleared_rows: self.cleared_rows + cleared as u64,
-            score: self.score + POINTS_PER_CLEARED_ROWS[cleared] * (self.level() + 1),
-            tetrises: self.tetrises + if cleared == 4 { 1 } else { 0 },
-        }
-    }
-
-    pub fn stats(&self) -> Stats {
-        Stats {
-            steps: self.steps,
-            lines: self.cleared_rows,
-            score: self.score,
-            level: self.level(),
-            tetrises: self.tetrises,
         }
     }
 
@@ -115,7 +121,14 @@ impl State {
         serde_wasm_bindgen::to_value(&WasmState {
             board: self.board.get_raw_data(),
             stats: self.stats(),
+            game_over: self.game_over,
         })
         .unwrap()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn test_delta(mut self, delta: Delta) -> Self {
+        self.delta = Some(delta);
+        self
     }
 }

@@ -1,4 +1,4 @@
-use crate::board::{Board, BOARD_HEIGHT, BOARD_WIDTH};
+use crate::board::{BOARD_HEIGHT, BOARD_WIDTH, Board};
 #[cfg(feature = "wasm")]
 use crate::piece::WasmPattern;
 use crate::piece::{Pattern, Piece};
@@ -19,7 +19,11 @@ impl Move {
         self.piece.rotation(self.pos.rot)
     }
 
-    pub fn drop(mut self, board: Board) -> Option<Move> {
+    pub fn is_valid(&self, board: &Board) -> bool {
+        !board.overlaps_move(*self)
+    }
+
+    pub fn drop(mut self, board: &Board) -> Option<Move> {
         self.pos.row += 1;
         if !board.overlaps_move(self) {
             Some(self)
@@ -31,6 +35,25 @@ impl Move {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Move {
+    pub fn left(self) -> Move {
+        Move {
+            pos: Position {
+                col: self.pos.col - 1,
+                ..self.pos
+            },
+            ..self
+        }
+    }
+
+    pub fn right(self) -> Move {
+        Move {
+            pos: Position {
+                col: self.pos.col + 1,
+                ..self.pos
+            },
+            ..self
+        }
+    }
     #[cfg(feature = "wasm")]
     pub fn get_pattern(&self) -> WasmPattern {
         self.piece.rotation(self.pos.rot).into_wasm()
@@ -115,7 +138,7 @@ impl Path {
 }
 
 /// Returns all possible moves when dropping a piece.
-pub fn move_drop(board: Board, piece: Piece) -> Vec<Position> {
+pub fn move_drop(board: &Board, piece: Piece) -> Vec<Position> {
     let mut moves = Vec::new();
     // for each rotation of the piece
     for rot in 0..piece.num_rotations() {
@@ -146,7 +169,7 @@ pub fn move_drop(board: Board, piece: Piece) -> Vec<Position> {
 const MIN_MOVES: u64 = 5; // minimum number of moves to perform in total
 const MAX_MOVES: u64 = 12; // maximum number of moves to perform in total
 const MAX_MOVES_PER_TICK: u64 = 3; // maximum number of moves to perform per tick
-                                   // lower settings makes the AI more realistic
+// lower settings makes the AI more realistic
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct Node {
@@ -211,7 +234,7 @@ fn touches_ground(piece: Piece, pos: Position, board: &Board) -> bool {
     })
 }
 
-pub fn move_dijkstra(board: Board, piece: Piece, level: u64) -> Vec<Path> {
+pub fn move_dijkstra(board: &Board, piece: Piece, level: u64) -> Vec<Path> {
     let mut cost = HashMap::<Position, u64>::new();
     let mut parent = HashMap::<Position, Position>::new();
     let mut to_visit = BinaryHeap::new();
@@ -244,7 +267,7 @@ pub fn move_dijkstra(board: Board, piece: Piece, level: u64) -> Vec<Path> {
         tick_moves: current_tick_moves,
     }) = to_visit.pop()
     {
-        if touches_ground(piece, current, &board) {
+        if touches_ground(piece, current, board) {
             destinations.push(current);
         }
         next_positions(&mut candidates, current, piece);

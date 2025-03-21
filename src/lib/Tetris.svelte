@@ -30,6 +30,7 @@
     let isRunning = $state(false);
     let gameOver = $state(false);
 
+    // TODO: Cleanup this mess
     let curr: GameState, next: GameState;
     let path: Path;
 
@@ -58,9 +59,14 @@
         curr = next;
         onNewStats(curr.stats);
         if (!simulator.step()) {
+            curr = simulator.state;
+            next = null;
             // game over
             gameOver = true;
             onGameOver(curr.stats);
+            console.log("Game over");
+            console.log(curr);
+            console.log(next);
             isRunning = false;
             return false;
         }
@@ -72,7 +78,7 @@
 
     function step() {
         simulateNext();
-        tetrisBoard.display(curr, null, gameOver);
+        tetrisBoard.display(curr, null);
     }
 
     function animateFrame(deltaTime: number) {
@@ -90,7 +96,7 @@
         }
         const tickProgress = tickTimer / tickInterval; // progress from 0 to 1 within a tick
         const currentMove = path.transition_move(tick, tickProgress);
-        tetrisBoard.display(curr, currentMove, gameOver);
+        tetrisBoard.display(curr, currentMove);
     }
 
     const targetFPS = 60; // TODO: measure exact time spent on rendering
@@ -123,7 +129,7 @@
                 if (ticksSpent >= ticksGoal) {
                     console.warn("Exceeded ticks goal");
                 }
-                tetrisBoard.display(curr, null, gameOver); // finally display the final state
+                tetrisBoard.display(curr, null); // finally display the final state
             } else {
                 animateFrame(deltaTime);
             }

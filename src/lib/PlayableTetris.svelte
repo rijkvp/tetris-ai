@@ -1,10 +1,9 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { Game } from "tetris-ai";
-    import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
 
     let game: Game = new Game();
     let tetrisBoard: TetrisBoard;
@@ -14,7 +13,7 @@
     let gameOver = $state(false);
 
     let lastFrameTime = 0;
-    const FRAME_DURATION = 1 / 30;
+    const FRAME_DURATION = 1 / 6;
     let timer = FRAME_DURATION;
 
     function gameLoop(currentTime: number) {
@@ -29,7 +28,7 @@
                     gameOver = true;
                     isRunning = false;
                 }
-                tetrisBoard.display(game.state, game.move ?? null, gameOver);
+                tetrisBoard.display(game.state, game.move ?? null);
             }
             requestAnimationFrame(gameLoop);
         }
@@ -50,8 +49,26 @@
         }
     }
 
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.key === "l" || event.key === "ArrowRight") {
+            game.move_right();
+        } else if (event.key === "j" || event.key === "ArrowLeft") {
+            game.move_left();
+        } else if (event.key === "k" || event.key === "ArrowDown") {
+            game.move_down();
+        } else if (event.key === "i" || event.key === "ArrowUp") {
+            game.rotate();
+        } else if (event.key === "c") {
+            game.hard_drop();
+        }
+    }
+
     onMount(() => {
+        window.addEventListener("keydown", handleKeydown);
         reset();
+    });
+    onDestroy(() => {
+        window.removeEventListener("keydown", handleKeydown);
     });
 </script>
 

@@ -4,7 +4,7 @@ use crate::{
 };
 use std::cmp::{max, min};
 #[cfg(feature = "wasm")]
-use wasm_bindgen::prelude::{wasm_bindgen, JsValue};
+use wasm_bindgen::prelude::{JsValue, wasm_bindgen};
 
 type FeatureFn = fn(&State) -> usize;
 
@@ -133,7 +133,7 @@ fn row_trans(state: &State) -> usize {
     let mut sum = 0;
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH - 1 {
-            if state.board[(r, c)].filled() != state.board[(r, c + 1)].filled() {
+            if state.board()[(r, c)].filled() != state.board()[(r, c + 1)].filled() {
                 sum += 1;
             }
         }
@@ -146,7 +146,7 @@ fn col_trans(state: &State) -> usize {
     let mut sum = 0;
     for c in 0..BOARD_WIDTH {
         for r in 0..BOARD_HEIGHT - 1 {
-            if state.board[(r, c)].filled() != state.board[(r + 1, c)].filled() {
+            if state.board()[(r, c)].filled() != state.board()[(r + 1, c)].filled() {
                 sum += 1;
             }
         }
@@ -158,7 +158,7 @@ fn col_trans(state: &State) -> usize {
 /// If a column is not shorter than both of its neighbors, it has a value of 0.
 /// Otherwise, its value is how much shorter it is than its shortest neighbor.
 fn wells(state: &State) -> [i64; BOARD_WIDTH] {
-    let heights = state.board.heights().map(|x| x as i64);
+    let heights = state.board().heights().map(|x| x as i64);
     let mut wells = [0i64; BOARD_WIDTH];
     for i in 1..BOARD_WIDTH - 1 {
         wells[i] = max(0, min(heights[i - 1], heights[i + 1]) - heights[i]);
@@ -181,8 +181,8 @@ fn cuml_wells(state: &State) -> usize {
 fn pits(state: &State) -> usize {
     let mut total = 0;
     for c in 0..BOARD_WIDTH {
-        for r in BOARD_HEIGHT - state.board.height(c)..BOARD_HEIGHT {
-            if state.board[(r, c)].empty() {
+        for r in BOARD_HEIGHT - state.board().height(c)..BOARD_HEIGHT {
+            if state.board()[(r, c)].empty() {
                 total += 1;
             }
         }
@@ -194,7 +194,7 @@ fn pits(state: &State) -> usize {
 fn landing_height(state: &State) -> usize {
     BOARD_HEIGHT
         - state
-            .delta
+            .delta()
             .as_ref()
             .map(|delta| {
                 let piece_height = delta.r#move.piece.rotation(delta.r#move.pos.rot).rows();
@@ -206,15 +206,15 @@ fn landing_height(state: &State) -> usize {
 
 /// The number of cells that were cleared from the previously placed piece.
 fn eroded_cells(state: &State) -> usize {
-    state.delta.as_ref().map(|delta| delta.eroded).unwrap_or(0)
+    state.delta().map(|delta| delta.eroded).unwrap_or(0)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
-        piece::Piece,
         r#move::{Move, Position},
+        piece::Piece,
         state::Delta,
         test,
     };
@@ -243,8 +243,8 @@ mod tests {
                         feature_name,
                         py_output,
                         rust_output,
-                        state.board,
-                        state.board.heights()
+                        state.board(),
+                        state.board().heights()
                     );
                 }
             }
@@ -259,7 +259,7 @@ mod tests {
                 let py_output = test::run_py_feature(&state, feature_name);
                 let rust_output = feature(&state);
                 if py_output != rust_output {
-                    if let Some(delta) = &state.delta {
+                    if let Some(delta) = state.delta() {
                         println!(
                             "Piece rotation: {}",
                             delta.r#move.piece.rotation(delta.r#move.pos.rot)
@@ -270,9 +270,9 @@ mod tests {
                         feature_name,
                         py_output,
                         rust_output,
-                        state.board,
-                        state.board.heights(),
-                        state.delta
+                        state.board(),
+                        state.board().heights(),
+                        state.delta()
                     );
                 }
             }
@@ -281,21 +281,18 @@ mod tests {
 
     #[test]
     fn test_landing_heigt() {
-        let lh = landing_height(&State {
-            delta: Some(Delta {
-                r#move: Move {
-                    piece: Piece::from_index(0),
-                    pos: Position {
-                        row: 13,
-                        col: 4,
-                        rot: 1,
-                    },
+        let lh = landing_height(&State::default().test_delta(Delta {
+            r#move: Move {
+                piece: Piece::from_index(0),
+                pos: Position {
+                    row: 13,
+                    col: 4,
+                    rot: 1,
                 },
-                eroded: 0,       // does not matter for this test
-                cleared: vec![], // does not matter for this test
-            }),
-            ..Default::default()
-        });
+            },
+            eroded: 0,
+            cleared: vec![],
+        }));
         // 3 rows from the bottom of the board
         assert_eq!(lh, 3);
     }

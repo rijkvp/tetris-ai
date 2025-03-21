@@ -1,4 +1,4 @@
-use crate::{piece::Pattern, r#move::Move};
+use crate::{r#move::Move, piece::Pattern};
 use std::{fmt::Display, ops::Index, str::FromStr};
 
 /// Represents a cell on the board.

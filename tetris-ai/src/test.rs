@@ -1,20 +1,20 @@
 use crate::board::Board;
 use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
+use crate::r#move::{Move, Position, move_drop};
 use crate::piece::Piece;
-use crate::r#move::{move_drop, Move, Position};
 use crate::state::State;
 use pyo3::ffi::c_str;
 use pyo3::types::{PyDict, PyTuple};
-use pyo3::{prelude::*, IntoPyObjectExt};
+use pyo3::{IntoPyObjectExt, prelude::*};
 use rand::Rng;
 
 /// Generates a random board.
 pub fn random_board() -> Board {
     let mut board = Board::default();
-    let mut rng = rand::thread_rng();
-    let iterations = rng.gen_range(0..=BOARD_HEIGHT * BOARD_WIDTH);
+    let mut rng = rand::rng();
+    let iterations = rng.random_range(0..=BOARD_HEIGHT * BOARD_WIDTH);
     for _ in 0..iterations {
-        let col = rng.gen_range(0..BOARD_WIDTH);
+        let col = rng.random_range(0..BOARD_WIDTH);
         let col_height = board.height(col);
         if col_height == BOARD_HEIGHT {
             continue;
@@ -25,7 +25,7 @@ pub fn random_board() -> Board {
     // make some cells empty
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH {
-            if board[(r, c)].filled() && rng.gen_bool(0.05) {
+            if board[(r, c)].filled() && rng.random_bool(0.05) {
                 board.clear_cell(r, c);
             }
         }
@@ -37,14 +37,14 @@ pub fn random_board() -> Board {
 /// Generates a random state by dropping pieces until no more moves are possible.
 pub fn random_state() -> State {
     let mut state = State::new(Board::default());
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     loop {
-        let piece = Piece::from_index(rng.gen_range(0..7));
-        let possible_moves = move_drop(state.board, piece);
+        let piece = Piece::from_index(rng.random_range(0..7));
+        let possible_moves = move_drop(state.board(), piece);
         if possible_moves.is_empty() {
             break;
         }
-        let pos = possible_moves[rng.gen_range(0..possible_moves.len())];
+        let pos = possible_moves[rng.random_range(0..possible_moves.len())];
         state = state.future(Move { piece, pos });
     }
     state
@@ -53,7 +53,7 @@ pub fn random_state() -> State {
 /// Runs a Python feature function.
 pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
     let board_data = state
-        .board
+        .board()
         .get_data()
         .iter()
         .map(|row| row.iter().map(|cell| cell.filled()).collect::<Vec<bool>>())
@@ -67,7 +67,7 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
         )
         .unwrap();
         let delta_dict = PyDict::new(py);
-        if let Some(delta) = &state.delta {
+        if let Some(delta) = state.delta() {
             delta_dict
                 .set_item("piece_idx", delta.r#move.piece.index())
                 .unwrap();
@@ -99,7 +99,7 @@ pub fn run_py_feature(state: &State, feature_name: &str) -> usize {
 /// Runs a Python move function, and collects the output into a Vec<Move>.
 pub fn run_py_move(state: &State, piece: Piece) -> Vec<Position> {
     let board_data = state
-        .board
+        .board()
         .get_data()
         .iter()
         .map(|row| row.iter().map(|cell| cell.filled()).collect::<Vec<bool>>())

@@ -1,7 +1,7 @@
 #[cfg(not(feature = "wasm"))]
 use crate::board::Board;
 use crate::feature::{Weights, WeightsMap};
-use crate::r#move::{move_dijkstra, Move, Path};
+use crate::r#move::{Move, Path, move_dijkstra};
 use crate::rng::gen_random_piece;
 use crate::state::State;
 #[cfg(not(feature = "wasm"))]
@@ -49,8 +49,8 @@ impl Simulator {
     }
 
     #[cfg(not(feature = "wasm"))]
-    pub fn board(&self) -> Board {
-        self.state.board
+    pub fn board(&self) -> &Board {
+        self.state.board()
     }
 
     pub fn run(&mut self) {
@@ -58,14 +58,14 @@ impl Simulator {
     }
 
     pub fn step(&mut self) -> bool {
-        let piece = gen_random_piece(self.state.delta.as_ref().map(|d| d.r#move.piece.index()));
+        let piece = gen_random_piece(self.state.delta().map(|d| d.r#move.piece.index()));
 
         // Use resivoir sampling to ramdomly select one of the best possible moves
         let mut chosen = None;
         let mut best_score = f64::NEG_INFINITY;
         let mut count = 0;
-        let mut rng = rand::thread_rng();
-        for path in move_dijkstra(self.state.board, piece, self.state.level()) {
+        let mut rng = rand::rng();
+        for path in move_dijkstra(self.state.board(), piece, self.state.stats().level) {
             let future = self.state.future(path.final_move());
             let score = self.weights.evaluate(&future);
             if score > best_score {
@@ -74,7 +74,7 @@ impl Simulator {
                 count = 1;
             } else if score == best_score {
                 count += 1;
-                if rng.gen_range(0..count) == 0 {
+                if rng.random_range(0..count) == 0 {
                     chosen = Some((future, path));
                 }
             }
@@ -85,6 +85,7 @@ impl Simulator {
             self.current_path = Some(path);
             return true;
         }
+        self.state.set_game_over();
         false
     }
 
@@ -125,17 +126,66 @@ impl Game {
     }
 
     pub fn step(&mut self) -> bool {
-        let piece = gen_random_piece(self.state.delta.as_ref().map(|d| d.r#move.piece.index()));
+        let piece = gen_random_piece(self.state.delta().map(|d| d.r#move.piece.index()));
         if let Some(current_move) = self.current_move {
-            let next_move = current_move.drop(self.state.board);
+            let next_move = current_move.drop(self.state.board());
             if next_move.is_none() {
                 self.state = self.state.future(current_move);
             }
             self.current_move = next_move;
         } else {
-            self.current_move = Some(piece.into_start_move());
+            let start_move = piece.into_start_move();
+            if start_move.is_valid(self.state.board()) {
+                self.current_move = Some(start_move);
+            } else {
+                self.state.set_game_over();
+                return false;
+            }
         }
         true
+    }
+
+    #[inline]
+    fn try_move(&mut self, move_change: impl FnOnce(Move) -> Move) {
+        if let Some(next_move) = self.current_move.map(move_change) {
+            if next_move.is_valid(self.state.board()) {
+                self.current_move = Some(next_move);
+            }
+        }
+    }
+
+    pub fn move_left(&mut self) {
+        self.try_move(|mut m| {
+            m.pos.col -= 1;
+            m
+        })
+    }
+
+    pub fn move_right(&mut self) {
+        self.try_move(|mut m| {
+            m.pos.col += 1;
+            m
+        })
+    }
+
+    pub fn move_down(&mut self) {
+        self.try_move(|mut m| {
+            m.pos.row += 1;
+            m
+        })
+    }
+
+    pub fn hard_drop(&mut self) {
+        while let Some(next_move) = self.current_move.and_then(|m| m.drop(self.state.board())) {
+            self.current_move = Some(next_move);
+        }
+    }
+
+    pub fn rotate(&mut self) {
+        self.try_move(|mut m| {
+            m.pos.rot = (m.pos.rot + 1) % m.piece.num_rotations();
+            m
+        })
     }
 
     #[cfg(feature = "wasm")]
