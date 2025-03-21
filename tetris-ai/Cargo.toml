@@ -1,15 +1,15 @@
 [package]
 name = "tetris-ai"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-rand = { version = "0.8.5" }
-getrandom = { version = "0.2.15" }
-serde = { version = "1.0.217", features = ["derive"] }
+rand = { version = "0.9.0" }
+getrandom = { version = "0.3.2" } 
+serde = { version = "1.0.219", features = ["derive"] }
 
 # wasm
 wasm-bindgen = { version = "0.2.100", optional = true }
@@ -17,11 +17,11 @@ serde-wasm-bindgen = { version = "0.6.5", optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
 [features]
-wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:console_error_panic_hook", "getrandom/js"]
+wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:console_error_panic_hook", "getrandom/wasm_js"]
 
 [dev-dependencies]
 criterion = "0.5.1"
-pyo3 = { version = "0.23.4", features = ["auto-initialize"] }
+pyo3 = { version = "0.24.0", features = ["auto-initialize"] }
 
 [[bench]]
 name = "game"
