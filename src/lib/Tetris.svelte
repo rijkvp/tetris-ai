@@ -271,12 +271,4 @@
         justify-content: center;
         gap: 0.2rem;
     }
-    img {
-        image-rendering: optimizeSpeed;
-        image-rendering: -o-crisp-edges;
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: crisp-edges;
-        image-rendering: pixelated;
-    }
 </style>
