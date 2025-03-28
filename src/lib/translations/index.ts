@@ -79,7 +79,7 @@ The AI calculates all possible positions and rotations where it can be placed fo
                     description: 'The number of cells that are cleared from the tetromino itself as a result of the move.',
                 },
                 cuml_wells: {
-                    name: 'Cumulative wells',
+                    name: 'Wells',
                     description: 'The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells.',
                 },
             },
@@ -127,7 +127,7 @@ De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst 
                 tetrises: 'Tetrissen',
             },
             controls: {
-                play: "Start",
+                play: "Spelen",
                 pause: "Pauze",
                 step: "Stap",
                 new_game: "Opnieuw",
@@ -164,7 +164,7 @@ De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst 
                     description: 'Het aantal hokjes dat wordt gewist van de tetromino zelf als gevolg van de zet.',
                 },
                 cuml_wells: {
-                    name: 'Cumulatieve putten',
+                    name: 'Putten',
                     description: 'De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen.',
                 },
             },

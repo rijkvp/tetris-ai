@@ -9,7 +9,7 @@
     import DynamicIcon from "./DynamicIcon.svelte";
 
     const SPEED_MUTIPLIER = [
-        0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
+        0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
     ];
 
     let {
@@ -36,11 +36,11 @@
     let lastFrameTime = 0;
     let tick = 0;
     let tickTimer = 0;
-    const BASE_SPEED = 1 / 8; // base interval between ticks in seconds
+    const BASE_SPEED = 1 / 5; // base interval between ticks in seconds
     let tickInterval = BASE_SPEED;
 
     let speedIndex = $state(2);
-    let speedMultiplier = $state(1);
+    let speedMultiplier = $state(SPEED_MUTIPLIER[speedIndex]);
 
     let moves = 0;
     let lastMoves = 0;
@@ -74,14 +74,10 @@
         return true;
     }
 
-    function step() {
-        simulateNext();
-        tetrisBoard.display(curr, null);
-    }
-
     function animateFrame(deltaTime: number) {
         // update tick timers, multiple ticks can occur in a single frame
         tickTimer += deltaTime;
+
         while (tickTimer >= tickInterval) {
             tickTimer -= tickInterval;
             tick++;
@@ -100,7 +96,20 @@
     const targetFPS = 60; // TODO: measure exact time spent on rendering
     const maxFrameDuration = 1 / targetFPS; // maximum time to spend on rendering a frame
 
+    // based on NES Tetris
+    function framesPerDrop(level: number): number {
+        if (level < 0) return NaN;
+        if (level <= 8) return 48 - 5 * level;
+        if (level <= 18) return 6 - Math.floor((level - 7) / 3);
+        if (level <= 28) return 2;
+        return 1;
+    }
+
     function gameLoop(currentTime: number) {
+        const weightedSpeed =
+            (speedMultiplier / framesPerDrop(Number(curr.stats.level) + 1)) * 10;
+        tickInterval = (1 / weightedSpeed) * BASE_SPEED;
+
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
         const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
         lastFrameTime = currentTime;
@@ -135,16 +144,23 @@
         }
     }
 
-    function reset() {
-        tick = 0;
-        tickTimer = 0;
+    function newGame() {
         simulator.reset();
         curr = simulator.state;
         simulator.step();
         next = simulator.state;
         path = simulator.path!;
+
         tetrisBoard.clear();
+
+        tick = 0;
+        tickTimer = 0;
+
         gameOver = false;
+        isRunning = true;
+        // start the game loop / animation
+        lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
+        requestAnimationFrame(gameLoop);
     }
 
     function togglePaused() {
@@ -158,7 +174,6 @@
 
     function updateSpeed() {
         speedMultiplier = SPEED_MUTIPLIER[speedIndex];
-        tickInterval = (1 / speedMultiplier) * BASE_SPEED;
     }
 
     export const setWeights = (weights: [string, number][]) => {
@@ -166,7 +181,7 @@
     };
 
     onMount(() => {
-        reset();
+        newGame();
     });
 </script>
 
@@ -189,7 +204,7 @@
                     {$t("controls.play")}
                 {/if}
             </button>
-            <button onclick={() => reset()} title={$t("controls.new_game")}>
+            <button onclick={() => newGame()} title={$t("controls.new_game")}>
                 <DynamicIcon icon="reset" alt="Reset" />
                 {$t("controls.new_game")}
             </button>
@@ -254,7 +269,7 @@
         width: 20%;
     }
     .controls button {
-        width: 6rem;
+        min-width: 4rem;
         height: 1.5rem;
         font-size: 1.1rem;
         display: flex;
