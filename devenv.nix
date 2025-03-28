@@ -21,6 +21,16 @@
   };
 
   git-hooks.hooks = {
+    typescript = {
+      enable = true;
+      name = "TypeScript typecheck";
+      entry = "yarn run check";
+      types = [
+        "svelte"
+        "ts"
+      ];
+      pass_filenames = false;
+    };
     rustfmt = {
       enable = true;
       settings.manifest-path = "./tetris-ai/Cargo.toml";

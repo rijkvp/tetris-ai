@@ -1,13 +1,11 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import { theme } from "$lib/theme.svelte";
     import { onDestroy } from "svelte";
     import { Simulator, WeightsMap, Path } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { onMount } from "svelte";
-    import { base } from "$app/paths";
     import DynamicIcon from "./DynamicIcon.svelte";
 
     const SPEED_MUTIPLIER = [
@@ -138,6 +136,8 @@
     }
 
     function reset() {
+        tick = 0;
+        tickTimer = 0;
         simulator.reset();
         curr = simulator.state;
         simulator.step();
@@ -176,28 +176,6 @@
     </div>
     <div class="controls">
         <div>
-            <input
-                class="speed-input"
-                title={$t("speed")}
-                type="range"
-                min="0"
-                max={Math.min(SPEED_MUTIPLIER.length - 1, maxSpeed)}
-                bind:value={speedIndex}
-                oninput={() => updateSpeed()}
-            />
-            <span class="speed-display"
-                >{speedMultiplier.toLocaleString()}x</span
-            >
-        </div>
-        <div>
-            <button
-                onclick={() => reset()}
-                disabled={isRunning}
-                title={$t("controls.reset")}
-            >
-                <DynamicIcon icon="reset" alt="Reset" />
-                {$t("controls.reset")}
-            </button>
             <button
                 onclick={() => togglePaused()}
                 disabled={gameOver}
@@ -211,14 +189,26 @@
                     {$t("controls.play")}
                 {/if}
             </button>
-            <button
-                onclick={() => step()}
-                disabled={isRunning}
-                title={$t("controls.step")}
-            >
-                <DynamicIcon icon="skip" alt="Step" />
-                {$t("controls.step")}
+            <button onclick={() => reset()} title={$t("controls.new_game")}>
+                <DynamicIcon icon="reset" alt="Reset" />
+                {$t("controls.new_game")}
             </button>
+        </div>
+        <div class="speed-control">
+            <label for="speed">{$t("controls.speed")}</label>
+            <input
+                class="speed-input"
+                title={$t("controls.speed")}
+                name="speed"
+                type="range"
+                min="0"
+                max={Math.min(SPEED_MUTIPLIER.length - 1, maxSpeed)}
+                bind:value={speedIndex}
+                oninput={() => updateSpeed()}
+            />
+            <span class="speed-display"
+                >{speedMultiplier.toLocaleString()}x</span
+            >
         </div>
     </div>
     <div class="board">
@@ -231,7 +221,8 @@
         display: grid;
         grid-template-columns: auto auto;
         grid-template-rows: min-content auto;
-        gap: 16px;
+        row-gap: 0.5rem;
+        column-gap: 1rem;
     }
     .board {
         grid-column: 2;
@@ -263,12 +254,21 @@
         width: 20%;
     }
     .controls button {
-        width: 4rem;
+        width: 6rem;
         height: 1.5rem;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.2rem;
+    }
+    .speed-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0.4rem;
+    }
+    .speed-control input {
+        width: 8rem;
     }
 </style>

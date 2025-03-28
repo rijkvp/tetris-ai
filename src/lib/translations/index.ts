@@ -8,7 +8,6 @@ const config = {
                 close: 'Close',
                 example: 'Example',
                 features: 'Features',
-                speed: 'Speed',
                 scoreboard: 'Scoreboard',
             },
             level_select: {
@@ -45,8 +44,9 @@ The AI calculates all possible positions and rotations where it can be placed fo
             controls: {
                 play: "Play",
                 pause: "Pause",
-                reset: "Reset",
                 step: "Step",
+                new_game: "New game",
+                speed: 'Speed',
             },
             goals: {
                 goals: 'Goals',
@@ -89,7 +89,6 @@ The AI calculates all possible positions and rotations where it can be placed fo
                 close: 'Sluiten',
                 example: 'Voorbeeld',
                 features: 'Kenmerken',
-                speed: 'Snelheid',
                 scoreboard: 'Scorebord',
             },
             level_select: {
@@ -130,8 +129,9 @@ De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst 
             controls: {
                 play: "Start",
                 pause: "Pauze",
-                reset: "Herstel",
                 step: "Stap",
+                new_game: "Opnieuw",
+                speed: 'Snelheid',
             },
             goals: {
                 goals: 'Doelen',
