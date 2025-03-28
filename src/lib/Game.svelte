@@ -89,23 +89,6 @@
 </div>
 
 <style>
-    .panels {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 2rem;
-    }
-    .panel {
-        /* fill up the remaining space */
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-basis: 0;
-
-        display: flex;
-        flex-direction: column;
-        flex-basis: min-content;
-        gap: 1rem;
-    }
     .goals {
         margin-top: 1rem;
     }

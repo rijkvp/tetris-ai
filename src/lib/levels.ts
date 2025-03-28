@@ -17,10 +17,10 @@ export type Level = {
 
 export const levels: Level[] = [
     {
-        key: "level1",
+        key: "level2",
         name: {
-            en: "Level 1: 100 lines",
-            nl: "Level 1: 100 rijen"
+            en: "2. 100 lines",
+            nl: "2. 100 rijen"
         },
         description: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
@@ -35,10 +35,10 @@ export const levels: Level[] = [
         ]
     },
     {
-        key: "level2",
+        key: "level3",
         name: {
-            en: "Level 2: 4 times Tetris",
-            nl: "Level 2: 4 keer Tetris"
+            en: "3. 4 times Tetris",
+            nl: "3. 4 keer Tetris"
         },
         description: {
             en: "Try to get four tetrises (clearing four rows at once) by using the landing height.",
@@ -54,10 +54,10 @@ export const levels: Level[] = [
         ]
     },
     {
-        key: "level3",
+        key: "level4",
         name: {
-            en: "Level 3: level 29",
-            nl: "Level 3: level 29"
+            en: "4. level 29",
+            nl: "4. level 29"
         },
         description: {
             en: "Try to reach level 29 and clear 200 lines by using 4 features.",

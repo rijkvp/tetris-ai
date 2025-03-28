@@ -38,7 +38,7 @@
         tetrisBoard.display(game.state, game.move ?? null);
     }
 
-    function reset() {
+    function newGame() {
         game.reset();
         tetrisBoard.clear();
         gameOver = false;
@@ -73,7 +73,7 @@
 
     onMount(() => {
         window.addEventListener("keydown", handleKeydown);
-        reset();
+        newGame();
     });
 
     onDestroy(() => {
@@ -88,13 +88,6 @@
     <div class="controls">
         <div>
             <button
-                onclick={() => reset()}
-                disabled={isRunning}
-                title={$t("controls.reset")}
-            >
-                {$t("controls.reset")}
-            </button>
-            <button
                 onclick={() => togglePaused()}
                 disabled={gameOver}
                 title={isRunning ? $t("controls.pause") : $t("controls.play")}
@@ -104,6 +97,13 @@
                 {:else}
                     Play
                 {/if}
+            </button>
+            <button
+                onclick={() => newGame()}
+                disabled={isRunning}
+                title={$t("controls.new_game")}
+            >
+                {$t("controls.new_game")}
             </button>
         </div>
     </div>
@@ -144,7 +144,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 4rem;
+        min-width: 4rem;
         height: 1.5rem;
         font-size: 1.2rem;
     }
