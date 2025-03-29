@@ -1,6 +1,10 @@
 <script lang="ts">
     import { t, locale } from "$lib/translations";
     import { levels } from "$lib/levels";
+
+    function resetProgress() {
+        localStorage.clear();
+    }
 </script>
 
 <h2>{$t("level_select.title")}</h2>
@@ -21,3 +25,5 @@
         <a href="{$locale}/sandbox">Sandbox</a>
     </li>
 </ul>
+
+<button onclick={() => resetProgress()}>Reset progress</button>

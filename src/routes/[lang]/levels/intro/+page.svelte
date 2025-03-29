@@ -27,8 +27,8 @@
             </li>
             <li>
                 <strong>Earn more points:</strong> Clear multiple lines at
-                once—especially four lines (called a <em>Tetris</em>)—to
-                boost your score.
+                once—especially four lines (called a <em>Tetris</em>)—to boost
+                your score.
             </li>
             <li>
                 <strong>Game over:</strong> If the tetrominos stack up to the top
@@ -40,14 +40,13 @@
             game.
         </p>
     {/snippet}
-    {#snippet hints()}
+    {#snippet side()}
         <h2>Controls</h2>
         <ul>
-            <li>Left arrow: Move the tetromino to the left</li>
-            <li>Right arrow: Move the tetromino to the right</li>
-            <li>Down arrow: Move the tetromino down</li>
-            <li>Up arrow: Rotate the tetromino</li>
-            <li>Space: Drop the tetromino</li>
+            <li><strong>Left/Right arrow keys</strong>: move the tetromino to the left/right</li>
+            <li>Up arrow/Z: Rotate the tetromino</li>
+            <li>Down arrow: Move the tetromino down (soft drop)</li>
+            <li>Space: Drop the tetromino (hard drop)</li>
         </ul>
     {/snippet}
 </Level>

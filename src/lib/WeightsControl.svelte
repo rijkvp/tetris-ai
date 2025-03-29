@@ -10,7 +10,7 @@
         availableFeatures,
     }: {
         onWeightsChange: (weights: [string, number][]) => void;
-        availableFeatures: string[] | undefined;
+        availableFeatures?: string[];
     } = $props();
 
     let weights: [string, number][] = $state()!;

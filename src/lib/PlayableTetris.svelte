@@ -1,17 +1,18 @@
 <script lang="ts">
-    import { t } from "$lib/translations";
     import { Game } from "tetris-ai";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import { onDestroy, onMount } from "svelte";
+    import GameControls from "./GameControls.svelte";
 
     let game: Game = new Game();
     let tetrisBoard: TetrisBoard;
     let statsPanel: StatsPanel = $state()!;
 
-    let isRunning = $state(false);
+    let isRunning = $state(true);
     let gameOver = $state(false);
 
+    let animationFrame: number;
     let lastFrameTime = 0;
     const TICK_DURATION = 0.4;
     let timer = TICK_DURATION;
@@ -22,7 +23,7 @@
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
         const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
         lastFrameTime = currentTime;
-        requestAnimationFrame(gameLoop);
+        animationFrame = requestAnimationFrame(gameLoop);
 
         // update
         timer -= deltaTime;
@@ -38,19 +39,24 @@
         tetrisBoard.display(game.state, game.move ?? null);
     }
 
+    function togglePaused() {
+        isRunning = !isRunning;
+        if (isRunning) {
+            startGameLoop();
+        }
+    }
+
+    function startGameLoop() {
+        lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
+        animationFrame = requestAnimationFrame(gameLoop);
+    }
+
     function newGame() {
         game.reset();
         tetrisBoard.clear();
         gameOver = false;
-    }
-
-    function togglePaused() {
-        isRunning = !isRunning;
-        if (isRunning) {
-            // start the game loop / animation
-            lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
-            requestAnimationFrame(gameLoop);
-        }
+        isRunning = true;
+        startGameLoop();
     }
 
     function handleKeydown(event: KeyboardEvent) {
@@ -78,6 +84,8 @@
 
     onDestroy(() => {
         window.removeEventListener("keydown", handleKeydown);
+        isRunning = false;
+        window.cancelAnimationFrame(animationFrame);
     });
 </script>
 
@@ -86,26 +94,12 @@
         <StatsPanel bind:this={statsPanel} />
     </div>
     <div class="controls">
-        <div>
-            <button
-                onclick={() => togglePaused()}
-                disabled={gameOver}
-                title={isRunning ? $t("controls.pause") : $t("controls.play")}
-            >
-                {#if isRunning}
-                    Pause
-                {:else}
-                    Play
-                {/if}
-            </button>
-            <button
-                onclick={() => newGame()}
-                disabled={isRunning}
-                title={$t("controls.new_game")}
-            >
-                {$t("controls.new_game")}
-            </button>
-        </div>
+        <GameControls
+            bind:isRunning
+            bind:gameOver
+            onPauseToggle={() => togglePaused()}
+            onNewGame={() => newGame()}
+        />
     </div>
     <div class="board">
         <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
@@ -132,20 +126,5 @@
         grid-row: 1;
         display: flex;
         flex-direction: column;
-    }
-    .controls > div {
-        width: 100%;
-        justify-content: center;
-        display: flex;
-        gap: 12px;
-        height: fit-content;
-    }
-    .controls button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 4rem;
-        height: 1.5rem;
-        font-size: 1.2rem;
     }
 </style>

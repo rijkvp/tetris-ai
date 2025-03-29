@@ -34,7 +34,7 @@
         margin-bottom: 1rem;
     }
     header img {
-        height: 51px;
+        height: 2rem;
     }
     .logo {
         display: flex;
@@ -44,6 +44,6 @@
     .logo > h1 {
         display: inline-block;
         margin: 0;
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 </style>

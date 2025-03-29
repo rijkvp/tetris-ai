@@ -126,14 +126,17 @@ impl Game {
     }
 
     pub fn step(&mut self) -> bool {
-        let piece = gen_random_piece(self.state.delta().map(|d| d.r#move.piece.index()));
         if let Some(current_move) = self.current_move {
+            // move the current piece down
             let next_move = current_move.drop(self.state.board());
             if next_move.is_none() {
+                // if the piece is dropped, update the state
                 self.state = self.state.future(current_move);
             }
             self.current_move = next_move;
         } else {
+            // spawn the next piece
+            let piece = gen_random_piece(self.state.delta().map(|d| d.r#move.piece.index()));
             let start_move = piece.into_start_move();
             if start_move.is_valid(self.state.board()) {
                 self.current_move = Some(start_move);
@@ -172,13 +175,14 @@ impl Game {
         self.try_move(|mut m| {
             m.pos.row += 1;
             m
-        })
+        });
     }
 
     pub fn hard_drop(&mut self) {
         while let Some(next_move) = self.current_move.and_then(|m| m.drop(self.state.board())) {
             self.current_move = Some(next_move);
         }
+        self.step(); // don't waste the next tick doing nothing
     }
 
     pub fn rotate(&mut self) {

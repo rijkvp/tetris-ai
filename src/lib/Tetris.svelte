@@ -5,8 +5,8 @@
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
+    import GameControls from "$lib/GameControls.svelte";
     import { onMount } from "svelte";
-    import DynamicIcon from "./DynamicIcon.svelte";
 
     const SPEED_MUTIPLIER = [
         0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
@@ -17,9 +17,9 @@
         onGameOver,
         maxSpeed = SPEED_MUTIPLIER.length - 1,
     }: {
-        onNewStats: (stats: Stats) => void;
+        onNewStats?: (stats: Stats) => void;
         onGameOver: (stats: Stats) => void;
-        maxSpeed: number;
+        maxSpeed?: number;
     } = $props();
 
     let simulator: Simulator = new Simulator();
@@ -40,7 +40,7 @@
     let tickInterval = BASE_SPEED;
 
     let speedIndex = $state(2);
-    let speedMultiplier = $state(SPEED_MUTIPLIER[speedIndex]);
+    let speedMultiplier = $derived(SPEED_MUTIPLIER[speedIndex]);
 
     let moves = 0;
     let lastMoves = 0;
@@ -50,21 +50,16 @@
         lastMoves = moves;
     }, 1000);
 
-    onDestroy(() => {
-        clearInterval(moveTimer);
-    });
+    let animationFrame: number;
 
     function simulateNext(): boolean {
         curr = next;
-        onNewStats(curr.stats);
+        if (onNewStats) onNewStats(curr.stats);
         if (!simulator.step()) {
             curr = simulator.state;
             // game over
             gameOver = true;
-            onGameOver(curr.stats);
-            console.log("Game over");
-            console.log(curr);
-            console.log(next);
+            if (onGameOver) onGameOver(curr.stats);
             isRunning = false;
             return false;
         }
@@ -107,7 +102,8 @@
 
     function gameLoop(currentTime: number) {
         const weightedSpeed =
-            (speedMultiplier / framesPerDrop(Number(curr.stats.level) + 1)) * 10;
+            (speedMultiplier / framesPerDrop(Number(curr.stats.level) + 1)) *
+            10;
         tickInterval = (1 / weightedSpeed) * BASE_SPEED;
 
         // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
@@ -140,7 +136,7 @@
             } else {
                 animateFrame(deltaTime);
             }
-            requestAnimationFrame(gameLoop);
+            animationFrame = requestAnimationFrame(gameLoop);
         }
     }
 
@@ -160,7 +156,7 @@
         isRunning = true;
         // start the game loop / animation
         lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
-        requestAnimationFrame(gameLoop);
+        animationFrame = requestAnimationFrame(gameLoop);
     }
 
     function togglePaused() {
@@ -168,12 +164,8 @@
         if (isRunning) {
             // start the game loop / animation
             lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
-            requestAnimationFrame(gameLoop);
+            animationFrame = requestAnimationFrame(gameLoop);
         }
-    }
-
-    function updateSpeed() {
-        speedMultiplier = SPEED_MUTIPLIER[speedIndex];
     }
 
     export const setWeights = (weights: [string, number][]) => {
@@ -183,6 +175,10 @@
     onMount(() => {
         newGame();
     });
+    onDestroy(() => {
+        cancelAnimationFrame(animationFrame);
+        clearInterval(moveTimer);
+    });
 </script>
 
 <div class="grid">
@@ -190,25 +186,12 @@
         <StatsPanel bind:this={statsPanel} />
     </div>
     <div class="controls">
-        <div>
-            <button
-                onclick={() => togglePaused()}
-                disabled={gameOver}
-                title={isRunning ? $t("controls.pause") : $t("controls.play")}
-            >
-                {#if isRunning}
-                    <DynamicIcon icon="pause" alt="Pause" />
-                    {$t("controls.pause")}
-                {:else}
-                    <DynamicIcon icon="play" alt="Play" />
-                    {$t("controls.play")}
-                {/if}
-            </button>
-            <button onclick={() => newGame()} title={$t("controls.new_game")}>
-                <DynamicIcon icon="reset" alt="Reset" />
-                {$t("controls.new_game")}
-            </button>
-        </div>
+        <GameControls
+            bind:isRunning
+            bind:gameOver
+            onPauseToggle={() => togglePaused()}
+            onNewGame={() => newGame()}
+        />
         <div class="speed-control">
             <label for="speed">{$t("controls.speed")}</label>
             <input
@@ -219,7 +202,6 @@
                 min="0"
                 max={Math.min(SPEED_MUTIPLIER.length - 1, maxSpeed)}
                 bind:value={speedIndex}
-                oninput={() => updateSpeed()}
             />
             <span class="speed-display"
                 >{speedMultiplier.toLocaleString()}x</span
@@ -234,8 +216,8 @@
 <style>
     .grid {
         display: grid;
-        grid-template-columns: auto auto;
-        grid-template-rows: min-content auto;
+        grid-template-columns: min-content min-content;
+        grid-template-rows: min-content 1fr;
         row-gap: 0.5rem;
         column-gap: 1rem;
     }
@@ -252,8 +234,6 @@
         grid-row: 1;
         display: flex;
         flex-direction: column;
-        /* gap: 8px; */
-        /* margin-bottom: 8px; */
     }
     .controls > div {
         width: 100%;
@@ -267,15 +247,6 @@
     }
     .speed-display {
         width: 20%;
-    }
-    .controls button {
-        min-width: 4rem;
-        height: 1.5rem;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.2rem;
     }
     .speed-control {
         display: flex;

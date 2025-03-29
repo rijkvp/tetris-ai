@@ -57,42 +57,44 @@
     }
 </script>
 
-<div>
-    <h2>{$t("general.scoreboard")} ({key})</h2>
-
+{#if entries.length > 0}
     <div>
-        {#each ORDER_CATEGORIES as order, idx}
-            <button
-                onclick={() => setOrder(idx)}
-                disabled={idx === orderCategoryIdx}
-            >
-                {$t(order.tkey)}
-            </button>
-        {/each}
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>{$t("score.score")}</th>
-                <th>{$t("score.lines")}</th>
-                <th>{$t("score.level")}</th>
-                <th>{$t("score.tetrises")}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each entries.slice(0, 10) as entry, n}
-                <tr class={{ latest: entry.latest }}>
-                    <td>{n + 1}</td>
-                    <td>{entry.stats.score.toLocaleString()}</td>
-                    <td>{entry.stats.lines.toLocaleString()}</td>
-                    <td>{entry.stats.level.toLocaleString()}</td>
-                    <td>{entry.stats.tetrises.toLocaleString()}</td>
-                </tr>
+        <h2>{$t("general.scoreboard")} ({key})</h2>
+
+        <div>
+            {#each ORDER_CATEGORIES as order, idx}
+                <button
+                    onclick={() => setOrder(idx)}
+                    disabled={idx === orderCategoryIdx}
+                >
+                    {$t(order.tkey)}
+                </button>
             {/each}
-        </tbody>
-    </table>
-</div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{$t("score.score")}</th>
+                    <th>{$t("score.lines")}</th>
+                    <th>{$t("score.level")}</th>
+                    <th>{$t("score.tetrises")}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each entries.slice(0, 10) as entry, n}
+                    <tr class={{ latest: entry.latest }}>
+                        <td>{n + 1}</td>
+                        <td>{entry.stats.score.toLocaleString()}</td>
+                        <td>{entry.stats.lines.toLocaleString()}</td>
+                        <td>{entry.stats.level.toLocaleString()}</td>
+                        <td>{entry.stats.tetrises.toLocaleString()}</td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
+{/if}
 
 <style>
     table {

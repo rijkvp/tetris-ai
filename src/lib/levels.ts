@@ -2,20 +2,56 @@ type MultiLang = {
     en: string;
     nl: string;
 };
-export type Level = {
+
+export interface Goals {
+    lines?: number;
+    score?: number;
+    level?: number;
+    tetrises?: number;
+};
+
+export interface Level {
     key: string;
     name: MultiLang;
     description: MultiLang;
-    goals?: {
-        lines?: number;
-        score?: number;
-        level?: number;
-        tetrises?: number;
-    },
+    goals: Goals;
     features?: string[]
 };
 
 export const levels: Level[] = [
+    {
+        key: "2",
+        name: {
+            en: "2. Features",
+            nl: "2. Features"
+        },
+        description: {
+            en: `
+                <p>
+                Now let's make the AI play Tetris!
+                Computers are really fast and the AI can easiliy calculate all possible splots to place the tetronomino.
+                However, it does not know what moves are good, and which are bad.
+                </p>
+                <p>
+                This is where <em>features</em> come in. Features are pieces of information that help the AI make decisions. Think of them as clues or characteristics that describe something.
+                We assign weights to these features to let the AI know which types of moves are good and which tyes are bad.
+                </p>
+                <p>
+                In the following level you will start with two features: <em>Holes</em> and <em>Landing Height</em>.
+                You can adjust the <em>weights</em> of these features using the sliders. For example, if you think a feature is desired, you can increase its weight to make the AI prioritize it. Or, if you think a feature should be avoided, you can decrease its weight.
+                Your <em>goal</em> is to clear 20 lines by tweaking the weights of the features!
+                </p>
+            `,
+            nl: "TODO"
+        },
+        goals: {
+            lines: 20,
+        },
+        features: [
+            "pits",
+            "landing_height"
+        ]
+    },
     {
         key: "level2",
         name: {

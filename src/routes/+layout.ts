@@ -9,7 +9,6 @@ import { base } from "$app/paths";
 
 export const load: LayoutLoad = async ({ url }) => {
     await init();
-    console.info("Tetris AI initialized");
 
     const { pathname } = url;
 
