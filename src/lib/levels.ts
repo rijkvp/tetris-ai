@@ -18,12 +18,22 @@ export interface Level {
     features?: string[]
 };
 
+export const NAVIGATION: string[] = [
+    "intro",
+    "2",
+    "3",
+    "4",
+    "5",
+    "sandbox",
+];
+
+
 export const levels: Level[] = [
     {
         key: "2",
         name: {
-            en: "2. Features",
-            nl: "2. Features"
+            en: "Features",
+            nl: "Kenmerken"
         },
         description: {
             en: `
@@ -53,10 +63,10 @@ export const levels: Level[] = [
         ]
     },
     {
-        key: "level2",
+        key: "3",
         name: {
-            en: "2. 100 lines",
-            nl: "2. 100 rijen"
+            en: "Features 2",
+            nl: "Kenmerken 2"
         },
         description: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
@@ -71,10 +81,10 @@ export const levels: Level[] = [
         ]
     },
     {
-        key: "level3",
+        key: "4",
         name: {
-            en: "3. 4 times Tetris",
-            nl: "3. 4 keer Tetris"
+            en: "4 times Tetris",
+            nl: "4 keer Tetris"
         },
         description: {
             en: "Try to get four tetrises (clearing four rows at once) by using the landing height.",
@@ -90,10 +100,10 @@ export const levels: Level[] = [
         ]
     },
     {
-        key: "level4",
+        key: "5",
         name: {
-            en: "4. level 29",
-            nl: "4. level 29"
+            en: "Level 29",
+            nl: "Level 29"
         },
         description: {
             en: "Try to reach level 29 and clear 200 lines by using 4 features.",

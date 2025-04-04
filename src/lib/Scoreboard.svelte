@@ -2,11 +2,17 @@
     import { t } from "$lib/translations";
     import { onMount } from "svelte";
     import type { Stats } from "./types";
+    import type { Weights, WeightsObject } from "./weights.svelte";
 
-    let { key }: { key: string } = $props();
+    let {
+        key,
+        onWeightsSelect,
+    }: { key: string; onWeightsSelect: (weights: WeightsObject) => void } =
+        $props();
 
     type Entry = {
         stats: Stats;
+        weights: WeightsObject;
         latest: boolean;
     };
 
@@ -42,12 +48,16 @@
         entries.sort((a, b) => (order.key(b) < order.key(a) ? -1 : 1));
     }
 
-    export const addEntry = (entry: Stats) => {
-        if (entry.score == BigInt(0)) {
+    export const addEntry = (stats: Stats, weights: Weights) => {
+        if (stats.score == BigInt(0)) {
             return;
         }
         entries.forEach((e) => (e.latest = false));
-        entries.push({ stats: entry, latest: true });
+        entries.push({
+            stats: stats,
+            weights: weights.getObject(),
+            latest: true,
+        });
         reorder();
     };
 
@@ -59,8 +69,7 @@
 
 {#if entries.length > 0}
     <div>
-        <h2>{$t("general.scoreboard")} ({key})</h2>
-
+        <h2>{$t("general.scoreboard")}</h2>
         <div>
             {#each ORDER_CATEGORIES as order, idx}
                 <button
@@ -83,7 +92,13 @@
             </thead>
             <tbody>
                 {#each entries.slice(0, 10) as entry, n}
-                    <tr class={{ latest: entry.latest }}>
+                    <tr
+                        class={{ latest: entry.latest, loadable: true }}
+                        onclick={() => {
+                            onWeightsSelect(entry.weights);
+                        }}
+                        title="Load weights"
+                    >
                         <td>{n + 1}</td>
                         <td>{entry.stats.score.toLocaleString()}</td>
                         <td>{entry.stats.lines.toLocaleString()}</td>
@@ -111,6 +126,10 @@
 
     th {
         text-align: left;
+    }
+
+    .loadable {
+        cursor: pointer;
     }
 
     .latest {

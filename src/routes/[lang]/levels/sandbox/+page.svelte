@@ -4,9 +4,7 @@
     import Tetris from "$lib/Tetris.svelte";
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
-
-    let scoreboard: Scoreboard;
-    let tetris: Tetris;
+    import { Weights } from "$lib/weights.svelte";
 
     const level = {
         key: "sandbox",
@@ -16,22 +14,27 @@
             nl: "Speel met alle kenmerken.",
         },
     };
+
+    let scoreboard: Scoreboard;
+    let weights = new Weights();
 </script>
 
-<LevelComp title={level.name[$locale]}>
+<LevelComp title={level.name[$locale]} key="sandbox">
     {#snippet content()}
         <Tetris
-            bind:this={tetris}
-            onGameOver={(stats) => scoreboard.addEntry(stats)}
+            {weights}
+            onGameOver={(stats) => scoreboard.addEntry(stats, weights)}
         />
     {/snippet}
     {#snippet side()}
         <p>
             {@html level.description[$locale]}
         </p>
-        <WeightsControl
-            onWeightsChange={(weights) => tetris.setWeights(weights)}
+        <WeightsControl {weights} />
+        <Scoreboard
+            key={level.key}
+            bind:this={scoreboard}
+            onWeightsSelect={(newWeights) => weights.setWeights(newWeights)}
         />
-        <Scoreboard key={level.key} bind:this={scoreboard} />
     {/snippet}
 </LevelComp>

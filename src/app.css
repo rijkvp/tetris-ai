@@ -6,6 +6,8 @@
     --fg0: #000;
     --fg1: #666;
     --border: #fff;
+    --primary: #007bff;
+    --primary-border: #0056b3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +18,8 @@
         --fg0: #ddd;
         --fg1: #aaa;
         --border: #ddd;
+        --primary: #005cbf;
+        --primary-border: #002e60;
     }
 }
 
@@ -89,6 +93,17 @@ button[disabled], input[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
     background: var(--bg1);
+}
+.btn-big {
+    font-size: 1.1rem;
+    padding: 4px 8px;
+}
+.btn-primary {
+    background: var(--primary);
+    border: 3px solid var(--primary-border);
+}
+.btn-primary:hover {
+    background: var(--primary-border);
 }
 input[type=range]:hover {
     opacity: 1;

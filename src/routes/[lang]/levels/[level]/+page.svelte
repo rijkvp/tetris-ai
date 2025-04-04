@@ -7,22 +7,27 @@
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
     import Goals from "$lib/Goals.svelte";
+    import { Weights } from "$lib/weights.svelte";
 
     let { data }: PageProps = $props();
-    const level: Level = data.level!;
+
+    let level: Level = $state(data.level!);
+    $effect(() => {
+        level = data.level!;
+    });
 
     let goals: Goals;
     let scoreboard: Scoreboard;
-    let tetris: Tetris;
+    let weights = $derived(new Weights(level.features));
 </script>
 
-<LevelComp title={level.name[$locale]}>
+<LevelComp key={level.key} title={level.name[$locale]}>
     {#snippet content()}
         <Tetris
-            bind:this={tetris}
+            {weights}
             maxSpeed={level.goals != null ? 8 : 12}
             onNewStats={(stats) => goals.updateGoals(stats)}
-            onGameOver={(stats) => scoreboard.addEntry(stats)}
+            onGameOver={(stats) => scoreboard.addEntry(stats, weights)}
         />
     {/snippet}
     {#snippet explanation()}
@@ -30,10 +35,11 @@
     {/snippet}
     {#snippet side()}
         <Goals bind:this={goals} goals={level.goals} />
-        <WeightsControl
-            onWeightsChange={(weights) => tetris.setWeights(weights)}
-            availableFeatures={level.features}
+        <WeightsControl {weights} />
+        <Scoreboard
+            bind:this={scoreboard}
+            key={level.key}
+            onWeightsSelect={(newWeights) => weights.setWeights(newWeights)}
         />
-        <Scoreboard key={level.key} bind:this={scoreboard} />
     {/snippet}
 </LevelComp>

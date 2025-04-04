@@ -1,22 +1,25 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { onDestroy } from "svelte";
-    import { Simulator, WeightsMap, Path } from "tetris-ai";
+    import { Simulator, Path } from "tetris-ai";
     import type { GameState, Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import GameControls from "$lib/GameControls.svelte";
     import { onMount } from "svelte";
+    import type { Weights } from "./weights.svelte";
 
     const SPEED_MUTIPLIER = [
         0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
     ];
 
     let {
+        weights,
         onNewStats,
         onGameOver,
         maxSpeed = SPEED_MUTIPLIER.length - 1,
     }: {
+        weights: Weights;
         onNewStats?: (stats: Stats) => void;
         onGameOver: (stats: Stats) => void;
         maxSpeed?: number;
@@ -24,7 +27,12 @@
 
     let simulator: Simulator = new Simulator();
     let tetrisBoard: TetrisBoard;
+
     let statsPanel: StatsPanel = $state()!;
+
+    $effect(() => {
+        simulator.update_weights(weights.getWeightsMap());
+    });
 
     let isRunning = $state(false);
     let gameOver = $state(false);
@@ -167,10 +175,6 @@
             animationFrame = requestAnimationFrame(gameLoop);
         }
     }
-
-    export const setWeights = (weights: [string, number][]) => {
-        simulator.update_weights(WeightsMap.from_js(weights));
-    };
 
     onMount(() => {
         newGame();

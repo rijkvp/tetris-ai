@@ -3,7 +3,7 @@
     import PlayableTetris from "$lib/PlayableTetris.svelte";
 </script>
 
-<Level title="1. Introduction to Tetris">
+<Level key="intro" title="Introduction to Tetris">
     {#snippet content()}
         <PlayableTetris />
     {/snippet}
@@ -43,7 +43,10 @@
     {#snippet side()}
         <h2>Controls</h2>
         <ul>
-            <li><strong>Left/Right arrow keys</strong>: move the tetromino to the left/right</li>
+            <li>
+                <strong>Left/Right arrow keys</strong>: move the tetromino to
+                the left/right
+            </li>
             <li>Up arrow/Z: Rotate the tetromino</li>
             <li>Down arrow: Move the tetromino down (soft drop)</li>
             <li>Space: Drop the tetromino (hard drop)</li>

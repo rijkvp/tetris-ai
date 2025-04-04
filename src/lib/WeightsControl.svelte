@@ -1,42 +1,11 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import { WeightsMap } from "tetris-ai";
+    import { Weights } from "$lib/weights.svelte";
     import { localState } from "$lib/stores.svelte";
     import ExampleBoard from "./ExampleBoard.svelte";
     import DynamicIcon from "./DynamicIcon.svelte";
 
-    let {
-        onWeightsChange,
-        availableFeatures,
-    }: {
-        onWeightsChange: (weights: [string, number][]) => void;
-        availableFeatures?: string[];
-    } = $props();
-
-    let weights: [string, number][] = $state()!;
-    let enabledWeights: boolean[] = $state()!;
-
-    function reset() {
-        weights = WeightsMap.defaults().into_js();
-        enabledWeights = WeightsMap.defaults()
-            .into_js()
-            .map(
-                ([key, _]: [string, number]) =>
-                    availableFeatures?.includes(key) ?? true,
-            );
-    }
-
-    reset();
-
-    function updateWeights() {
-        const actualWeights = WeightsMap.defaults().into_js();
-        for (let i = 0; i < weights.length; i++) {
-            if (enabledWeights[i]) {
-                actualWeights[i][1] = weights[i][1];
-            }
-        }
-        onWeightsChange(actualWeights);
-    }
+    let { weights }: { weights: Weights } = $props();
 
     let selectedFeature: string = $state("col_trans");
     let infoDialog: HTMLDialogElement;
@@ -47,8 +16,7 @@
     <div class="buttons">
         <button
             onclick={() => {
-                reset();
-                updateWeights();
+                weights.reset();
             }}
         >
             <DynamicIcon icon="reset" alt="Reset" />
@@ -56,14 +24,7 @@
         >
         <button
             onclick={() => {
-                weights.forEach((_, i) => {
-                    if (enabledWeights[i]) {
-                        weights[i][1] = parseFloat(
-                            (Math.random() * 20 - 10).toFixed(1),
-                        );
-                    }
-                });
-                updateWeights();
+                weights.randomize();
             }}
         >
             <DynamicIcon icon="shuffle" alt="Shuffle" />
@@ -74,45 +35,35 @@
         <h2>Cheat mode</h2>
         <button
             onclick={() => {
-                weights = WeightsMap.preset("infinite").into_js();
-                updateWeights();
+                weights.loadPreset("infinite");
             }}>Preset (infinite)</button
         >
         <button
             onclick={() => {
-                weights = WeightsMap.preset("score").into_js();
-                updateWeights();
+                weights.loadPreset("score");
             }}>Preset (score)</button
         >
     </div>
     <div class="weights-list">
-        {#each weights as [key, value], i}
-            {#if !availableFeatures || availableFeatures.includes(key)}
-                <div class="weight-item">
-                    <input
-                        type="checkbox"
-                        bind:checked={enabledWeights[i]}
-                        onchange={() => updateWeights()}
-                    />
-                    <input
-                        type="range"
-                        bind:value={weights[i][1]}
-                        disabled={!enabledWeights[i]}
-                        min="-10.0"
-                        max="10.0"
-                        step="0.1"
-                        oninput={() => updateWeights()}
-                    />
-                    <span class="weight-value">{value}</span>
-                    <span class="weight-name">{$t(`feature.${key}.name`)}</span>
-                    <button
-                        onclick={() => {
-                            selectedFeature = key;
-                            infoDialog.showModal();
-                        }}>?</button
-                    >
-                </div>
-            {/if}
+        {#each weights.entries() as [key, entry]}
+            <div class="weight-item">
+                <input type="checkbox" bind:checked={entry.enabled} />
+                <input
+                    type="range"
+                    bind:value={entry.value}
+                    min="-10.0"
+                    max="10.0"
+                    step="0.1"
+                />
+                <span class="weight-value">{entry.value}</span>
+                <span class="weight-name">{$t(`feature.${key}.name`)}</span>
+                <button
+                    onclick={() => {
+                        selectedFeature = key;
+                        infoDialog.showModal();
+                    }}>?</button
+                >
+            </div>
         {/each}
     </div>
 </div>

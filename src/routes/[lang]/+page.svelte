@@ -12,9 +12,7 @@
 
 <ul>
     <li>
-        <a href="{$locale}/levels/intro"
-            >1. Intoduction to Tetris (START HERE)</a
-        >
+        <a href="{$locale}/levels/intro">Intoduction to Tetris</a>
     </li>
     {#each levels as level}
         <li>
@@ -22,7 +20,7 @@
         </li>
     {/each}
     <li>
-        <a href="{$locale}/sandbox">Sandbox</a>
+        <a href="{$locale}/levels/sandbox">Sandbox</a>
     </li>
 </ul>
 
