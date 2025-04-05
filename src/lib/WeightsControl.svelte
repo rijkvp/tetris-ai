@@ -72,6 +72,7 @@
     <p>{$t(`feature.${selectedFeature}.description`)}</p>
     <div class="example">
         <h2>{$t("general.example")}:</h2>
+        <p>{$t(`feature.${selectedFeature}.example`)}</p>
         <div class="example-board">
             <ExampleBoard feature={selectedFeature} />
         </div>

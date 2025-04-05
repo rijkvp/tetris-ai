@@ -18,9 +18,12 @@ const CELL_OUTLINE = 3;
 const HIGHLIGHT_LINE_COLOUR = "#f00";
 const HIGHLIGHT_LINE_WIDTH = 5;
 
-const HIGHLIGHT_CELL_STROKE = "#f7f300";
+const HIGHLIGHT_CELL_STROKE = "#b7b41b";
 const HIGHLIGHT_CELL_FILL = "rgba(247, 252, 118, 0.1)"
-const HIGHLIGHT_CELL_WIDTH = 4;
+const HIGHLIGHT_CELL_WIDTH = 2;
+
+const STRIKE_THROUGH_COLOUR = "#470701";
+const STRIKE_THROUGH_WIDTH = 2;
 
 export type BoardData = Uint8Array[];
 
@@ -107,6 +110,16 @@ export function highlightCell(ctx: CanvasRenderingContext2D, col: number, row: n
         CELL_SIZE,
     );
 }
+
+export function strikeThroughCell(ctx: CanvasRenderingContext2D, col: number, row: number) {
+    ctx.strokeStyle = STRIKE_THROUGH_COLOUR;
+    ctx.lineWidth = STRIKE_THROUGH_WIDTH;
+    ctx.beginPath();
+    ctx.moveTo(col * CELL_SIZE + STRIKE_THROUGH_WIDTH / 2, row * CELL_SIZE + STRIKE_THROUGH_WIDTH / 2);
+    ctx.lineTo(col * CELL_SIZE + CELL_SIZE - STRIKE_THROUGH_WIDTH / 2, row * CELL_SIZE + CELL_SIZE - STRIKE_THROUGH_WIDTH / 2);
+    ctx.stroke();
+}
+
 
 export function clearBoard(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

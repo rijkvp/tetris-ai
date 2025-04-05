@@ -6,6 +6,7 @@
         type BoardData,
         highlightLine,
         highlightCell,
+        strikeThroughCell,
         clearBoard,
         displayBoard,
     } from "$lib/display";
@@ -74,7 +75,12 @@
     }
 
     function displayErodedCells() {
-        for (let c = 4; c < 8; c++) highlightCell(ctx, c, 13);
+        for (let c = 0; c < BOARD_WIDTH; c++) {
+            strikeThroughCell(ctx, c, 13);
+        }
+        for (let c = 4; c < 8; c++) {
+            highlightCell(ctx, c, 13);
+        }
     }
 
     function getHeight(board: BoardData): number[] {

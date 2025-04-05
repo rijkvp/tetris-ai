@@ -77,6 +77,7 @@ The AI calculates all possible positions and rotations where it can be placed fo
                 eroded_cells: {
                     name: 'Cleared cells',
                     description: 'The number of cells that are cleared from the tetromino itself as a result of the move.',
+                    example: 'In this example, the number of cleared cells is 4 because 4 cells are cleared from the tetromino due to the line being cleared when it is placed.',
                 },
                 cuml_wells: {
                     name: 'Wells',
@@ -162,6 +163,7 @@ De AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst 
                 eroded_cells: {
                     name: 'Gewiste hokjes',
                     description: 'Het aantal hokjes dat wordt gewist van de tetromino zelf als gevolg van de zet.',
+                    example: "In dit voorbeeld is het aantal gewiste hokjes 4.",
                 },
                 cuml_wells: {
                     name: 'Putten',
