@@ -1,8 +1,8 @@
-export type GameState = {
+export type TetrisState = {
     board: Uint8Array[];
     stats: Stats;
-    game_over: boolean;
-};
+    gameOver: boolean;
+}
 
 export type Stats = {
     steps: bigint;

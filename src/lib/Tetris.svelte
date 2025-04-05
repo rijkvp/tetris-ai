@@ -1,8 +1,9 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { onDestroy } from "svelte";
-    import { Simulator, Path } from "tetris-ai";
-    import type { GameState, Stats } from "$lib/types.ts";
+    import { TetrisAnimator } from "$lib/animator.svelte";
+    import { TetrisSimulator } from "$lib/simulator.svelte";
+    import type { Stats } from "$lib/types.ts";
     import TetrisBoard from "$lib/TetrisBoard.svelte";
     import StatsPanel from "$lib/StatsPanel.svelte";
     import GameControls from "$lib/GameControls.svelte";
@@ -25,175 +26,65 @@
         maxSpeed?: number;
     } = $props();
 
-    let simulator: Simulator = new Simulator();
-    let tetrisBoard: TetrisBoard;
-
-    let statsPanel: StatsPanel = $state()!;
+    let sim = new TetrisSimulator();
+    let animator = new TetrisAnimator(
+        sim,
+        () => tetrisBoard.display(),
+        () => onGameOver(sim.state.stats),
+    );
 
     $effect(() => {
-        simulator.update_weights(weights.getWeightsMap());
+        sim.updateWeights(weights.getWeightsMap());
     });
 
-    let isRunning = $state(false);
-    let gameOver = $state(false);
-
-    // TODO: Cleanup this mess
-    let curr: GameState, next: GameState;
-    let path: Path;
-
-    let lastFrameTime = 0;
-    let tick = 0;
-    let tickTimer = 0;
-    const BASE_SPEED = 1 / 5; // base interval between ticks in seconds
-    let tickInterval = BASE_SPEED;
+    // TODO: fix ugly hacks
+    $effect(() => {
+        if (animator.isRunning) {
+            onNewStats?.(sim.state.stats);
+        }
+    });
 
     let speedIndex = $state(2);
     let speedMultiplier = $derived(SPEED_MUTIPLIER[speedIndex]);
+    $effect(() => {
+        animator.setSpeed(speedMultiplier);
+    });
 
     let moves = 0;
     let lastMoves = 0;
+    let moveRate = $state(0);
 
+    let tetrisBoard: TetrisBoard;
     const moveTimer = setInterval(() => {
-        statsPanel.setMoves(moves - lastMoves);
+        moveRate = moves - lastMoves;
         lastMoves = moves;
     }, 1000);
 
-    let animationFrame: number;
-
-    function simulateNext(): boolean {
-        curr = next;
-        if (onNewStats) onNewStats(curr.stats);
-        if (!simulator.step()) {
-            curr = simulator.state;
-            // game over
-            gameOver = true;
-            if (onGameOver) onGameOver(curr.stats);
-            isRunning = false;
-            return false;
-        }
-        moves++;
-        next = simulator.state;
-        path = simulator.path!;
-        return true;
-    }
-
-    function animateFrame(deltaTime: number) {
-        // update tick timers, multiple ticks can occur in a single frame
-        tickTimer += deltaTime;
-
-        while (tickTimer >= tickInterval) {
-            tickTimer -= tickInterval;
-            tick++;
-        }
-        // check if move is complete
-        if (tick >= path.length) {
-            simulateNext();
-            tick = 0;
-            tickTimer = 0;
-        }
-        const tickProgress = tickTimer / tickInterval; // progress from 0 to 1 within a tick
-        const currentMove = path.transition_move(tick, tickProgress);
-        tetrisBoard.display(curr, currentMove);
-    }
-
-    const targetFPS = 60; // TODO: measure exact time spent on rendering
-    const maxFrameDuration = 1 / targetFPS; // maximum time to spend on rendering a frame
-
-    // based on NES Tetris
-    function framesPerDrop(level: number): number {
-        if (level < 0) return NaN;
-        if (level <= 8) return 48 - 5 * level;
-        if (level <= 18) return 6 - Math.floor((level - 7) / 3);
-        if (level <= 28) return 2;
-        return 1;
-    }
-
-    function gameLoop(currentTime: number) {
-        const weightedSpeed =
-            (speedMultiplier / framesPerDrop(Number(curr.stats.level) + 1)) *
-            10;
-        tickInterval = (1 / weightedSpeed) * BASE_SPEED;
-
-        // ensure deltaTime is at least 1ms, to avoid division by zero or negative values
-        const deltaTime = Math.max(currentTime - lastFrameTime, 1) / 1000;
-        lastFrameTime = currentTime;
-        // console.log(`Delta time: ${deltaTime}, FPS: ${1 / deltaTime}`);
-        if (isRunning) {
-            // if the complete animation of the move takes less than the frame duration
-            if (tickInterval * path.length < deltaTime) {
-                const ticksGoal = Math.floor(maxFrameDuration / tickInterval); // ideally, we want to complete about many ticks to reach the ticks/second goal
-                let ticksSpent = path.length;
-                while (ticksSpent < ticksGoal) {
-                    if (!simulateNext()) {
-                        break;
-                    }
-                    ticksSpent += path.length;
-                    // if current update is taking longer than the max frame duration, break
-                    if (
-                        performance.now() - currentTime >
-                        maxFrameDuration * 1000
-                    ) {
-                        break;
-                    }
-                }
-                // console.log(`${ticksSpent} ticks spent of ${ticksGoal}`);
-                if (ticksSpent >= ticksGoal) {
-                    console.warn("Exceeded ticks goal");
-                }
-                tetrisBoard.display(curr, null); // finally display the final state
-            } else {
-                animateFrame(deltaTime);
-            }
-            animationFrame = requestAnimationFrame(gameLoop);
-        }
-    }
-
     function newGame() {
-        simulator.reset();
-        curr = simulator.state;
-        simulator.step();
-        next = simulator.state;
-        path = simulator.path!;
-
+        sim.reset();
         tetrisBoard.clear();
-
-        tick = 0;
-        tickTimer = 0;
-
-        gameOver = false;
-        isRunning = true;
-        // start the game loop / animation
-        lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
-        animationFrame = requestAnimationFrame(gameLoop);
-    }
-
-    function togglePaused() {
-        isRunning = !isRunning;
-        if (isRunning) {
-            // start the game loop / animation
-            lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
-            animationFrame = requestAnimationFrame(gameLoop);
-        }
+        animator.restart();
     }
 
     onMount(() => {
         newGame();
     });
+
     onDestroy(() => {
-        cancelAnimationFrame(animationFrame);
+        animator.stop();
         clearInterval(moveTimer);
     });
 </script>
 
 <div class="grid">
     <div class="stats">
-        <StatsPanel bind:this={statsPanel} />
+        <StatsPanel bind:stats={sim.state.stats} bind:moveRate />
     </div>
     <div class="controls">
         <GameControls
-            bind:isRunning
-            bind:gameOver
-            onPauseToggle={() => togglePaused()}
+            bind:isRunning={animator.isRunning}
+            bind:gameOver={sim.state.gameOver}
+            onPauseToggle={() => animator.togglePaused()}
             onNewGame={() => newGame()}
         />
         <div class="speed-control">
@@ -213,7 +104,11 @@
         </div>
     </div>
     <div class="board">
-        <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
+        <TetrisBoard
+            bind:this={tetrisBoard}
+            bind:state={sim.state}
+            bind:currentMove={animator.currentMove}
+        />
     </div>
 </div>
 

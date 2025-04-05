@@ -35,25 +35,6 @@ impl Move {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Move {
-    pub fn left(self) -> Move {
-        Move {
-            pos: Position {
-                col: self.pos.col - 1,
-                ..self.pos
-            },
-            ..self
-        }
-    }
-
-    pub fn right(self) -> Move {
-        Move {
-            pos: Position {
-                col: self.pos.col + 1,
-                ..self.pos
-            },
-            ..self
-        }
-    }
     #[cfg(feature = "wasm")]
     pub fn get_pattern(&self) -> WasmPattern {
         self.piece.rotation(self.pos.rot).into_wasm()
@@ -191,7 +172,7 @@ impl PartialOrd for Node {
     }
 }
 
-fn next_positions(candidates: &mut [Position], pos: Position, piece: Piece) {
+fn next_positions(candidates: &mut [Position], pos: Position, piece: Piece) -> usize {
     candidates[0] = Position {
         rot: pos.rot,
         row: pos.row,
@@ -220,7 +201,12 @@ fn next_positions(candidates: &mut [Position], pos: Position, piece: Piece) {
                 row: pos.row,
                 col: pos.col,
             };
+            5
+        } else {
+            4
         }
+    } else {
+        3
     }
 }
 fn touches_ground(piece: Piece, pos: Position, board: &Board) -> bool {
@@ -270,8 +256,8 @@ pub fn move_dijkstra(board: &Board, piece: Piece, level: u64) -> Vec<Path> {
         if touches_ground(piece, current, board) {
             destinations.push(current);
         }
-        next_positions(&mut candidates, current, piece);
-        for next in candidates.iter().copied() {
+        let next_count = next_positions(&mut candidates, current, piece);
+        for next in candidates[..next_count].iter().copied() {
             if board.overlaps_move(Move { piece, pos: next }) {
                 continue;
             }

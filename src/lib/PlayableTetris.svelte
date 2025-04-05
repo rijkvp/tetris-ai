@@ -7,8 +7,9 @@
 
     let game: Game = new Game();
     let tetrisBoard: TetrisBoard;
-    let statsPanel: StatsPanel = $state()!;
 
+    let gameState = $state(game.state);
+    let currentMove = $state(game.move ?? null);
     let isRunning = $state(true);
     let gameOver = $state(false);
 
@@ -36,7 +37,9 @@
         }
 
         // display
-        tetrisBoard.display(game.state, game.move ?? null);
+        gameState = game.state;
+        currentMove = game.move ?? null;
+        tetrisBoard.display();
     }
 
     function togglePaused() {
@@ -91,7 +94,7 @@
 
 <div class="grid">
     <div class="stats">
-        <StatsPanel bind:this={statsPanel} />
+        <StatsPanel bind:stats={gameState.stats} />
     </div>
     <div class="controls">
         <GameControls
@@ -102,7 +105,11 @@
         />
     </div>
     <div class="board">
-        <TetrisBoard bind:this={tetrisBoard} bind:statsPanel />
+        <TetrisBoard
+            bind:this={tetrisBoard}
+            bind:state={gameState}
+            bind:currentMove
+        />
     </div>
 </div>
 

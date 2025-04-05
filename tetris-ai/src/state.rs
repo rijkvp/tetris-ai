@@ -35,6 +35,7 @@ pub struct Delta {
 struct WasmState<'a> {
     board: &'a [[u8; BOARD_WIDTH]; BOARD_HEIGHT],
     stats: Stats,
+    #[serde(rename = "gameOver")]
     game_over: bool,
 }
 

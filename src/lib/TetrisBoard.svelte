@@ -1,8 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { Move } from "tetris-ai";
-    import type { GameState } from "$lib/types.ts";
-    import StatsPanel from "$lib/StatsPanel.svelte";
+    import type { TetrisState } from "$lib/types.ts";
     import { clearBoard, displayBoard, displayCell } from "$lib/display";
 
     let canvas: HTMLCanvasElement;
@@ -39,43 +38,32 @@
         ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
     }
 
-    let { statsPanel = $bindable() }: { statsPanel: StatsPanel } = $props();
-
-    export const clear = () => {
-        clearBoard(ctx, canvas);
-    };
-
-    // the state that is currently being displayed
-    let boardState = $state({
-        state: null,
-        move: null,
-    }) as {
-        state: GameState | null;
-        move: Move | null;
-    };
-
-    export const display = (state: GameState, move: Move | null) => {
-        boardState = { state, move };
-    };
+    let {
+        state = $bindable(),
+        currentMove = $bindable(),
+    }: { state: TetrisState; currentMove: Move | null } = $props();
 
     onMount(() => {
         ctx = canvas.getContext("2d")!;
     });
 
-    $effect(() => {
+    export const clear = () => {
         clearBoard(ctx, canvas);
-        if (boardState.state == null) {
+    };
+
+    export const display = () => {
+        clearBoard(ctx, canvas);
+        if (state == null) {
             return;
         }
-        displayBoard(ctx, boardState.state.board);
-        statsPanel.update(boardState.state.stats);
-        if (boardState.move != null) {
-            displayMove(boardState.move);
+        displayBoard(ctx, state.board);
+        if (currentMove != null) {
+            displayMove(currentMove);
         }
-        if (boardState.state.game_over) {
+        if (state.gameOver) {
             displayGameOver();
         }
-    });
+    };
 </script>
 
 <canvas bind:this={canvas} class="border" width="320" height="640"></canvas>

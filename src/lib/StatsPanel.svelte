@@ -3,22 +3,10 @@
     import type { Stats } from "./types";
     import { localState } from "$lib/stores.svelte";
 
-    let stats: Stats = $state({
-        score: BigInt(0),
-        lines: BigInt(0),
-        level: BigInt(0),
-        steps: BigInt(0),
-        tetrises: BigInt(0),
-    });
-
-    export const update = (state: Stats) => {
-        stats = state;
-    };
-
-    let displayMoves = $state(0);
-    export const setMoves = (moves: number) => {
-        displayMoves = moves;
-    };
+    let {
+        stats = $bindable(),
+        moveRate = $bindable(),
+    }: { stats: Stats; moveRate?: number } = $props();
 </script>
 
 <div class="stats border">
@@ -46,7 +34,7 @@
     {#if localState.cheatMode}
         <div class="item">
             <div class="label">Moves/Sec</div>
-            <div class="value">{displayMoves}</div>
+            <div class="value">{moveRate}</div>
         </div>
     {/if}
 </div>
