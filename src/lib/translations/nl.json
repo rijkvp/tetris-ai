@@ -1,0 +1,74 @@
+{
+  "general": {
+    "close": "Sluiten",
+    "example": "Voorbeeld",
+    "features": "Kenmerken",
+    "scoreboard": "Scorebord"
+  },
+  "level_select": {
+    "title": "Level selecteren",
+    "description": "Kies een level om te spelen."
+  },
+  "locale": {
+    "en": "Engels",
+    "nl": "Nederlands"
+  },
+  "nav": {
+    "levels": "Levels",
+    "sandbox": "Sandbox-modus",
+    "guide": "Uitleg"
+  },
+  "guide": {
+    "title": "Uitleg",
+    "text": "Met deze tool kun je een AI besturen die Tetris speelt, een klassieke videogame. Er zijn verschillende niveaus met verschillende doelen die je kunt spelen zodat je kunt leren hoe de AI werkt. In de Sandbox-modus kun je experimenteren met alle functies. Veel plezier!\n\n<h2>Wat is Tetris?</h2>\n\nTetris is een klassieke videogame waarin je puzelstukjes, die tetromino's worden genoemd, moet plaatsen om rijen te vullen. Als je een rij vult, verdwijnt deze en krijg je punten. Het doel is om zoveel mogelijk rijen te vullen en zo lang mogelijk te overleven. De meeste punten krijg je door een tetris te maken, door 4 rijen tegelijk weg te spelen. Als de tetromino's tot aan de bovenkant van het bord komen, is het spel voorbij.\n\n<h2>Hoe bestuur ik de AI?</h2>\n\nBovenaan het Tetris-bord vind je knoppen waarmee je de AI kunt starten en pauzeren of het bord herstellen. Je kunt ook de snelheid van het spel en de waardes van de kenmarken aanpassen. Links zie je de statistieken van het huidige spel dat door de AI wordt gespeeld. Je ziet de score (hoe meer rijen je hebt weggespeeld, hoe hoger de score), het aantal weggespeelde rijen, het huidige level (elke 10 rijen is een level) en het aantal tetrissen dat de AI heeft gemaakt (4 rijen tegelijk weggespeeld). De doelen tonen aan wat je moet doen om het level te voltooien. Om een uitleg te krijgen over een kernmerk, druk op de [?] knop.\n\n<h2>Hoe werkt de AI?</h2>\n\nDe AI berekent alle mogelijke posities en rotaties waar een tetromino geplaatst kan worden. Daarna telt hij aan de hand van een aantal kenmerken de score op die elke zet geeft. De AI kiest dan de zet met de hoogste score. Je kunt het belang van verschillende kenmerken aanpassen met de schuifregelaars om de doelen te bereiken. De waardes van deze kenmerken bepalen hoe belangrijk ze zijn in de evaluatie. Als je bijvoorbeeld denkt dat een kenmerk erg belangrijk is, kun je het waarde ervan verhogen zodat de AI er prioriteit aan geeft. Of als je denkt dat een kenmerk moet worden vermeden, kun je het waarde verlagen."
+  },
+  "score": {
+    "score": "Punten",
+    "lines": "Rijen",
+    "level": "Level",
+    "tetrises": "Tetrissen"
+  },
+  "controls": {
+    "play": "Spelen",
+    "pause": "Pauze",
+    "step": "Stap",
+    "new_game": "Opnieuw",
+    "speed": "Snelheid"
+  },
+  "goals": {
+    "goals": "Doelen",
+    "complete": "Level voltooid! Je hebt alle doelen bereikt.",
+    "info": "Behaal alle doelen om dit level te voltooien."
+  },
+  "feature_control": {
+    "reset": "Herstel",
+    "randomize": "Willekeurig"
+  },
+  "feature": {
+    "col_trans": {
+      "name": "Kolomovergangen",
+      "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg)."
+    },
+    "row_trans": {
+      "name": "Rijovergangen",
+      "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg)."
+    },
+    "pits": {
+      "name": "Gaten",
+      "description": "Het aantal lege cellen dat een gevulde cel erboven heeft."
+    },
+    "landing_height": {
+      "name": "Landingshoogte",
+      "description": "De hoogte waarop de tetromino wordt geplaatst."
+    },
+    "eroded_cells": {
+      "name": "Gewiste hokjes",
+      "description": "Het aantal hokjes dat wordt gewist van de tetromino zelf als gevolg van de zet.",
+      "example": "In dit voorbeeld is het aantal gewiste hokjes 4."
+    },
+    "cuml_wells": {
+      "name": "Putten",
+      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen."
+    }
+  }
+}

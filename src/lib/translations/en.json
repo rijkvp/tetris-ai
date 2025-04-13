@@ -1,0 +1,77 @@
+{
+  "general": {
+    "close": "Close",
+    "example": "Example",
+    "features": "Features",
+    "scoreboard": "Scoreboard"
+  },
+  "level_select": {
+    "title": "Select level",
+    "description": "Select a level to play."
+  },
+  "locale": {
+    "en": "English",
+    "nl": "Dutch"
+  },
+  "nav": {
+    "levels": "Levels",
+    "sandbox": "Sandbox",
+    "guide": "Guide"
+  },
+  "guide": {
+    "title": "Guide",
+    "text": "This tool lets you control an AI playing Tetris, a classic game. There are different levels with different goals that you can play so you can learn how the AI works. Sandbox mode lets you experiment with all the features. Have fun!\n\n<h2>How do I control the AI?</h2>\n\nAt the top of the Tetris board, there are buttons that allow you to play, pause, reset, or step through the game. You can also adjust the speed of the game and the weights of the features. On the left, you can see the stats of the current game played by the AI. It shows the score (the more lines cleared, the higher the score), the number of lines cleared, the current level (every 10 lines is a level), and the number of tetrises you have made (clearing 4 rows at once). The goals show the objectives you need to complete to finish the level.\n\n<h2>How does the AI work?</h2>\n\nThe AI calculates all possible positions and rotations where it can be placed for every tetromino it has to play. Then, it evaluates them using a set of features. The AI then chooses the move with the highest score. You can adjust the importance of different features using the sliders to meet the goals. The weights of these features determine how important they are in the evaluation. For example, if you think a feature is very important, you can increase its weight to make the AI prioritize it. Or, if you think a feature should be avoided, you can decrease its weight."
+  },
+  "score": {
+    "score": "Score",
+    "lines": "Lines",
+    "level": "Level",
+    "tetrises": "Tetrises"
+  },
+  "controls": {
+    "play": "Play",
+    "pause": "Pause",
+    "step": "Step",
+    "new_game": "New game",
+    "speed": "Speed"
+  },
+  "goals": {
+    "goals": "Goals",
+    "complete": "Level complete! You reached all goals.",
+    "info": "Complete all goals to finish the level."
+  },
+  "feature_control": {
+    "reset": "Reset",
+    "randomize": "Randomize"
+  },
+  "feature": {
+    "col_trans": {
+      "name": "Column transitions",
+      "description": "The number of times that two cells next to each other in the same column don't match (one is filled and the other is empty).",
+      "example": "In this example, the arrows show the column transitions. In total there are 15 column transitions."
+    },
+    "row_trans": {
+      "name": "Row transitions",
+      "description": "The number of times that two cells next to each other in the same row don't match (one is filled and the other is empty).",
+      "example": "In this example, the arrows show the row transitions. In total there are 11 row transitions."
+    },
+    "pits": {
+      "name": "Holes",
+      "description": "The number of empty cells that have a filled cell above them.",
+      "example": "In this example, all holes are marked with crosses. In total there are 25 holes."
+    },
+    "landing_height": {
+      "name": "Landing height",
+      "description": "The height at which the tetromino is placed."
+    },
+    "eroded_cells": {
+      "name": "Cleared cells",
+      "description": "The number of cells that are cleared from the tetromino itself as a result of the move.",
+      "example": "In this example, the number of cleared cells is 4 because 4 cells are cleared from the tetromino due to the line being cleared when it is placed."
+    },
+    "cuml_wells": {
+      "name": "Wells",
+      "description": "The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells."
+    }
+  }
+}

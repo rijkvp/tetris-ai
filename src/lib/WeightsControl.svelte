@@ -71,7 +71,7 @@
     <h1>{$t(`feature.${selectedFeature}.name`)}</h1>
     <p>{$t(`feature.${selectedFeature}.description`)}</p>
     <div class="example">
-        <h2>{$t("general.example")}:</h2>
+        <h2>{$t("general.example")}</h2>
         <p>{$t(`feature.${selectedFeature}.example`)}</p>
         <div class="example-board">
             <ExampleBoard feature={selectedFeature} />
@@ -106,11 +106,18 @@
     dialog {
         inset: 50%;
         transform: translate(-50%, -50%);
-        width: 500px;
         padding: 1rem;
-        border: none;
+        border: 1px solid var(--border);
         background: var(--bg0);
         color: var(--fg0);
+        box-shadow:
+            0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    @media (min-width: 600px) {
+        dialog {
+            min-width: 550px;
+        }
     }
     .buttons {
         display: flex;
@@ -123,15 +130,17 @@
         gap: 0.2rem;
     }
     .example {
-        margin: 1rem 0;
+        margin-top: 0.5rem;
     }
     .example-board {
-        margin: 1rem 0;
+        margin-top: 0.5rem;
         display: flex;
         justify-content: center;
     }
     .close-button {
-        float: right;
+        position: absolute;
+        top: 0;
+        right: 0;
     }
     dialog::backdrop {
         backdrop-filter: blur(6px);

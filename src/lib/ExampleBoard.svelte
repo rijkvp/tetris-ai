@@ -4,8 +4,9 @@
         BOARD_WIDTH,
         BOARD_HEIGHT,
         type BoardData,
-        highlightLine,
+        transitionArrow,
         highlightCell,
+        crossOutCell,
         strikeThroughCell,
         clearBoard,
         displayBoard,
@@ -18,8 +19,10 @@
     function displayColTrans(board: BoardData) {
         for (let c = 0; c < BOARD_WIDTH; c++) {
             for (let r = 0; r < BOARD_HEIGHT - 1; r++) {
-                if ((board[r][c] !== 0) != (board[r + 1][c] !== 0)) {
-                    highlightLine(ctx, c, r + 1, c + 1, r + 1);
+                if (board[r][c] !== 0 && board[r + 1][c] === 0) {
+                    transitionArrow(ctx, c, r, c, r + 1);
+                } else if (board[r][c] === 0 && board[r + 1][c] !== 0) {
+                    transitionArrow(ctx, c, r + 1, c, r);
                 }
             }
         }
@@ -28,8 +31,10 @@
     function displayRowTrans(board: BoardData) {
         for (let r = 0; r < BOARD_HEIGHT; r++) {
             for (let c = 0; c < BOARD_WIDTH - 1; c++) {
-                if ((board[r][c] !== 0) != (board[r][c + 1] !== 0)) {
-                    highlightLine(ctx, c + 1, r, c + 1, r + 1);
+                if (board[r][c] !== 0 && board[r][c + 1] === 0) {
+                    transitionArrow(ctx, c, r, c + 1, r);
+                } else if (board[r][c] === 0 && board[r][c + 1] !== 0) {
+                    transitionArrow(ctx, c + 1, r, c, r);
                 }
             }
         }
@@ -39,7 +44,7 @@
         for (let c = 0; c < BOARD_WIDTH; c++) {
             for (let r = BOARD_HEIGHT - height[c]; r < BOARD_HEIGHT; r++) {
                 if (board[r][c] === 0) {
-                    highlightCell(ctx, c, r);
+                    crossOutCell(ctx, c, r);
                 }
             }
         }

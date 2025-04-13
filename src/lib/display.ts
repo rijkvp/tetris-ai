@@ -15,8 +15,9 @@ const CELL_COLOURS = [
 ];
 const CELL_OUTLINE = 3;
 
-const HIGHLIGHT_LINE_COLOUR = "#f00";
-const HIGHLIGHT_LINE_WIDTH = 5;
+const ARROW_COLOUR = "#f0f";
+const ARROW_WIDTH = 4;
+const ARROW_SIZE = 10;
 
 const HIGHLIGHT_CELL_STROKE = "#b7b41b";
 const HIGHLIGHT_CELL_FILL = "rgba(247, 252, 118, 0.1)"
@@ -24,6 +25,10 @@ const HIGHLIGHT_CELL_WIDTH = 2;
 
 const STRIKE_THROUGH_COLOUR = "#470701";
 const STRIKE_THROUGH_WIDTH = 2;
+
+const CROSS_COLOUR = "#dd0000";
+const CROSS_WIDTH = 3;
+const CROSS_OFFSET = 4;
 
 export type BoardData = Uint8Array[];
 
@@ -88,13 +93,42 @@ function displayGrid(ctx: CanvasRenderingContext2D) {
 
 }
 
-export function highlightLine(ctx: CanvasRenderingContext2D, c1: number, r1: number, c2: number, r2: number) {
-    ctx.strokeStyle = HIGHLIGHT_LINE_COLOUR;
-    ctx.lineWidth = HIGHLIGHT_LINE_WIDTH;
+export function transitionArrow(ctx: CanvasRenderingContext2D, c1: number, r1: number, c2: number, r2: number) {
+    let offset = 0;
+    if (r1 != r2) {
+        offset = r1 > r2 ? ARROW_SIZE : -ARROW_SIZE;
+    } else if (c1 != c2) {
+        offset = c1 > c2 ? ARROW_SIZE : -ARROW_SIZE;
+    }
+    // the tail
     ctx.beginPath();
-    ctx.moveTo(c1 * CELL_SIZE, r1 * CELL_SIZE);
-    ctx.lineTo(c2 * CELL_SIZE, r2 * CELL_SIZE);
+    ctx.moveTo(c1 * CELL_SIZE + CELL_SIZE / 2, r1 * CELL_SIZE + CELL_SIZE / 2);
+    const endX = c2 * CELL_SIZE + CELL_SIZE / 2;
+    const endY = r2 * CELL_SIZE + CELL_SIZE / 2;
+    if (r1 != r2) {
+        ctx.lineTo(endX, endY + offset);
+    } else if (c1 != c2) {
+        ctx.lineTo(endX + offset, endY);
+    }
+    ctx.strokeStyle = ARROW_COLOUR;
+    ctx.lineWidth = ARROW_WIDTH;
     ctx.stroke();
+
+    // the arrow head
+    ctx.beginPath();
+    ctx.moveTo(endX, endY);
+    if (r1 != r2) {
+        ctx.lineTo(endX - ARROW_SIZE, endY + offset);
+        ctx.lineTo(endX + ARROW_SIZE, endY + offset);
+    } else if (c1 != c2) {
+        const offset = c1 > c2 ? ARROW_SIZE : -ARROW_SIZE;
+        ctx.lineTo(endX + offset, endY - ARROW_SIZE);
+        ctx.lineTo(endX + offset, endY + ARROW_SIZE);
+    }
+    ctx.lineTo(endX, endY);
+    ctx.closePath();
+    ctx.fillStyle = ARROW_COLOUR;
+    ctx.fill();
 }
 
 export function highlightCell(ctx: CanvasRenderingContext2D, col: number, row: number) {
@@ -120,6 +154,20 @@ export function strikeThroughCell(ctx: CanvasRenderingContext2D, col: number, ro
     ctx.stroke();
 }
 
+export function crossOutCell(ctx: CanvasRenderingContext2D, col: number, row: number) {
+    ctx.strokeStyle = CROSS_COLOUR;
+    ctx.lineWidth = CROSS_WIDTH;
+    ctx.beginPath();
+    const [topLeftX, topLeftY] = [col * CELL_SIZE + CROSS_WIDTH / 2 + CROSS_OFFSET, row * CELL_SIZE + CROSS_WIDTH / 2 + CROSS_OFFSET];
+    const [bottomRightX, bottomRightY] = [col * CELL_SIZE + CELL_SIZE - CROSS_WIDTH / 2 - CROSS_OFFSET, row * CELL_SIZE + CELL_SIZE - CROSS_WIDTH / 2 - CROSS_OFFSET];
+    ctx.moveTo(topLeftX, topLeftY);
+    ctx.lineTo(bottomRightX, bottomRightY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(bottomRightX, topLeftY);
+    ctx.lineTo(topLeftX, bottomRightY);
+    ctx.stroke();
+}
 
 export function clearBoard(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
