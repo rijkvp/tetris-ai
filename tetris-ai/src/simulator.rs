@@ -31,6 +31,13 @@ impl Simulator {
         Self::default()
     }
 
+    pub fn new_with_weights(weights: Weights) -> Self {
+        Self {
+            weights,
+            ..Self::default()
+        }
+    }
+
     pub fn new_with_preset(preset: &str) -> Self {
         Self {
             weights: Weights::from_preset(preset),
@@ -55,6 +62,14 @@ impl Simulator {
 
     pub fn run(&mut self) {
         while self.step() {}
+    }
+
+    pub fn run_for(&mut self, iterations: usize) {
+        for _ in 0..iterations {
+            if !self.step() {
+                break;
+            }
+        }
     }
 
     pub fn step(&mut self) -> bool {

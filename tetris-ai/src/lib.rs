@@ -1,5 +1,6 @@
 pub mod board;
 pub mod feature;
+pub mod learn;
 pub mod r#move;
 pub mod piece;
 pub mod rng;

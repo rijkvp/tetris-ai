@@ -16,6 +16,8 @@ wasm-bindgen = { version = "0.2.100", optional = true }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 log = "0.4.27"
+ndarray = "0.16.1"
+rand_distr = "0.5.1"
 
 [features]
 wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:console_error_panic_hook"]

@@ -87,6 +87,28 @@ impl WeightsMap {
     pub fn into_js(self) -> JsValue {
         serde_wasm_bindgen::to_value(&self.0).unwrap()
     }
+
+    pub fn from_features_values(names: &[&str], values: &[f64]) -> Self {
+        if names.len() != values.len() {
+            panic!("Names and values must have the same length");
+        }
+        let mut map = Vec::with_capacity(names.len());
+        for (name, value) in names.iter().zip(values.iter()) {
+            map.push((name.to_string(), *value));
+        }
+        WeightsMap(map)
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&str, f64)> {
+        self.0.iter().map(|(name, weight)| (name.as_str(), *weight))
+    }
+
+    pub fn names(&self) -> Vec<&str> {
+        self.0
+            .iter()
+            .map(|(name, _)| name.as_str())
+            .collect::<Vec<_>>()
+    }
 }
 
 impl From<WeightsMap> for Weights {
@@ -125,6 +147,32 @@ impl Weights {
             score += feature(state) as f64 * weight;
         }
         score
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn iter_values(&self) -> impl Iterator<Item = f64> {
+        self.0.iter().map(|(_, weight)| *weight)
+    }
+
+    pub fn into_values(self) -> Vec<f64> {
+        self.0.into_iter().map(|(_, weight)| weight).collect()
+    }
+
+    pub fn with_values(&self, model_weights: &[f64]) -> Self {
+        Self(
+            self.0
+                .iter()
+                .zip(model_weights.iter())
+                .map(|((feature, _), weight)| (*feature, *weight))
+                .collect::<Vec<_>>(),
+        )
+    }
+
+    pub fn set_value(&mut self, i: usize, mean: f64) {
+        self.0[i].1 = mean;
     }
 }
 
