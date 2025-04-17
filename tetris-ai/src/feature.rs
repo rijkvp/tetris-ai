@@ -57,14 +57,13 @@ impl Default for WeightsMap {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[cfg(feature = "wasm")]
+#[wasm_bindgen]
 impl WeightsMap {
-    #[cfg(feature = "wasm")]
     pub fn defaults() -> Self {
         Self::default()
     }
 
-    #[cfg(feature = "wasm")]
     pub fn preset(preset: &str) -> Self {
         if let Some((_, weight_map)) = PRESET_MAP.iter().find(|(name, _)| name == &preset) {
             Self(
@@ -78,16 +77,16 @@ impl WeightsMap {
         }
     }
 
-    #[cfg(feature = "wasm")]
     pub fn from_js(val: wasm_bindgen::JsValue) -> Self {
         Self(serde_wasm_bindgen::from_value(val).unwrap())
     }
 
-    #[cfg(feature = "wasm")]
     pub fn into_js(self) -> JsValue {
         serde_wasm_bindgen::to_value(&self.0).unwrap()
     }
+}
 
+impl WeightsMap {
     pub fn from_features_values(names: &[&str], values: &[f64]) -> Self {
         if names.len() != values.len() {
             panic!("Names and values must have the same length");
@@ -117,8 +116,70 @@ impl From<WeightsMap> for Weights {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+impl From<Weights> for WeightsMap {
+    fn from(weights: Weights) -> Self {
+        Self(
+            weights
+                .0
+                .iter()
+                .map(|(feature_fn, weight)| {
+                    let name = FEATURE_LOOKUP
+                        .iter()
+                        .find(|(_, fn_ptr)| std::ptr::fn_addr_eq(*fn_ptr, *feature_fn))
+                        .expect("Feature function not found");
+                    (name.0.to_string(), *weight)
+                })
+                .collect::<Vec<_>>(),
+        )
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct Weights(Vec<(FeatureFn, f64)>);
+
+impl Default for Weights {
+    fn default() -> Self {
+        WeightsMap::default().into()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Features(Vec<FeatureFn>);
+
+impl Features {
+    pub fn from_names(names: &[&str]) -> Self {
+        let mut features = Vec::with_capacity(names.len());
+        for name in names.iter() {
+            if let Some((_, feature)) = FEATURE_LOOKUP.iter().find(|(n, _)| n == name) {
+                features.push(*feature);
+            } else {
+                panic!("Unknown feature: {}", name);
+            }
+        }
+        Features(features)
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    pub fn with_weights(&self, weights: &[f64]) -> Weights {
+        if self.0.len() != weights.len() {
+            panic!("Features and weights must have the same length");
+        }
+        Weights(
+            self.0
+                .iter()
+                .copied()
+                .zip(weights.iter().copied())
+                .collect::<Vec<_>>(),
+        )
+    }
+}
 
 impl Weights {
     pub fn from_preset(preset: &str) -> Self {
@@ -149,26 +210,12 @@ impl Weights {
         score
     }
 
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
-
     pub fn iter_values(&self) -> impl Iterator<Item = f64> {
         self.0.iter().map(|(_, weight)| *weight)
     }
 
     pub fn into_values(self) -> Vec<f64> {
         self.0.into_iter().map(|(_, weight)| weight).collect()
-    }
-
-    pub fn with_values(&self, model_weights: &[f64]) -> Self {
-        Self(
-            self.0
-                .iter()
-                .zip(model_weights.iter())
-                .map(|((feature, _), weight)| (*feature, *weight))
-                .collect::<Vec<_>>(),
-        )
     }
 
     pub fn set_value(&mut self, i: usize, mean: f64) {

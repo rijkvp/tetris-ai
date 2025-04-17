@@ -1,12 +1,12 @@
 use std::time::Instant;
-use tetris_ai::{learn::Learner, simulator::Simulator};
+use tetris_ai::{feature::Features, simulator::Simulator, train::Trainer};
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
 
     if args.len() > 1 {
         match args[1].as_str() {
-            "learn" => learn(),
+            "train" => train(),
             "run" => run(),
             _ => eprintln!("unknown command: {}", args[1]),
         }
@@ -33,15 +33,36 @@ fn run() {
     println!("{}", simulator.board());
 }
 
-fn learn() {
-    let mut learner = Learner::default();
-    for i in 0..20 {
-        learner.step();
-        println!("Iteration {}:", i + 1);
-        println!("---------------------");
-        let (weights_map, st_dev) = learner.state();
-        for (i, (feature, weight)) in weights_map.iter().enumerate() {
-            println!("{:<20}\t{:+.4} \t(±{:.4})", feature, weight, st_dev[i]);
+fn train() {
+    let mut trainer = Trainer::new(Features::from_names(&[
+        "row_trans",
+        "col_trans",
+        "pits",
+        "landing_height",
+        "eroded_cells",
+        "cuml_wells",
+    ]));
+    let mut i = 1;
+    while !trainer.is_stable() {
+        let state = trainer.train_gen();
+        println!("\ngeneration {i}");
+        println!(
+            "max: {:.1}, min: {:.1}, mean: {:.1}",
+            state.max, state.min, state.mean
+        );
+        let max_weight = state
+            .weights
+            .iter()
+            .map(|(_, weight)| weight.abs())
+            .fold(f64::NEG_INFINITY, f64::max);
+        for (i, (feature, weight)) in state.weights.iter().enumerate() {
+            let normalized_weight = weight / max_weight * 10.0;
+            let normalized_st_dev = state.std_dev[i] / max_weight * 10.0;
+            println!(
+                "{:<20}\t{:+.1} \t(±{:.1})",
+                feature, normalized_weight, normalized_st_dev
+            );
         }
+        i += 1;
     }
 }

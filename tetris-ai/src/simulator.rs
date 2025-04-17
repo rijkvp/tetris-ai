@@ -1,20 +1,11 @@
-#[cfg(not(feature = "wasm"))]
 use crate::board::Board;
 use crate::feature::{Weights, WeightsMap};
 use crate::r#move::{Move, Path, move_dijkstra};
 use crate::rng::gen_random_piece;
-use crate::state::State;
-#[cfg(not(feature = "wasm"))]
-use crate::state::Stats;
+use crate::state::{State, Stats};
 use rand::Rng;
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
-
-#[cfg(all(target_arch = "wasm32", feature = "wasm"))]
-#[wasm_bindgen(start)]
-pub fn wasm_main() {
-    console_error_panic_hook::set_once();
-}
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Default)]
@@ -24,18 +15,28 @@ pub struct Simulator {
     current_path: Option<Path>,
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Simulator {
-    #[cfg_attr(feature = "wasm", wasm_bindgen(constructor))]
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn new_with_weights(weights: Weights) -> Self {
         Self {
             weights,
             ..Self::default()
         }
+    }
+
+    pub fn stats(&self) -> Stats {
+        self.state.stats()
+    }
+
+    pub fn board(&self) -> &Board {
+        self.state.board()
+    }
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+impl Simulator {
+    #[cfg_attr(feature = "wasm", wasm_bindgen(constructor))]
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn new_with_preset(preset: &str) -> Self {
@@ -48,16 +49,6 @@ impl Simulator {
     pub fn reset(&mut self) {
         self.state = State::default();
         self.current_path = None;
-    }
-
-    #[cfg(not(feature = "wasm"))]
-    pub fn stats(&self) -> Stats {
-        self.state.stats()
-    }
-
-    #[cfg(not(feature = "wasm"))]
-    pub fn board(&self) -> &Board {
-        self.state.board()
     }
 
     pub fn run(&mut self) {
