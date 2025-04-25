@@ -1,5 +1,9 @@
 use std::time::Instant;
-use tetris_ai::{feature::Features, simulator::Simulator, train::Trainer};
+use tetris_ai::{
+    feature::Features,
+    simulator::Simulator,
+    train::{TrainCriteria, Trainer},
+};
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -34,14 +38,17 @@ fn run() {
 }
 
 fn train() {
-    let mut trainer = Trainer::new(Features::from_names(&[
-        "row_trans",
-        "col_trans",
-        "pits",
-        "landing_height",
-        "eroded_cells",
-        "cuml_wells",
-    ]));
+    let mut trainer = Trainer::new(
+        Features::from_names(&[
+            "row_trans",
+            "col_trans",
+            // "pits",
+            // "landing_height",
+            "eroded_cells",
+            "cuml_wells",
+        ]),
+        TrainCriteria::Tetrises,
+    );
     let mut i = 1;
     while !trainer.is_stable() {
         let state = trainer.train_gen();

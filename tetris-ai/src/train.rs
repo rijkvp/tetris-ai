@@ -6,6 +6,7 @@ use rand_distr::{Distribution, Normal};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
+const EVAL_ITERATIONS: usize = 100000;
 const STABLE_THRESHOLD: f64 = 0.1;
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
@@ -15,6 +16,7 @@ pub struct Trainer {
     st_dev: Vec<f64>,
     models_per_gen: usize,
     kept_per_gen: usize,
+    criteria: TrainCriteria,
 }
 
 #[derive(Debug, Clone)]
@@ -30,13 +32,14 @@ pub struct TrainGeneration {
 }
 
 impl Trainer {
-    pub fn new(features: Features) -> Self {
+    pub fn new(features: Features, criteria: TrainCriteria) -> Self {
         Self {
             weights: vec![0.0; features.len()],
             st_dev: vec![10.0; features.len()],
             features,
             models_per_gen: 100,
             kept_per_gen: 10,
+            criteria,
         }
     }
 }
@@ -46,7 +49,7 @@ impl Trainer {
     #[cfg(feature = "wasm")]
     pub fn from_feature_names(feature_names: Box<[String]>) -> Self {
         let strs = feature_names.iter().map(String::as_str).collect::<Vec<_>>();
-        Self::new(Features::from_names(&strs))
+        Self::new(Features::from_names(&strs), TrainCriteria::Score)
     }
 
     pub fn train_gen(&mut self) -> TrainGeneration {
@@ -68,7 +71,12 @@ impl Trainer {
         // TODO: figure out if multithreading can be used here
         let mut results = generation
             .iter()
-            .map(|weights| (weights, eval(self.features.with_weights(weights))))
+            .map(|weights| {
+                (
+                    weights,
+                    self.criteria.eval(self.features.with_weights(weights)),
+                )
+            })
             .collect::<Vec<_>>();
 
         // Sort the results by score
@@ -108,13 +116,32 @@ impl Trainer {
     }
 }
 
-// TODO: make configurable which metric to use
-fn eval(weights: Weights) -> f64 {
-    let mut sim = Simulator::new_with_weights(weights);
-    while sim.step() {
-        if sim.stats().level >= 30 {
-            break;
+pub enum TrainCriteria {
+    Score,
+    Level,
+    Tetrises,
+}
+
+impl TrainCriteria {
+    fn eval(&self, weights: Weights) -> f64 {
+        let mut sim = Simulator::new_with_weights(weights);
+        match self {
+            TrainCriteria::Score => {
+                sim.run_for(EVAL_ITERATIONS);
+                sim.stats().score as f64
+            }
+            TrainCriteria::Level => {
+                while sim.step() {
+                    if sim.stats().level >= 30 {
+                        break;
+                    }
+                }
+                sim.stats().lines as f64
+            }
+            TrainCriteria::Tetrises => {
+                sim.run_for(EVAL_ITERATIONS);
+                sim.stats().score as f64 * 10.0 * (sim.stats().tetrises + 1) as f64
+            }
         }
     }
-    sim.stats().score as f64
 }
