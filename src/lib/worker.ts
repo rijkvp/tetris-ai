@@ -29,7 +29,9 @@ export type WorkerMessage =
     | { type: 'train_state'; data: TrainState }
     | { type: 'status'; status: 'stopped' | 'started', message?: string };
 
-await init(); // initialize the WASM module
+async function initTetris() {
+    await init(); // initialize the WASM module
+}
 
 const trainer: Trainer = Trainer.from_feature_names([
     "row_trans",
@@ -98,3 +100,4 @@ self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
     }
 };
 
+initTetris();
