@@ -29,18 +29,22 @@ export type WorkerMessage =
     | { type: 'train_state'; data: TrainState }
     | { type: 'status'; status: 'stopped' | 'started', message?: string };
 
-async function initTetris() {
-    await init(); // initialize the WASM module
-}
+let trainer: Trainer;
 
-const trainer: Trainer = Trainer.from_feature_names([
-    "row_trans",
-    "col_trans",
-    "pits",
-    "landing_height",
-    "eroded_cells",
-    "cuml_wells",
-]);
+async function initWorker() {
+    await init(); // initialize the WASM module
+
+    // the Rust code is now available
+    trainer = Trainer.from_feature_names([
+        "row_trans",
+        "col_trans",
+        "pits",
+        "landing_height",
+        "eroded_cells",
+        "cuml_wells",
+    ]);
+
+}
 
 let isRunning: boolean = false;
 let isStopRequested: boolean = false;
@@ -100,4 +104,4 @@ self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
     }
 };
 
-initTetris();
+initWorker();
