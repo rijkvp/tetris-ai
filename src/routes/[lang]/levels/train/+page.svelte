@@ -10,7 +10,5 @@
     {#snippet explanation()}
         <h2>Watch the AI being trained!</h2>
     {/snippet}
-    {#snippet side()}
-        TODO: Put weights here
-    {/snippet}
+    {#snippet side()}{/snippet}
 </Level>

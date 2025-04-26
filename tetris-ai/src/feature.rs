@@ -2,6 +2,7 @@ use crate::{
     board::{BOARD_HEIGHT, BOARD_WIDTH},
     state::State,
 };
+use serde::Serialize;
 use std::cmp::{max, min};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::{JsValue, wasm_bindgen};
@@ -43,7 +44,8 @@ const FEATURE_LOOKUP: [(&str, FeatureFn); 6] = [
 ];
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
+#[serde(transparent)]
 pub struct WeightsMap(Vec<(String, f64)>);
 
 impl Default for WeightsMap {

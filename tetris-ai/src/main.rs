@@ -38,38 +38,40 @@ fn run() {
 }
 
 fn train() {
-    let mut trainer = Trainer::new(
-        Features::from_names(&[
-            "row_trans",
-            "col_trans",
-            // "pits",
-            // "landing_height",
-            "eroded_cells",
-            "cuml_wells",
-        ]),
-        TrainCriteria::Tetrises,
-    );
-    let mut i = 1;
+    const FEATURE_NAMES: &[&str] = &[
+        "row_trans",
+        "col_trans",
+        "pits",
+        "landing_height",
+        "eroded_cells",
+        "cuml_wells",
+    ];
+
+    let mut trainer = Trainer::new(Features::from_names(FEATURE_NAMES), TrainCriteria::Score);
     while !trainer.is_stable() {
-        let state = trainer.train_gen();
-        println!("\ngeneration {i}");
+        let state = trainer.step();
         println!(
-            "max: {:.1}, min: {:.1}, mean: {:.1}",
-            state.max, state.min, state.mean
+            "Generation {}, Model {}, Score: {:.1}",
+            state.gen_index(),
+            state.model_index(),
+            state.eval_result().score
         );
-        let max_weight = state
-            .weights
-            .iter()
-            .map(|(_, weight)| weight.abs())
-            .fold(f64::NEG_INFINITY, f64::max);
-        for (i, (feature, weight)) in state.weights.iter().enumerate() {
-            let normalized_weight = weight / max_weight * 10.0;
-            let normalized_st_dev = state.std_dev[i] / max_weight * 10.0;
+        if let Some(generation) = state.generation() {
             println!(
-                "{:<20}\t{:+.1} \t(±{:.1})",
-                feature, normalized_weight, normalized_st_dev
+                "max: {:.1}, min: {:.1}, mean: {:.1}",
+                generation.max, generation.min, generation.mean
             );
+            for (i, (weight, feature)) in generation
+                .weights
+                .iter()
+                .zip(FEATURE_NAMES.iter())
+                .enumerate()
+            {
+                println!(
+                    "{:<20}\t{:+.1} \t(±{:.1})",
+                    feature, weight, generation.std_dev[i]
+                );
+            }
         }
-        i += 1;
     }
 }

@@ -1,81 +1,109 @@
 <script lang="ts">
-    import { Trainer } from "tetris-ai";
-    import TetrisBoard from "$lib/TetrisBoard.svelte";
-    import StatsPanel from "$lib/StatsPanel.svelte";
-    import { onDestroy, onMount } from "svelte";
-    import GameControls from "./GameControls.svelte";
+    import { onMount } from "svelte";
+    import type {
+        TrainGeneration,
+        TrainState,
+        WorkerCommand,
+        WorkerMessage,
+    } from "./worker";
+    import WeightsDisplay from "./WeightsDisplay.svelte";
 
-    let trainer: Trainer = Trainer.from_feature_names([
-        "col_trans",
+    let isRunning: boolean = $state(false);
+    let trainState: TrainState | null = $state(null);
+    let trainGeneration: TrainGeneration | null = $state(null);
+
+    const FEATURE_KEYS: string[] = [
         "row_trans",
-    ]);
-    let tetrisBoard: TetrisBoard;
+        "col_trans",
+        "pits",
+        "landing_height",
+        "eroded_cells",
+        "cuml_wells",
+    ];
 
-    // let gameState = $state(game.state);
-    // let currentMove = $state(game.move ?? null);
-    let isRunning = $state(true);
-    let gameOver = $state(false);
-
-    let animationFrame: number;
-    let lastFrameTime = 0;
-    const TICK_DURATION = 0.4;
-    let timer = TICK_DURATION;
-
-    function togglePaused() {
-        isRunning = !isRunning;
-        if (isRunning) {
-            startGameLoop();
-        }
+    function startTrain() {
+        worker.postMessage({ command: "start" } satisfies WorkerCommand);
     }
 
-    function startGameLoop() {
-        console.log("Animating frame");
-        const startTime = performance.now();
-        let state = trainer.train_gen();
-        const endTime = performance.now();
-        console.log("Frame time:", endTime - startTime);
-        console.log(state);
+    function stopTrain() {
+        worker.postMessage({ command: "stop" } satisfies WorkerCommand);
     }
 
-    function newGame() {
-        // tetrisBoard.clear();
-        gameOver = false;
-        isRunning = true;
-        startGameLoop();
+    function resetTrain() {
+        worker.postMessage({ command: "reset" } satisfies WorkerCommand);
+        trainState = null;
+        trainGeneration = null;
     }
+
+    let worker: Worker;
+
+    onMount(() => {
+        worker = new Worker(new URL("./worker.ts", import.meta.url), {
+            type: "module",
+        });
+
+        worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+            switch (event.data.type) {
+                case "train_state":
+                    trainState = event.data.data;
+                    if (trainState.generation) {
+                        trainGeneration = trainState.generation;
+                    }
+                    break;
+                case "status":
+                    console.log("Received status:", event.data.status);
+                    if (event.data.status === "started") {
+                        isRunning = true;
+                    } else if (event.data.status === "stopped") {
+                        isRunning = false;
+                    }
+                    break;
+                default:
+                    console.error("Unknown message from worker:", event.data);
+            }
+        };
+
+        return () => {
+            worker.terminate();
+        };
+    });
 </script>
 
-<div class="grid">
+<div>
     <div class="controls">
-        <GameControls
-            bind:isRunning
-            bind:gameOver
-            onPauseToggle={() => togglePaused()}
-            onNewGame={() => newGame()}
-        />
+        {#if isRunning}
+            <button onclick={stopTrain}>Stop training</button>
+        {:else}
+            <button onclick={startTrain}>Start training</button>
+        {/if}
+        <button onclick={resetTrain}>Reset training</button>
     </div>
-    <div class="board"></div>
+    <div>
+        {#if trainState}
+            <p>
+                Generation {trainState.gen_index}, Model {trainState.model_index}
+            </p>
+        {/if}
+    </div>
+    <div>
+        <h2>Current Weights</h2>
+        {#if trainState}
+            <WeightsDisplay
+                weightKeys={FEATURE_KEYS}
+                weightValues={trainState.eval_result.weights}
+            />
+        {/if}
+    </div>
+    <div>
+        <h2>Best of last generation</h2>
+        {#if trainGeneration}
+            <p>
+                Min {trainGeneration.min}, Max {trainGeneration.max}, Mean {trainGeneration.mean}
+            </p>
+            <WeightsDisplay
+                weightKeys={FEATURE_KEYS}
+                weightValues={trainGeneration.weights}
+            />
+        {/if}
+    </div>
 </div>
-
-<style>
-    .grid {
-        display: grid;
-        grid-template-columns: auto auto;
-        grid-template-rows: min-content auto;
-        gap: 16px;
-    }
-    .board {
-        grid-column: 2;
-        grid-row: 2;
-    }
-    .stats {
-        grid-column: 1;
-        grid-row: 2;
-    }
-    .controls {
-        grid-column: 2;
-        grid-row: 1;
-        display: flex;
-        flex-direction: column;
-    }
-</style>
