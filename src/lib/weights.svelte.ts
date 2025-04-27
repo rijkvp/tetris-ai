@@ -24,6 +24,14 @@ export class Weights {
         }
     }
 
+    static fromValues(keys: string[], values: number[]) {
+        const weights = new Weights();
+        for (let i = 0; i < keys.length; i++) {
+            weights.map.set(keys[i], new WeightEntry(true, values[i]));
+        }
+        return weights;
+    }
+
     getWeightsMap(): WeightsMap {
         const array = new Array();
         for (const [key, entry] of this.map) {

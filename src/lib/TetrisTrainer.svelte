@@ -7,6 +7,10 @@
         WorkerMessage,
     } from "./worker";
     import WeightsDisplay from "./WeightsDisplay.svelte";
+    import { Weights } from "./weights.svelte";
+    import TetrisBoard from "./TetrisBoard.svelte";
+    import { TetrisSimulator } from "./simulator.svelte";
+    import { TetrisAnimator } from "./animator.svelte";
 
     let isRunning: boolean = $state(false);
     let trainState: TrainState | null = $state(null);
@@ -21,6 +25,16 @@
         "cuml_wells",
     ];
 
+    let tetrisBoard: TetrisBoard;
+    let sim = new TetrisSimulator();
+    let animator = new TetrisAnimator(
+        sim,
+        () => tetrisBoard.display(),
+        () => {
+            console.log("Game over");
+        },
+    );
+
     function startTrain() {
         worker.postMessage({ command: "start" } satisfies WorkerCommand);
     }
@@ -33,6 +47,21 @@
         worker.postMessage({ command: "reset" } satisfies WorkerCommand);
         trainState = null;
         trainGeneration = null;
+        startSim();
+    }
+
+    function startSim(weightValues?: number[]) {
+        let weights: Weights;
+        if (weightValues) {
+            weights = Weights.fromValues(FEATURE_KEYS, weightValues);
+        } else {
+            weights = new Weights(FEATURE_KEYS);
+        }
+        sim.reset();
+        sim.updateWeights(weights.getWeightsMap());
+        tetrisBoard.clear();
+        animator.restart();
+        animator.setSpeed(80);
     }
 
     let worker: Worker;
@@ -48,6 +77,7 @@
                     trainState = event.data.data;
                     if (trainState.generation) {
                         trainGeneration = trainState.generation;
+                        startSim(trainGeneration.weights);
                     }
                     break;
                 case "status":
@@ -62,6 +92,8 @@
                     console.error("Unknown message from worker:", event.data);
             }
         };
+
+        startSim();
 
         return () => {
             worker.terminate();
@@ -85,25 +117,48 @@
             </p>
         {/if}
     </div>
-    <div>
-        <h2>Current Weights</h2>
-        {#if trainState}
-            <WeightsDisplay
-                weightKeys={FEATURE_KEYS}
-                weightValues={trainState.eval_result.weights}
-            />
-        {/if}
+    <div class="board">
+        <TetrisBoard
+            bind:this={tetrisBoard}
+            bind:state={sim.state}
+            bind:currentMove={animator.currentMove}
+        />
     </div>
-    <div>
-        <h2>Best of last generation</h2>
-        {#if trainGeneration}
-            <p>
-                Min {trainGeneration.min}, Max {trainGeneration.max}, Mean {trainGeneration.mean}
-            </p>
-            <WeightsDisplay
-                weightKeys={FEATURE_KEYS}
-                weightValues={trainGeneration.weights}
-            />
-        {/if}
+    <div class="weights">
+        <div class="weights-item">
+            <h2>Current Weights</h2>
+            {#if trainState}
+                <WeightsDisplay
+                    weightKeys={FEATURE_KEYS}
+                    weightValues={trainState.eval_result.weights}
+                />
+            {/if}
+        </div>
+        <div class="weights-item">
+            <h2>Best of last generation</h2>
+            {#if trainGeneration}
+                <p>
+                    Min {trainGeneration.min}, Max {trainGeneration.max}, Mean {trainGeneration.mean}
+                </p>
+                <WeightsDisplay
+                    weightKeys={FEATURE_KEYS}
+                    weightValues={trainGeneration.weights}
+                />
+            {/if}
+        </div>
     </div>
 </div>
+
+<style>
+    .weights {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    .weights-item {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+</style>
