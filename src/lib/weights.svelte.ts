@@ -19,10 +19,11 @@ export class Weights {
 
     constructor(defaultFeatures?: [string, number][], lockedFeatures?: string[]) {
         for (const [key, value] of WeightsMap.defaults().into_js()) {
-            if (defaultFeatures && !defaultFeatures.includes(key)) {
+            const defaultFeature = defaultFeatures?.find(([k]) => k === key);
+            if (defaultFeatures && !defaultFeature) {
                 continue;
             }
-            const initialValue = defaultFeatures?.find(([k]) => k === key)?.[1] ?? value;
+            const initialValue = defaultFeature?.[1] ?? value;
             const locked = lockedFeatures?.includes(key) ?? false;
             this.map.set(key, new WeightEntry(true, initialValue, locked));
         }
@@ -83,13 +84,14 @@ export class Weights {
     reset() {
         for (const entry of this.map.values()) {
             entry.enabled = true;
-            entry.value = 0;
+            if (!entry.locked)
+                entry.value = 0;
         }
     }
 
     randomize() {
         for (const entry of this.map.values()) {
-            if (entry.enabled) {
+            if (entry.enabled && !entry.locked) {
                 entry.value = parseFloat(
                     (Math.random() * 20 - 10).toFixed(1),
                 );

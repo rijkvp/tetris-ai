@@ -26,6 +26,7 @@ export const NAVIGATION: string[] = [
     "4",
     "5",
     "sandbox",
+    "train"
 ];
 
 
@@ -84,25 +85,25 @@ export const levels: Level[] = [
     {
         key: "4",
         name: {
-            en: "4 times Tetris",
-            nl: "4 keer Tetris"
+            en: "Tetris",
+            nl: "Tetris"
         },
         description: {
-            en: "Try to get four tetrises (clearing four rows at once) by using the landing height.",
+            en: "Try to get a tetris (clearing four rows at once) by using the cleared cells and wells features.",
             nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
         },
         goals: {
-            tetrises: 4
+            tetrises: 1
         },
         features: [
-            ["eroded_cells", -10],
-            ["cuml_wells", 3],
-            ["pits", 0],
-            ["landing_height", 0],
+            ["pits", -10],
+            ["landing_height", -3],
+            ["eroded_cells", 0],
+            ["cuml_wells", 0],
         ],
         lockedFeatures: [
-            "eroded_cells",
-            "cuml_wells"
+            "pits",
+            "landing_height"
         ]
     },
     {
@@ -112,18 +113,25 @@ export const levels: Level[] = [
             nl: "Level 29"
         },
         description: {
-            en: "Try to reach level 29 and clear 200 lines by using 4 features.",
+            en: "Try to reach level 29.",
             nl: "Probeer level 29 te halen en 200 regels vrij te maken met behulp van 4 kenmerken."
         },
         goals: {
-            lines: 200,
             level: 29
         },
         features: [
-            ["col_trans", 0],
-            ["row_trans", 0],
-            ["pits", 0],
-            ["landing_height", 0]
-        ]
+            ["col_trans", -8.5],
+            ["row_trans", -2.5],
+            ["pits", -10],
+            ["landing_height", -5],
+            ["eroded_cells", 0],
+            ["cuml_wells", 0]
+        ],
+        lockedFeatures: [
+            "col_trans",
+            "row_trans",
+            "pits",
+            "landing_height"
+        ],
     }
 ];

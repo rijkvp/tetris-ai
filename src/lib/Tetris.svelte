@@ -30,7 +30,10 @@
     let animator = new TetrisAnimator(
         sim,
         () => tetrisBoard.display(),
-        () => onGameOver(sim.state.stats),
+        () => {
+            onNewStats?.(sim.state.stats);
+            onGameOver(sim.state.stats);
+        },
     );
 
     $effect(() => {
