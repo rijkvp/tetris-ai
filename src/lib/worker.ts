@@ -6,7 +6,7 @@ export type WorkerCommand =
     | { command: 'reset' };
 
 export type EvalResult = {
-    weight: number[];
+    weights: number[];
     score: number;
 }
 

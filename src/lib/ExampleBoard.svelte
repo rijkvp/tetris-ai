@@ -8,6 +8,8 @@
         highlightCell,
         crossOutCell,
         strikeThroughCell,
+        highlightLine,
+        highlightWell,
         clearBoard,
         displayBoard,
     } from "$lib/display";
@@ -64,13 +66,7 @@
             height[BOARD_WIDTH - 2] - height[BOARD_WIDTH - 1],
         );
         for (let c = 0; c < BOARD_WIDTH; c++) {
-            for (
-                let r = BOARD_HEIGHT - height[c] - wells[c];
-                r < BOARD_HEIGHT - height[c];
-                r++
-            ) {
-                highlightCell(ctx, c, r);
-            }
+            highlightWell(ctx, c, BOARD_HEIGHT - height[c] - wells[c], BOARD_HEIGHT - height[c]);
         }
     }
 

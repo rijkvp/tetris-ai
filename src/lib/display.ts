@@ -23,6 +23,11 @@ const HIGHLIGHT_CELL_STROKE = "#b7b41b";
 const HIGHLIGHT_CELL_FILL = "rgba(247, 252, 118, 0.1)"
 const HIGHLIGHT_CELL_WIDTH = 2;
 
+const HIGHLIGHT_WELL_FILL = "rgba(200, 0, 200, 0.6)"
+
+const HIGHLIGHT_LINE_COLOUR = "#dd0000";
+const HIGHLIGHT_LINE_WIDTH = 5;
+
 const STRIKE_THROUGH_COLOUR = "#470701";
 const STRIKE_THROUGH_WIDTH = 2;
 
@@ -143,6 +148,24 @@ export function highlightCell(ctx: CanvasRenderingContext2D, col: number, row: n
         CELL_SIZE,
         CELL_SIZE,
     );
+}
+
+export function highlightLine(ctx: CanvasRenderingContext2D, col1: number, row1: number, col2: number, row2: number) {
+    ctx.strokeStyle = HIGHLIGHT_LINE_COLOUR;
+    ctx.lineWidth = HIGHLIGHT_LINE_WIDTH;
+    ctx.beginPath();
+    ctx.moveTo(col1 * CELL_SIZE, row1 * CELL_SIZE);
+    ctx.lineTo(col2 * CELL_SIZE, row2 * CELL_SIZE);
+    ctx.stroke();
+}
+
+export function highlightWell(ctx: CanvasRenderingContext2D, col: number, row1: number, row2: number) {
+    ctx.fillStyle = HIGHLIGHT_WELL_FILL;
+    ctx.beginPath();
+    ctx.moveTo(col * CELL_SIZE, row1 * CELL_SIZE);
+    ctx.lineTo(col * CELL_SIZE + CELL_SIZE / 2, row2 * CELL_SIZE);
+    ctx.lineTo(col * CELL_SIZE + CELL_SIZE, row1 * CELL_SIZE);
+    ctx.fill();
 }
 
 export function strikeThroughCell(ctx: CanvasRenderingContext2D, col: number, row: number) {

@@ -62,7 +62,8 @@
     },
     "landing_height": {
       "name": "Landing height",
-      "description": "The height at which the tetromino is placed."
+      "description": "The height at which the tetromino is placed.",
+      "example": "In this example, the tetromino is placed at height 3."
     },
     "eroded_cells": {
       "name": "Cleared cells",
@@ -71,7 +72,8 @@
     },
     "cuml_wells": {
       "name": "Wells",
-      "description": "The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells."
+      "description": "The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells.",
+      "example": "There are 4 wells in total in this example with varying depths."
     }
   }
 }
