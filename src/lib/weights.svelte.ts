@@ -3,10 +3,12 @@ import { WeightsMap } from "tetris-ai";
 class WeightEntry {
     enabled = $state(true);
     value = $state(0);
+    locked = $state(false);
 
-    constructor(enabled = true, value = 0) {
+    constructor(enabled = true, value = 0, locked = false) {
         this.enabled = enabled;
         this.value = value;
+        this.locked = locked;
     }
 }
 
@@ -15,12 +17,14 @@ export type WeightsObject = { [key: string]: number };
 export class Weights {
     map: Map<string, WeightEntry> = $state(new Map<string, WeightEntry>());
 
-    constructor(allowedFeatures?: string[]) {
+    constructor(defaultFeatures?: [string, number][], lockedFeatures?: string[]) {
         for (const [key, value] of WeightsMap.defaults().into_js()) {
-            if (allowedFeatures && !allowedFeatures.includes(key)) {
+            if (defaultFeatures && !defaultFeatures.includes(key)) {
                 continue;
             }
-            this.map.set(key, new WeightEntry(true, value));
+            const initialValue = defaultFeatures?.find(([k]) => k === key)?.[1] ?? value;
+            const locked = lockedFeatures?.includes(key) ?? false;
+            this.map.set(key, new WeightEntry(true, initialValue, locked));
         }
     }
 

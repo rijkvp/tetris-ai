@@ -55,7 +55,7 @@
         if (weightValues) {
             weights = Weights.fromValues(FEATURE_KEYS, weightValues);
         } else {
-            weights = new Weights(FEATURE_KEYS);
+            weights = new Weights(FEATURE_KEYS.map((key) => [key, 0]));
         }
         sim.reset();
         sim.updateWeights(weights.getWeightsMap());

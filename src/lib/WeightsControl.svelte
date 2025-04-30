@@ -47,10 +47,15 @@
     <div class="weights-list">
         {#each weights.entries() as [key, entry]}
             <div class="weight-item">
-                <input type="checkbox" bind:checked={entry.enabled} />
+                <input
+                    type="checkbox"
+                    bind:checked={entry.enabled}
+                    disabled={entry.locked}
+                />
                 <input
                     type="range"
                     bind:value={entry.value}
+                    disabled={entry.locked}
                     min="-10.0"
                     max="10.0"
                     step="0.1"

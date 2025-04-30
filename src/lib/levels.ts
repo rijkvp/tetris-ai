@@ -15,7 +15,8 @@ export interface Level {
     name: MultiLang;
     description: MultiLang;
     goals: Goals;
-    features?: string[]
+    features?: [string, number][];
+    lockedFeatures?: string[];
 };
 
 export const NAVIGATION: string[] = [
@@ -58,8 +59,8 @@ export const levels: Level[] = [
             lines: 20,
         },
         features: [
-            "pits",
-            "landing_height"
+            ["pits", 0],
+            ["landing_height", 0]
         ]
     },
     {
@@ -76,8 +77,8 @@ export const levels: Level[] = [
             lines: 100,
         },
         features: [
-            "col_trans",
-            "row_trans"
+            ["col_trans", 0],
+            ["row_trans", 0]
         ]
     },
     {
@@ -94,9 +95,14 @@ export const levels: Level[] = [
             tetrises: 4
         },
         features: [
-            "col_trans",
-            "row_trans",
-            "landing_height"
+            ["eroded_cells", -10],
+            ["cuml_wells", 3],
+            ["pits", 0],
+            ["landing_height", 0],
+        ],
+        lockedFeatures: [
+            "eroded_cells",
+            "cuml_wells"
         ]
     },
     {
@@ -114,10 +120,10 @@ export const levels: Level[] = [
             level: 29
         },
         features: [
-            "col_trans",
-            "row_trans",
-            "pits",
-            "landing_height"
+            ["col_trans", 0],
+            ["row_trans", 0],
+            ["pits", 0],
+            ["landing_height", 0]
         ]
     }
 ];

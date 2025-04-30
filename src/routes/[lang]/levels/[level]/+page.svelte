@@ -18,7 +18,7 @@
 
     let goals: Goals;
     let scoreboard: Scoreboard;
-    let weights = $derived(new Weights(level.features));
+    let weights = $derived(new Weights(level.features, level.lockedFeatures));
 </script>
 
 <LevelComp key={level.key} title={level.name[$locale]}>
