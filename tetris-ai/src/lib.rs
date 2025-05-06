@@ -1,5 +1,6 @@
 pub mod board;
 pub mod feature;
+pub mod game;
 pub mod r#move;
 pub mod piece;
 pub mod rng;
@@ -8,6 +9,7 @@ pub mod state;
 #[cfg(test)]
 pub mod test;
 pub mod train;
+
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 

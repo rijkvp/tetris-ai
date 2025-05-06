@@ -209,6 +209,7 @@ fn next_positions(candidates: &mut [Position], pos: Position, piece: Piece) -> u
         3
     }
 }
+
 fn touches_ground(piece: Piece, pos: Position, board: &Board) -> bool {
     board.overlaps_move(Move {
         piece,
