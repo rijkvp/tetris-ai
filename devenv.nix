@@ -42,11 +42,4 @@
       };
     };
   };
-
-  # env.LD_LIBRARY_PATH =
-  #   with pkgs;
-  #   lib.makeLibraryPath [
-  #     python3
-  #     python3Packages.numpy
-  #   ];
 }

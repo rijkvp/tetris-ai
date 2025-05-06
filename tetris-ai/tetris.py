@@ -1,7 +1,5 @@
-# This is a simplified version of the original code from https://github.com/clsibert/Tetris-AI
-# which was used as a reference for this version in Rust.
-# Changed are marked with CHANGE comments.
-# All credit goes to the original authors.
+# This is a simplified version of https://github.com/clsibert/Tetris-AI which was used as a reference for this Rust version.
+# Changes are marked with CHANGE comments, all credit goes to the original authors.
 
 from copy import deepcopy
 import collections.abc
