@@ -14,6 +14,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v4
     - uses: cachix/install-nix-action@v31
@@ -22,13 +24,22 @@ jobs:
     - name: Build the site
       shell: devenv shell bash -- -e {0}
       run: |
-        yarn wasm 
-        yarn install --frozen-lockfile
-        yarn build
+        pnpm wasm 
+        pnpm install --frozen-lockfile
+        pnpm build
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: build
+    - name: Tag latest commit
+      run: git tag -f latest && git push origin main --tags --force
+    - name: Release 
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: latest
+        name: "Latest release"
+        files: |
+          ./build
   deploy:
     environment:
       name: github-pages
