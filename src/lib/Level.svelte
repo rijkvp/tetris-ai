@@ -43,7 +43,7 @@
 </nav>
 
 {#if inExplanation && levelInfo.explanation != null}
-    <div>
+    <div class="explanation">
         {@html levelInfo.explanation[$locale]}
     </div>
     <button onclick={() => (inExplanation = false)} class="btn-big btn-primary">
@@ -53,9 +53,11 @@
     <div class="panels">
         {@render content()}
         <div class="panel">
-            <button onclick={() => (inExplanation = true)}
-                >{$t("general.level_explanation")}</button
-            >
+            {#if levelInfo.explanation != null}
+                <button onclick={() => (inExplanation = true)}
+                    >{$t("general.level_explanation")}</button
+                >
+            {/if}
             {@render side()}
         </div>
     </div>
@@ -71,6 +73,9 @@
     }
     nav button {
         min-width: 4rem;
+    }
+    .explanation {
+        margin-bottom: 1rem;
     }
 
     .panels {
