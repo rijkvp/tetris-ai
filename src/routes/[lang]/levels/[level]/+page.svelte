@@ -1,13 +1,12 @@
 <script lang="ts">
     import type { PageProps } from "./$types";
-    import { locale } from "$lib/translations";
-    import LevelComp from "$lib/Level.svelte";
+    import Level from "$lib/Level.svelte";
     import Tetris from "$lib/Tetris.svelte";
     import WeightsControl from "$lib/WeightsControl.svelte";
     import Scoreboard from "$lib/Scoreboard.svelte";
     import Goals from "$lib/Goals.svelte";
     import { Weights } from "$lib/weights.svelte";
-    import { LEVEL_INFO, LEVEL_CONFIG } from "$lib/levels";
+    import { LEVEL_CONFIG } from "$lib/levels";
 
     let { data }: PageProps = $props();
 
@@ -16,7 +15,6 @@
         levelKey = data.levelKey!;
     });
 
-    let levelInfo = $derived(LEVEL_INFO[levelKey]);
     let levelConfig = $derived(LEVEL_CONFIG[levelKey]);
 
     let goals: Goals;
@@ -26,7 +24,7 @@
     );
 </script>
 
-<LevelComp key={levelKey} title={levelInfo.name[$locale]}>
+<Level key={levelKey}>
     {#snippet content()}
         <Tetris
             {weights}
@@ -34,9 +32,6 @@
             onNewStats={(stats) => goals.updateGoals(stats)}
             onGameOver={(stats) => scoreboard.addEntry(stats, weights)}
         />
-    {/snippet}
-    {#snippet explanation()}
-        {@html levelConfig.description[$locale]}
     {/snippet}
     {#snippet side()}
         <Goals bind:this={goals} goals={levelConfig.goals} />
@@ -47,4 +42,4 @@
             onWeightsSelect={(newWeights) => weights.setWeights(newWeights)}
         />
     {/snippet}
-</LevelComp>
+</Level>

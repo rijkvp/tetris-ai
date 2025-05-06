@@ -1,48 +1,11 @@
 <script lang="ts">
-    import { locale } from "$lib/translations";
     import Level from "$lib/Level.svelte";
-    import { LEVEL_INFO } from "$lib/levels";
     import PlayableTetris from "$lib/PlayableTetris.svelte";
-
-    const levelInfo = LEVEL_INFO["intro"];
 </script>
 
-<Level key="intro" title={levelInfo.name[$locale]}>
+<Level key="intro">
     {#snippet content()}
         <PlayableTetris />
-    {/snippet}
-    {#snippet explanation()}
-        <h2>Welcome!</h2>
-        <p>
-            This 'game' lets you explore how an artificial intelligence (AI)
-            works that plays the game Tetris. You’ll learn how an AI plays
-            Tetris and how the AI is 'trained' to play better.
-        </p>
-
-        <h3>New to Tetris? Here’s what you need to know:</h3>
-        <ul>
-            <li>
-                <strong>What is Tetris?</strong> It’s a classic video game where
-                you fit puzzle pieces, called <em>tetrominos</em>, into a grid.
-            </li>
-            <li>
-                <strong>The goal:</strong> Arrange the tetrominos to fill horizontal
-                lines. When a line is full, it disappears, and you earn points!
-            </li>
-            <li>
-                <strong>Earn more points:</strong> Clear multiple lines at
-                once—especially four lines (called a <em>Tetris</em>)—to boost
-                your score.
-            </li>
-            <li>
-                <strong>Game over:</strong> If the tetrominos stack up to the top
-                of the board, the game ends.
-            </li>
-        </ul>
-        <p>
-            First, let's start by playing Tetris yourself to get a feel for the
-            game.
-        </p>
     {/snippet}
     {#snippet side()}
         <h2>Controls</h2>

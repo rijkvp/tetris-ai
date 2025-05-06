@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import type {
         TrainGeneration,
         TrainState,
@@ -98,6 +98,10 @@
         return () => {
             worker.terminate();
         };
+    });
+
+    onDestroy(() => {
+        animator.stop();
     });
 </script>
 

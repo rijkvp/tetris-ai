@@ -1,12 +1,13 @@
 <script lang="ts">
     import { base } from "$app/paths";
     import { t, locale } from "$lib/translations";
-    import { LEVELS } from "$lib/levels";
+    import { LEVEL_INFO, LEVELS } from "$lib/levels";
     import { goto } from "$app/navigation";
-    let { title, key, content, explanation = null, side } = $props();
+
+    let { key, content, side } = $props();
+    const levelInfo = $derived(LEVEL_INFO[key]);
 
     let inExplanation = $state(true);
-    let showExplanation = $derived(inExplanation && explanation != null);
 
     let currentIndex = $derived(LEVELS.findIndex((n) => n === key));
     let prev = $derived(currentIndex > 0 ? LEVELS[currentIndex - 1] : null);
@@ -27,7 +28,7 @@
     >
         {$t("general.previous")}</button
     >
-    <h1>{title}</h1>
+    <h1>{levelInfo.name[$locale]}</h1>
     <button
         disabled={next == null}
         onclick={() => {
@@ -41,9 +42,9 @@
     >
 </nav>
 
-{#if showExplanation}
+{#if inExplanation && levelInfo.explanation != null}
     <div>
-        {@render explanation()}
+        {@html levelInfo.explanation[$locale]}
     </div>
     <button onclick={() => (inExplanation = false)} class="btn-big btn-primary">
         Start level</button

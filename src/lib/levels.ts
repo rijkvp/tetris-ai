@@ -6,6 +6,7 @@ type MultiLang = {
 export interface LevelInfo {
     name: MultiLang;
     summary: MultiLang;
+    explanation?: MultiLang;
 };
 
 export const LEVELS: string[] = [
@@ -14,8 +15,8 @@ export const LEVELS: string[] = [
     "3",
     "4",
     "5",
+    "train",
     "sandbox",
-    "train"
 ];
 
 export const LEVEL_INFO: { [key: string]: LevelInfo } = {
@@ -28,6 +29,40 @@ export const LEVEL_INFO: { [key: string]: LevelInfo } = {
             en: "Play Tetris yourself to explore the game and its features.",
             nl: "Speel Tetris zelf om het spel en de kenmerken te verkennen."
         },
+        explanation: {
+            en: `<h2>Welcome!</h2>
+        <p>
+            This 'game' lets you explore how an artificial intelligence (AI)
+            works that plays the game Tetris. You’ll learn how an AI plays
+            Tetris and how the AI is 'trained' to play better.
+        </p>
+
+        <h3>New to Tetris? Here’s what you need to know:</h3>
+        <ul>
+            <li>
+                <strong>What is Tetris?</strong> It’s a classic video game where
+                you fit puzzle pieces, called <em>tetrominos</em>, into a grid.
+            </li>
+            <li>
+                <strong>The goal:</strong> Arrange the tetrominos to fill horizontal
+                lines. When a line is full, it disappears, and you earn points!
+            </li>
+            <li>
+                <strong>Earn more points:</strong> Clear multiple lines at
+                once—especially four lines (called a <em>Tetris</em>)—to boost
+                your score.
+            </li>
+            <li>
+                <strong>Game over:</strong> If the tetrominos stack up to the top
+                of the board, the game ends.
+            </li>
+        </ul>
+        <p>
+            First, let's start by playing Tetris yourself to get a feel for the
+            game.
+        </p>`,
+            nl: `TODO`
+        },
     },
     "2": {
         name: {
@@ -38,77 +73,7 @@ export const LEVEL_INFO: { [key: string]: LevelInfo } = {
             en: "Learn how to use features to make the AI play Tetris.",
             nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
         },
-    },
-    "3": {
-        name: {
-            en: "Features 2",
-            nl: "Kenmerken 2"
-        },
-        summary: {
-            en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
-        },
-    },
-    "4": {
-        name: {
-            en: "Tetris",
-            nl: "Tetris"
-        },
-        summary: {
-            en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
-        },
-    },
-    "5": {
-        name: {
-            en: "Level 29",
-            nl: "Level 29"
-        },
-        summary: {
-            en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
-        },
-    },
-    "sandbox": {
-        name: {
-            en: "Sandbox",
-            nl: "Sandbox"
-        },
-        summary: {
-            en: "Play Tetris yourself to explore the game and its features.",
-            nl: "Speel Tetris zelf om het spel en de kenmerken te verkennen."
-        },
-    },
-    "train": {
-        name: {
-            en: "Train",
-            nl: "Train"
-        },
-        summary: {
-            en: "Explore how the AI is trained to play Tetris.",
-            nl: "Verken hoe de AI wordt getraind om Tetris te spelen."
-        },
-    }
-};
-
-
-export interface LevelConfig {
-    description: MultiLang;
-    goals: Goals;
-    features?: [string, number][];
-    lockedFeatures?: string[];
-};
-
-export interface Goals {
-    lines?: number;
-    score?: number;
-    level?: number;
-    tetrises?: number;
-};
-
-export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
-    "2": {
-        description: {
+        explanation: {
             en: `
                 <p>
                 Now let's make the AI play Tetris!
@@ -127,6 +92,88 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             `,
             nl: "TODO"
         },
+    },
+    "3": {
+        name: {
+            en: "Features 2",
+            nl: "Kenmerken 2"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+        explanation: {
+            en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
+            nl: "Pas de waardes van de kenmerken zo aan zodat de AI honderd rijen weggespeelt."
+        },
+    },
+    "4": {
+        name: {
+            en: "Tetris",
+            nl: "Tetris"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+        explanation: {
+            en: "Try to get a tetris (clearing four rows at once) by using the cleared cells and wells features.",
+            nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
+        },
+    },
+    "5": {
+        name: {
+            en: "Level 29",
+            nl: "Level 29"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+        explanation: {
+            en: "Try to reach level 29.",
+            nl: "Probeer level 29 te halen en 200 regels vrij te maken met behulp van 4 kenmerken."
+        },
+    },
+    "train": {
+        name: {
+            en: "Train",
+            nl: "Train"
+        },
+        summary: {
+            en: "Explore how the AI is trained to play Tetris.",
+            nl: "Verken hoe de AI wordt getraind om Tetris te spelen."
+        },
+        explanation: {
+            en: "In this level you can see how to AI is trained.",
+            nl: "TODO"
+        },
+    },
+    "sandbox": {
+        name: { en: "Sandbox", nl: "Sandbox-modus" },
+        summary: {
+            en: "Play around with all the features.",
+            nl: "Speel met alle kenmerken.",
+        },
+    },
+};
+
+
+export interface LevelConfig {
+    goals: Goals;
+    features?: [string, number][];
+    lockedFeatures?: string[];
+};
+
+export interface Goals {
+    lines?: number;
+    score?: number;
+    level?: number;
+    tetrises?: number;
+};
+
+export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
+    "2": {
         goals: {
             lines: 20,
         },
@@ -136,10 +183,6 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
         ]
     },
     "3": {
-        description: {
-            en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
-            nl: "Pas de waardes van de kenmerken zo aan zodat de AI honderd rijen weggespeelt."
-        },
         goals: {
             lines: 100,
         },
@@ -149,10 +192,6 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
         ]
     },
     "4": {
-        description: {
-            en: "Try to get a tetris (clearing four rows at once) by using the cleared cells and wells features.",
-            nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
-        },
         goals: {
             tetrises: 1
         },
@@ -168,10 +207,6 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
         ]
     },
     "5": {
-        description: {
-            en: "Try to reach level 29.",
-            nl: "Probeer level 29 te halen en 200 regels vrij te maken met behulp van 4 kenmerken."
-        },
         goals: {
             level: 29
         },

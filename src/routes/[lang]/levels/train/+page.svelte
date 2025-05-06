@@ -3,12 +3,9 @@
     import TetrisTrainer from "$lib/TetrisTrainer.svelte";
 </script>
 
-<Level key="train" title="Train">
+<Level key="train">
     {#snippet content()}
         <TetrisTrainer />
-    {/snippet}
-    {#snippet explanation()}
-        <h2>Watch the AI being trained!</h2>
     {/snippet}
     {#snippet side()}{/snippet}
 </Level>
