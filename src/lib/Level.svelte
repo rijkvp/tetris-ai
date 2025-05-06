@@ -47,12 +47,15 @@
         {@html levelInfo.explanation[$locale]}
     </div>
     <button onclick={() => (inExplanation = false)} class="btn-big btn-primary">
-        Start level</button
+        {$t("general.level_start")}</button
     >
 {:else}
     <div class="panels">
         {@render content()}
         <div class="panel">
+            <button onclick={() => (inExplanation = true)}
+                >{$t("general.level_explanation")}</button
+            >
             {@render side()}
         </div>
     </div>

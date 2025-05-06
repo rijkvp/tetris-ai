@@ -5,7 +5,9 @@
     "next": "Volgende",
     "example": "Voorbeeld",
     "features": "Kenmerken",
-    "scoreboard": "Scorebord"
+    "scoreboard": "Scorebord",
+    "level_start": "Begin level",
+    "level_explanation": "Uitleg"
   },
   "level_select": {
     "title": "Level selecteren",
@@ -49,19 +51,23 @@
   "feature": {
     "col_trans": {
       "name": "Kolomovergangen",
-      "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg)."
+      "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg).",
+      "example": "In dit voorbeeld zijn alle kolomovergangen gemarkeerd met pijltjes. Er zijn 15 kolomovergangen in totaal."
     },
     "row_trans": {
       "name": "Rijovergangen",
-      "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg)."
+      "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg).",
+      "example": "In dit voorbeeld zijn alle rijovergangen gemarkeerd met pijltjes. Er zijn 11 rijovergangen in totaal."
     },
     "pits": {
       "name": "Gaten",
-      "description": "Het aantal lege cellen dat een gevulde cel erboven heeft."
+      "description": "Het aantal lege cellen dat een gevulde cel erboven heeft.",
+      "example": "In dit voorbeeld zijn alle gaten gemarkeerd met kruisjes. Er zijn 25 gaten in totaal."
     },
     "landing_height": {
       "name": "Landingshoogte",
-      "description": "De hoogte waarop de tetromino wordt geplaatst."
+      "description": "De hoogte waarop de tetromino wordt geplaatst.",
+      "example": "In dit voorbeeld, the tetromino wordt geplaatst op hoogte 3."
     },
     "eroded_cells": {
       "name": "Gewiste hokjes",
@@ -70,7 +76,8 @@
     },
     "cuml_wells": {
       "name": "Putten",
-      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen."
+      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen.",
+      "example": "In dit voorbeeld zijn er 4 putten met verschillende dieptes."
     }
   }
 }

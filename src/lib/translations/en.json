@@ -5,7 +5,9 @@
     "next": "Next",
     "example": "Example",
     "features": "Features",
-    "scoreboard": "Scoreboard"
+    "scoreboard": "Scoreboard",
+    "level_start": "Start level",
+    "level_explanation": "Explanation"
   },
   "level_select": {
     "title": "Select level",
