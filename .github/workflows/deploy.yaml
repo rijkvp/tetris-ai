@@ -31,6 +31,8 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         path: build
+    - name: Zip files
+      run: zip -r build.zip build/*
     - name: Tag latest commit
       run: git tag -f latest && git push origin main --tags --force
     - name: Release 
@@ -38,8 +40,7 @@ jobs:
       with:
         tag_name: latest
         name: "Latest release"
-        files: |
-          ./build
+        files: ./build.zip
   deploy:
     environment:
       name: github-pages
