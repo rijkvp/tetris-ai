@@ -1,9 +1,13 @@
 <script lang="ts">
+    import { locale } from "$lib/translations";
     import Level from "$lib/Level.svelte";
+    import { LEVEL_INFO } from "$lib/levels";
     import PlayableTetris from "$lib/PlayableTetris.svelte";
+
+    const levelInfo = LEVEL_INFO["intro"];
 </script>
 
-<Level key="intro" title="Introduction to Tetris">
+<Level key="intro" title={levelInfo.name[$locale]}>
     {#snippet content()}
         <PlayableTetris />
     {/snippet}

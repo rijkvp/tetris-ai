@@ -1,19 +1,17 @@
 <script lang="ts">
     import { base } from "$app/paths";
-    import { locale } from "$lib/translations";
-    import { NAVIGATION } from "$lib/levels";
+    import { t, locale } from "$lib/translations";
+    import { LEVELS } from "$lib/levels";
     import { goto } from "$app/navigation";
     let { title, key, content, explanation = null, side } = $props();
 
     let inExplanation = $state(true);
     let showExplanation = $derived(inExplanation && explanation != null);
 
-    let currentIndex = $derived(NAVIGATION.findIndex((n) => n === key));
-    let prev = $derived(currentIndex > 0 ? NAVIGATION[currentIndex - 1] : null);
+    let currentIndex = $derived(LEVELS.findIndex((n) => n === key));
+    let prev = $derived(currentIndex > 0 ? LEVELS[currentIndex - 1] : null);
     let next = $derived(
-        currentIndex < NAVIGATION.length - 1
-            ? NAVIGATION[currentIndex + 1]
-            : null,
+        currentIndex < LEVELS.length - 1 ? LEVELS[currentIndex + 1] : null,
     );
 </script>
 
@@ -27,7 +25,7 @@
             }
         }}
     >
-        Previous</button
+        {$t("general.previous")}</button
     >
     <h1>{title}</h1>
     <button
@@ -39,7 +37,7 @@
             }
         }}
     >
-        Next</button
+        {$t("general.next")}</button
     >
 </nav>
 

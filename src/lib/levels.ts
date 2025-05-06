@@ -3,23 +3,12 @@ type MultiLang = {
     nl: string;
 };
 
-export interface Goals {
-    lines?: number;
-    score?: number;
-    level?: number;
-    tetrises?: number;
-};
-
-export interface Level {
-    key: string;
+export interface LevelInfo {
     name: MultiLang;
-    description: MultiLang;
-    goals: Goals;
-    features?: [string, number][];
-    lockedFeatures?: string[];
+    summary: MultiLang;
 };
 
-export const NAVIGATION: string[] = [
+export const LEVELS: string[] = [
     "intro",
     "2",
     "3",
@@ -29,14 +18,96 @@ export const NAVIGATION: string[] = [
     "train"
 ];
 
-
-export const levels: Level[] = [
-    {
-        key: "2",
+export const LEVEL_INFO: { [key: string]: LevelInfo } = {
+    "intro": {
+        name: {
+            en: "Introduction",
+            nl: "Introductie"
+        },
+        summary: {
+            en: "Play Tetris yourself to explore the game and its features.",
+            nl: "Speel Tetris zelf om het spel en de kenmerken te verkennen."
+        },
+    },
+    "2": {
         name: {
             en: "Features",
             nl: "Kenmerken"
         },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+    },
+    "3": {
+        name: {
+            en: "Features 2",
+            nl: "Kenmerken 2"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+    },
+    "4": {
+        name: {
+            en: "Tetris",
+            nl: "Tetris"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+    },
+    "5": {
+        name: {
+            en: "Level 29",
+            nl: "Level 29"
+        },
+        summary: {
+            en: "Learn how to use features to make the AI play Tetris.",
+            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+        },
+    },
+    "sandbox": {
+        name: {
+            en: "Sandbox",
+            nl: "Sandbox"
+        },
+        summary: {
+            en: "Play Tetris yourself to explore the game and its features.",
+            nl: "Speel Tetris zelf om het spel en de kenmerken te verkennen."
+        },
+    },
+    "train": {
+        name: {
+            en: "Train",
+            nl: "Train"
+        },
+        summary: {
+            en: "Explore how the AI is trained to play Tetris.",
+            nl: "Verken hoe de AI wordt getraind om Tetris te spelen."
+        },
+    }
+};
+
+
+export interface LevelConfig {
+    description: MultiLang;
+    goals: Goals;
+    features?: [string, number][];
+    lockedFeatures?: string[];
+};
+
+export interface Goals {
+    lines?: number;
+    score?: number;
+    level?: number;
+    tetrises?: number;
+};
+
+export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
+    "2": {
         description: {
             en: `
                 <p>
@@ -64,12 +135,7 @@ export const levels: Level[] = [
             ["landing_height", 0]
         ]
     },
-    {
-        key: "3",
-        name: {
-            en: "Features 2",
-            nl: "Kenmerken 2"
-        },
+    "3": {
         description: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
             nl: "Pas de waardes van de kenmerken zo aan zodat de AI honderd rijen weggespeelt."
@@ -82,12 +148,7 @@ export const levels: Level[] = [
             ["row_trans", 0]
         ]
     },
-    {
-        key: "4",
-        name: {
-            en: "Tetris",
-            nl: "Tetris"
-        },
+    "4": {
         description: {
             en: "Try to get a tetris (clearing four rows at once) by using the cleared cells and wells features.",
             nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
@@ -106,12 +167,7 @@ export const levels: Level[] = [
             "landing_height"
         ]
     },
-    {
-        key: "5",
-        name: {
-            en: "Level 29",
-            nl: "Level 29"
-        },
+    "5": {
         description: {
             en: "Try to reach level 29.",
             nl: "Probeer level 29 te halen en 200 regels vrij te maken met behulp van 4 kenmerken."
@@ -134,4 +190,4 @@ export const levels: Level[] = [
             "landing_height"
         ],
     }
-];
+};

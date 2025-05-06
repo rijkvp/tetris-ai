@@ -1,6 +1,8 @@
 {
   "general": {
     "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
     "example": "Example",
     "features": "Features",
     "scoreboard": "Scoreboard"

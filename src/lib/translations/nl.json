@@ -1,6 +1,8 @@
 {
   "general": {
     "close": "Sluiten",
+    "previous": "Vorige",
+    "next": "Volgende",
     "example": "Voorbeeld",
     "features": "Kenmerken",
     "scoreboard": "Scorebord"

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { t, locale } from "$lib/translations";
-    import { NAVIGATION } from "$lib/levels";
+    import { LEVELS, LEVEL_INFO } from "$lib/levels";
 
     function resetProgress() {
         localStorage.clear();
@@ -10,12 +10,35 @@
 <h2>{$t("level_select.title")}</h2>
 <p>{$t("level_select.description")}</p>
 
-<ul>
-    {#each NAVIGATION as level}
-        <li>
-            <a href="{$locale}/levels/{level}">{level}</a>
-        </li>
+<div class="level-select">
+    {#each LEVELS as level}
+        {@const info = LEVEL_INFO[level]}
+        <a class="level" href="{$locale}/levels/{level}">
+            <h3>
+                {info.name[$locale]}
+            </h3>
+            <span>
+                {info.summary[$locale]}
+            </span>
+        </a>
     {/each}
-</ul>
+</div>
 
 <button onclick={() => resetProgress()}>Reset progress</button>
+
+<style>
+    .level-select {
+        display: flex;
+        flex-direction: column;
+    }
+    .level {
+        display: block;
+        margin: 10px;
+        padding: 20px;
+        border: 1px solid var(--border);
+    }
+    .level:hover {
+        background-color: var(--bg1);
+        text-decoration: none;
+    }
+</style>
