@@ -106,7 +106,7 @@
             >
         </div>
     </div>
-    <div class="board">
+    <div class="tetris-board">
         <TetrisBoard
             bind:this={tetrisBoard}
             bind:state={sim.state}
@@ -123,7 +123,7 @@
         row-gap: 0.5rem;
         column-gap: 1rem;
     }
-    .board {
+    .tetris-board {
         grid-column: 2;
         grid-row: 2;
     }

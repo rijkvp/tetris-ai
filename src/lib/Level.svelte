@@ -3,8 +3,17 @@
     import { t, locale } from "$lib/translations";
     import { LEVEL_INFO, LEVELS } from "$lib/levels";
     import { goto } from "$app/navigation";
+    import type { Snippet } from "svelte";
 
-    let { key, content, side } = $props();
+    let {
+        key,
+        content,
+        side,
+    }: {
+        key: string;
+        content: Snippet;
+        side?: Snippet;
+    } = $props();
     const levelInfo = $derived(LEVEL_INFO[key]);
 
     let inExplanation = $state(true);
@@ -58,7 +67,14 @@
                     >{$t("general.level_explanation")}</button
                 >
             {/if}
-            {@render side()}
+            {#if levelInfo.sideText != null}
+                <div>
+                    {@html levelInfo.sideText[$locale]}
+                </div>
+            {/if}
+            {#if side != null}
+                {@render side()}
+            {/if}
         </div>
     </div>
 {/if}
@@ -68,8 +84,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 0rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
     nav button {
         min-width: 4rem;
@@ -77,7 +92,6 @@
     .explanation {
         margin-bottom: 1rem;
     }
-
     .panels {
         display: flex;
         flex-wrap: wrap;
@@ -92,5 +106,9 @@
         flex-direction: column;
         flex-basis: min-content;
         gap: 1rem;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
 </style>

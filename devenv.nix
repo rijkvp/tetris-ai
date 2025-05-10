@@ -7,7 +7,6 @@
     cargo-edit
     python3
     python3Packages.numpy
-    cargo-flamegraph
     wasm-pack
     nodejs
     pnpm
@@ -23,7 +22,7 @@
     typescript = {
       enable = true;
       name = "TypeScript typecheck";
-      entry = "yarn run check";
+      entry = "pnpm run check";
       types = [
         "svelte"
         "ts"

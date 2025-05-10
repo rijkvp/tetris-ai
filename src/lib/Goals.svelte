@@ -57,9 +57,6 @@
 </div>
 
 <style>
-    .goals {
-        margin-top: 1rem;
-    }
     .goal-item {
         font-size: 1.1rem;
         margin-bottom: 5px;

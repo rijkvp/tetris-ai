@@ -7,6 +7,7 @@ export interface LevelInfo {
     name: MultiLang;
     summary: MultiLang;
     explanation?: MultiLang;
+    sideText?: MultiLang;
 };
 
 export const LEVELS: string[] = [
@@ -40,29 +41,67 @@ export const LEVEL_INFO: { [key: string]: LevelInfo } = {
         <h3>New to Tetris? Here’s what you need to know:</h3>
         <ul>
             <li>
-                <strong>What is Tetris?</strong> It’s a classic video game where
-                you fit puzzle pieces, called <em>tetrominos</em>, into a grid.
+                <strong>Tetris</strong> is a classic video game where you fit pieces, called <em>tetrominos</em>, into a grid.
             </li>
             <li>
                 <strong>The goal:</strong> Arrange the tetrominos to fill horizontal
-                lines. When a line is full, it disappears, and you earn points!
+                lines. When a line is full, it disappears, and you earn points.
             </li>
             <li>
-                <strong>Earn more points:</strong> Clear multiple lines at
-                once—especially four lines (called a <em>Tetris</em>)—to boost
-                your score.
+                <strong>Earn more points:</strong> Clear multiple lines at once —especially four lines (called a <em>Tetris</em>)— to boost your score.
             </li>
             <li>
-                <strong>Game over:</strong> If the tetrominos stack up to the top
-                of the board, the game ends.
+                <strong>Game over:</strong> If the tetrominos stack up to the top of the board, the game ends.
             </li>
         </ul>
         <p>
             First, let's start by playing Tetris yourself to get a feel for the
             game.
         </p>`,
-            nl: `TODO`
+            nl: `<h2>Welkom!</h2>
+ <p>
+ In dit 'spel' ontdek je hoe een kunstmatige intelligentie (AI) werkt die het spel Tetris speelt.
+Je leert hoe de computer het spel Tetris kan spelen en hoe die wordt 'getraind'.
+        </p>
+
+        <h3>Ken je Tetris nog niet? Dit is wat je moet weten:</h3>
+ <ul>
+ <li>
+ <strong>Tetris</strong> is een klassiek videospel waarin je blokjes, <em>tetrominos</em> genaamd, in een raster plaatst.
+            </li>
+ <li>
+ <strong>Het doel:</strong> Plaats de tetromino's om horizontale rijen te vullen. Als een rij gevuld is, verdwijnt deze en verdien je punten.
+            </li>
+ <li>
+ <strong>Verdien meer punten:</strong> Vul meerdere rijen tegelijk om je score te verhogen, de meeste punten krijg je door vier vier rijen tegelijk weg te spelen, dit wordt een <em>Tetris</em> genoemd.
+            </li>
+ <li>
+ <strong>Game over:</strong> Als de tetromino de bovenkant van het scherm raken is het spel afgelopen.
+            </li>
+ </ul>
+ <p>
+Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
         },
+        sideText: {
+            en: `<h2>Controls</h2>
+        <ul>
+            <li>
+                <strong>Left/Right arrow keys</strong>: move the tetromino to
+                the left/right
+            </li>
+            <li>Up arrow/Z: Rotate the tetromino</li>
+            <li>Down arrow: Move the tetromino down (soft drop)</li>
+            <li>Space: Drop the tetromino (hard drop)</li>
+        </ul>`,
+            nl: `<h2>Besturing</h2>
+ <ul>
+ <li>
+ <strong>Pijltjes links/rechts</strong>: verplaats de tetromino naar links/rechts </li>
+ <li><strong>Pijlje omhoog/Z</strong>: draai de tetromino</li>
+ <li><strong>Pijlje omlaag</strong>: verplaats de tetromino naar beneden</li>
+ <li><strong>Spatiebalk</strong>: laat de tetromino vallen</li>
+ </ul>`
+        }
     },
     "2": {
         name: {
@@ -87,10 +126,16 @@ export const LEVEL_INFO: { [key: string]: LevelInfo } = {
                 <p>
                 In the following level you will start with two features: <em>Holes</em> and <em>Landing Height</em>.
                 You can adjust the <em>weights</em> of these features using the sliders. For example, if you think a feature is desired, you can increase its weight to make the AI prioritize it. Or, if you think a feature should be avoided, you can decrease its weight.
-                Your <em>goal</em> is to clear 20 lines by tweaking the weights of the features!
+                The <em>goal</em> is to clear 20 lines by tweaking the weights of the features, good luck!
                 </p>
             `,
-            nl: "TODO"
+            nl: `<p>Laten we de AI nu Tetris laten spelen! Computers zijn erg snel en kunnen kan gemakkelijk alle mogelijke plekken berekenen om de blokjes te plaatsen. Maar hij weet niet welke zetten goed zijn en welke slecht.</p>
+<p>
+Hier komen kenmerken om de hoek kijken. Kenmerken zijn aanwijzingen van stukjes informatie die de AI helpen om beslissingen te nemen. Door gewichten toe te kennen aan deze kenmerken laten we de AI weten welke soorten zetten goed zijn en welke juist slecht.</p>
+<p>
+In het volgende level begin je met twee kenmerken: Gaten en Landingshoogte. Je kunt de gewichten van de kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kenmerken wenselijk is, kun je het gewicht verhogen zodat de AI deze prioriteert. Of als je denkt dat een kenmerk juist vermeden moet worden, kun je het gewicht verlagen. Het doel is om 20 lijnen weg te spelen door de gewichten van de kenmerken aan te passen, succes!</p>
+
+`
         },
     },
     "3": {
@@ -132,7 +177,7 @@ export const LEVEL_INFO: { [key: string]: LevelInfo } = {
         },
         explanation: {
             en: "Try to reach level 29.",
-            nl: "Probeer level 29 te halen en 200 regels vrij te maken met behulp van 4 kenmerken."
+            nl: "Probeer level 29 te halen en 200 rijen vrij te maken met behulp van 4 kenmerken."
         },
     },
     "train": {

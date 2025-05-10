@@ -3,7 +3,6 @@
     import { Weights } from "$lib/weights.svelte";
     import { localState } from "$lib/stores.svelte";
     import ExampleBoard from "./ExampleBoard.svelte";
-    import DynamicIcon from "./DynamicIcon.svelte";
 
     let { weights }: { weights: Weights } = $props();
 
@@ -19,7 +18,7 @@
                 weights.reset();
             }}
         >
-            <DynamicIcon icon="reset" alt="Reset" />
+            <svg inline-src="arrow-clockwise" alt="Reset" />
             {$t("feature_control.reset")}</button
         >
         <button
@@ -27,7 +26,7 @@
                 weights.randomize();
             }}
         >
-            <DynamicIcon icon="shuffle" alt="Shuffle" />
+            <svg inline-src="shuffle" alt="Shuffle" />
             {$t("feature_control.randomize")}</button
         >
     </div>
@@ -82,9 +81,10 @@
             <ExampleBoard feature={selectedFeature} />
         </div>
     </div>
-    <button class="close-button" onclick={() => infoDialog.close()}
-        >{$t("general.close")}</button
-    >
+    <button class="close-button" onclick={() => infoDialog.close()}>
+        <svg inline-src="x" alt="x" />
+        {$t("general.close")}
+    </button>
 </dialog>
 
 <style>
@@ -103,7 +103,8 @@
         width: 150px;
     }
     .weight-value {
-        width: 1rem;
+        width: 1.6rem;
+        font-weight: bold;
     }
     .weight-name {
         flex-grow: 1;
@@ -128,12 +129,6 @@
         display: flex;
         gap: 0.5rem;
     }
-    .buttons > button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.2rem;
-    }
     .example {
         margin-top: 0.5rem;
     }
@@ -146,6 +141,14 @@
         position: absolute;
         top: 0;
         right: 0;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        gap: 0.2rem;
+    }
+    .close-button svg {
+        width: 0.9rem;
+        height: 0.9rem;
     }
     dialog::backdrop {
         backdrop-filter: blur(6px);

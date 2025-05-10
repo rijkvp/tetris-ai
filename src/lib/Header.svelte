@@ -26,15 +26,22 @@
 </header>
 
 <style>
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 2rem;
-        margin-bottom: 1rem;
+    @media (min-width: 700px) {
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
     }
     header img {
-        height: 2rem;
+        height: 3rem;
+    }
+    @media (max-width: 900px) {
+        header img {
+            height: 2rem;
+        }
     }
     .logo {
         display: flex;

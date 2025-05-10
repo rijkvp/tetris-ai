@@ -14,7 +14,7 @@
         <div class="label">{$t("score.score")}</div>
         <div
             class="value"
-            style:font-size={stats.score > 999999 ? "0.8em" : "1.2em"}
+            style:font-size={stats.score > 99999 ? "0.9rem" : "1.1rem"}
         >
             {stats.score.toLocaleString()}
         </div>
@@ -46,19 +46,12 @@
         width: 100px;
 
         padding: 0.8rem 0.4rem;
-        border-radius: 0px;
         box-shadow:
             0 4px 8px 0 rgba(0, 0, 0, 0.2),
             0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
-    @media (prefers-color-scheme: dark) {
-        .stats {
-            background-color: #070707;
-            color: #fff;
-        }
-    }
-    .item {
-        margin: 0.2rem 0;
+        gap: 0.8rem;
+        background: var(--bg0);
+        border: 3px solid var(--border);
     }
     .label,
     .value {
@@ -66,9 +59,12 @@
     }
     .label {
         font-weight: bold;
-        font-size: 0.8em;
+        margin: 0.4rem 0;
+        font-size: 0.8rem;
+        color: var(--fg1);
     }
     .value {
-        font-size: 1.2em;
+        font-size: 1.1rem;
+        font-weight: bold;
     }
 </style>

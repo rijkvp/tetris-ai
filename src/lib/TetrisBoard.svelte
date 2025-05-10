@@ -66,20 +66,4 @@
     };
 </script>
 
-<canvas bind:this={canvas} class="border" width="320" height="640"></canvas>
-
-<style>
-    canvas {
-        border-radius: 0px;
-        background-color: #bbb;
-        box-shadow:
-            0 4px 8px 0 rgba(0, 0, 0, 0.2),
-            0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        canvas {
-            background-color: #070707;
-        }
-    }
-</style>
+<canvas bind:this={canvas} class="board" width="320" height="640"></canvas>
