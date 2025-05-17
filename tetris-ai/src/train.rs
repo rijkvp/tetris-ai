@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::{
     feature::{Features, Weights},
     simulator::Simulator,
@@ -9,7 +11,7 @@ use wasm_bindgen::prelude::*;
 
 const MODELS_PER_GEN: usize = 100;
 const KEPT_PER_GEN: usize = 10;
-const EVAL_ITERATIONS: usize = 100000;
+const EVAL_ITERATIONS: usize = 10000;
 const WEIGHT_RANGE: f64 = 10.0;
 const STABLE_THRESHOLD: f64 = 0.25;
 
@@ -34,7 +36,7 @@ impl Trainer {
             features,
             criteria,
             current_gen: None,
-            current_gen_index: 0,
+            current_gen_index: 1,
             current_results: Vec::with_capacity(MODELS_PER_GEN),
             current_model_index: 0,
         }
@@ -52,16 +54,16 @@ impl TrainState {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Trainer {
     #[cfg(feature = "wasm")]
-    pub fn from_feature_names(feature_names: Box<[String]>) -> Self {
+    pub fn from_feature_names(feature_names: Box<[String]>, criteria: String) -> Self {
         let strs = feature_names.iter().map(String::as_str).collect::<Vec<_>>();
-        Self::new(Features::from_names(&strs), TrainCriteria::Score)
+        Self::new(Features::from_names(&strs), criteria.parse().unwrap())
     }
 
     pub fn reset(&mut self) {
         self.weights = vec![0.0; self.features.len()];
         self.st_dev = vec![WEIGHT_RANGE; self.features.len()];
         self.current_gen = None;
-        self.current_gen_index = 0;
+        self.current_gen_index = 1;
         self.current_results.clear();
         self.current_model_index = 0;
     }
@@ -231,6 +233,19 @@ impl TrainState {
 
     pub fn generation(&self) -> Option<&TrainGeneration> {
         self.generation.as_ref()
+    }
+}
+
+impl FromStr for TrainCriteria {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "score" => Ok(TrainCriteria::Score),
+            "level" => Ok(TrainCriteria::Level),
+            "tetrises" => Ok(TrainCriteria::Tetrises),
+            _ => Err(()),
+        }
     }
 }
 

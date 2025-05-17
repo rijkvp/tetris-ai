@@ -71,6 +71,17 @@
       "example": "There are 4 wells in total in this example with varying depths."
     }
   },
+  "training": {
+    "criterion": "Criterion",
+    "generation": "Generation",
+    "model": "Model",
+    "current_results": "Current results",
+    "min": "Min",
+    "max": "Max",
+    "mean": "Mean",
+    "restart": "Restart training",
+    "stop": "Stop training"
+  },
   "footer": {
     "credits": "Credits",
     "source_code": "Source code"

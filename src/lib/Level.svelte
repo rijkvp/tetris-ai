@@ -55,7 +55,12 @@
     <div class="explanation">
         {@html levelInfo.explanation[$locale]}
     </div>
-    <button onclick={() => (inExplanation = false)} class="btn-big btn-primary">
+    <button
+        onclick={() => {
+            inExplanation = false;
+        }}
+        class="btn-big btn-primary"
+    >
         {$t("general.level_start")}</button
     >
 {:else}

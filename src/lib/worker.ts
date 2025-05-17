@@ -1,9 +1,10 @@
 import init, { Trainer } from "tetris-ai";
 
+export type TrainCriterion = "score" | "level" | "tetrises";
+
 export type WorkerCommand =
-    | { command: 'start' }
-    | { command: 'stop' }
-    | { command: 'reset' };
+    | { command: 'restart', criterion: TrainCriterion }
+    | { command: 'stop' };
 
 export type EvalResult = {
     weights: number[];
@@ -29,22 +30,16 @@ export type WorkerMessage =
     | { type: 'train_state'; data: TrainState }
     | { type: 'status'; status: 'stopped' | 'started', message?: string };
 
+const FEATURE_NAMES = [
+    "row_trans",
+    "col_trans",
+    "pits",
+    "landing_height",
+    "eroded_cells",
+    "cuml_wells"];
+
+
 let trainer: Trainer;
-
-async function initWorker() {
-    await init(); // initialize the WASM module
-
-    // the Rust code is now available
-    trainer = Trainer.from_feature_names([
-        "row_trans",
-        "col_trans",
-        "pits",
-        "landing_height",
-        "eroded_cells",
-        "cuml_wells",
-    ]);
-
-}
 
 let isRunning: boolean = false;
 let isStopRequested: boolean = false;
@@ -82,11 +77,10 @@ async function runTrainingLoop(): Promise<void> {
 
 
 self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
-    const command = event.data.command;
-
-    switch (command) {
-        case 'start':
+    switch (event.data.command) {
+        case 'restart':
             if (!isRunning) {
+                trainer = Trainer.from_feature_names(FEATURE_NAMES, event.data.criterion);
                 runTrainingLoop();
             }
             break;
@@ -95,12 +89,15 @@ self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
                 isStopRequested = true;
             }
             break;
-        case 'reset':
-            trainer.reset();
-            break;
         default:
-            console.error("Worker: Unknown message command received:", command);
+            console.error("Worker: Unknown message command received:", event.data);
     }
 };
+
+async function initWorker() {
+    await init(); // initialize the WASM module
+    trainer = Trainer.from_feature_names(FEATURE_NAMES, "score");
+    runTrainingLoop();
+}
 
 initWorker();

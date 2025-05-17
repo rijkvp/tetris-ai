@@ -71,6 +71,17 @@
       "example": "In dit voorbeeld zijn er 4 putten met verschillende dieptes."
     }
   },
+  "training": {
+    "criterion": "Criterium",
+    "generation": "Generatie",
+    "model": "Model",
+    "current_results": "Huidige resultaten",
+    "min": "Min",
+    "max": "Max",
+    "mean": "Gemiddeld",
+    "restart": "Herstart trainen",
+    "stop": "Stop trainen"
+  },
   "footer": {
     "credits": "Colofon",
     "source_code": "Broncode"
