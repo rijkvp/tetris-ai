@@ -87,7 +87,6 @@
                     }
                     break;
                 case "status":
-                    console.log("Received status:", event.data.status);
                     if (event.data.status === "started") {
                         isRunning = true;
                     } else if (event.data.status === "stopped") {

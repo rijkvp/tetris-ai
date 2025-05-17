@@ -51,7 +51,6 @@ let isStopRequested: boolean = false;
 
 function stepTrainer(): boolean {
     if (trainer.is_stable()) {
-        console.log("Worker: Trainer is stable.");
         self.postMessage({ type: 'status', status: 'stopped' } satisfies WorkerMessage);
         return true;
     }

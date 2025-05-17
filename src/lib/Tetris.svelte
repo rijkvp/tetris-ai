@@ -45,9 +45,6 @@
 
     let speedIndex = $state(2);
     let speedMultiplier = $derived(SPEED_MUTIPLIER[speedIndex]);
-    $effect(() => {
-        animator.setSpeed(speedMultiplier);
-    });
 
     let moves = 0;
     let lastMoves = 0;
@@ -96,6 +93,9 @@
                 min="0"
                 max={Math.min(SPEED_MUTIPLIER.length - 1, maxSpeed)}
                 bind:value={speedIndex}
+                oninput={() => {
+                    animator.setSpeed(speedMultiplier);
+                }}
             />
             <span class="speed-display"
                 >{speedMultiplier.toLocaleString()}x</span
