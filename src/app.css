@@ -125,6 +125,11 @@ button[disabled], input[disabled] {
     border: 3px solid var(--primary-border);
     color: var(--bg0);
 }
+@media (prefers-color-scheme: dark) {
+    .btn-primary {
+        color: var(--fg0);
+    }
+}
 .btn-primary:hover {
     background: var(--primary-border);
 }

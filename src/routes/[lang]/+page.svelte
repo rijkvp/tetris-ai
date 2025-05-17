@@ -27,14 +27,20 @@
 <button onclick={() => resetProgress()}>Reset progress</button>
 
 <style>
+    h3 {
+        margin-bottom: 0.5rem;
+    }
+    a {
+        font: inherit;
+    }
     .level-select {
         display: flex;
         flex-direction: column;
     }
     .level {
         display: block;
-        margin: 10px;
-        padding: 20px;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
         border: 1px solid var(--border);
     }
     .level:hover {

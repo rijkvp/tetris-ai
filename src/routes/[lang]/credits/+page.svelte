@@ -3,6 +3,6 @@
 </script>
 
 <div>
-    <h1>{$t("guide.title")}</h1>
-    <p>{@html $t("guide.text")}</p>
+    <h1>{$t("credits.title")}</h1>
+    <p>{@html $t("credits.content")}</p>
 </div>

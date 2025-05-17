@@ -70,5 +70,13 @@
       "description": "The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells.",
       "example": "There are 4 wells in total in this example with varying depths."
     }
+  },
+  "footer": {
+    "credits": "Credits",
+    "source_code": "Source code"
+  },
+  "credits": {
+    "title": "Credits",
+    "content": "Made by Rijk van Putten for the Jantina Tammes School of the University of Groningen."
   }
 }

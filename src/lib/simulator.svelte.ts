@@ -3,7 +3,7 @@ import type { TetrisState } from "./types";
 
 export class TetrisSimulator {
     #simulator: Simulator = new Simulator();
-    state: TetrisState = $state({
+    #state: TetrisState = $state({
         board: this.#simulator.state.board,
         stats: this.#simulator.state.stats,
         gameOver: false,
@@ -17,8 +17,8 @@ export class TetrisSimulator {
 
     reset() {
         this.#simulator.reset();
-        this.state = this.#simulator.state;
-        this.state.gameOver = false;
+        this.#state = this.#simulator.state;
+        this.#state.gameOver = false;
         this.#simulator.step();
         this.#next = this.#simulator.state;
         this.#path = this.#simulator.path ?? null;
@@ -29,7 +29,7 @@ export class TetrisSimulator {
     }
 
     simulateNext(): boolean {
-        this.state = this.#next;
+        this.#state = this.#next;
         if (this.state.gameOver) {
             // game over
             return false;
@@ -38,6 +38,10 @@ export class TetrisSimulator {
         this.#next = this.#simulator.state;
         this.#path = this.#simulator.path ?? null;
         return true;
+    }
+
+    get state(): TetrisState {
+        return this.#state;
     }
 
     get path(): Path | null {

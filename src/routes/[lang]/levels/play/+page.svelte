@@ -3,7 +3,7 @@
     import PlayableTetris from "$lib/PlayableTetris.svelte";
 </script>
 
-<Level key="intro">
+<Level key="play">
     {#snippet content()}
         <PlayableTetris />
     {/snippet}

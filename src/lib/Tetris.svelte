@@ -29,7 +29,10 @@
     let sim = new TetrisSimulator();
     let animator = new TetrisAnimator(
         sim,
-        () => tetrisBoard.display(),
+        () => {
+            onNewStats?.(sim.state.stats);
+            tetrisBoard.display();
+        },
         () => {
             onNewStats?.(sim.state.stats);
             onGameOver(sim.state.stats);
@@ -38,13 +41,6 @@
 
     $effect(() => {
         sim.updateWeights(weights.getWeightsMap());
-    });
-
-    // TODO: fix ugly hacks
-    $effect(() => {
-        if (animator.isRunning) {
-            onNewStats?.(sim.state.stats);
-        }
     });
 
     let speedIndex = $state(2);

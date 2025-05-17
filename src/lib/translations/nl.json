@@ -70,5 +70,13 @@
       "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen.",
       "example": "In dit voorbeeld zijn er 4 putten met verschillende dieptes."
     }
+  },
+  "footer": {
+    "credits": "Colofon",
+    "source_code": "Broncode"
+  },
+  "credits": {
+    "title": "Colofon",
+    "content": "Gemaakt door Rijk van Putten voor de Jantina Tammes School van de Rijksuniversiteit Groningen."
   }
 }

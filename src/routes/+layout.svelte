@@ -3,6 +3,7 @@
     import Header from "$lib/Header.svelte";
     import { localState } from "$lib/stores.svelte";
     import { onMount, onDestroy } from "svelte";
+    import Footer from "$lib/Footer.svelte";
 
     let { children } = $props();
 
@@ -24,3 +25,4 @@
 
 <Header />
 {@render children()}
+<Footer />

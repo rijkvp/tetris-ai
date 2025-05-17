@@ -3,7 +3,7 @@
     import TetrisTrainer from "$lib/TetrisTrainer.svelte";
 </script>
 
-<Level key="train">
+<Level key="training">
     {#snippet content()}
         <TetrisTrainer />
     {/snippet}

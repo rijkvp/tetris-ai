@@ -29,9 +29,11 @@
     let sim = new TetrisSimulator();
     let animator = new TetrisAnimator(
         sim,
-        () => tetrisBoard.display(),
         () => {
-            console.log("Game over");
+            tetrisBoard.display();
+        },
+        () => {
+            restartSim();
         },
     );
 
@@ -47,21 +49,25 @@
         worker.postMessage({ command: "reset" } satisfies WorkerCommand);
         trainState = null;
         trainGeneration = null;
-        startSim();
+        updateSim();
+        restartSim();
     }
 
-    function startSim(weightValues?: number[]) {
+    function restartSim() {
+        sim.reset();
+        tetrisBoard.clear();
+        animator.restart();
+        animator.setSpeed(50);
+    }
+
+    function updateSim(weightValues?: number[]) {
         let weights: Weights;
         if (weightValues) {
             weights = Weights.fromValues(FEATURE_KEYS, weightValues);
         } else {
             weights = new Weights(FEATURE_KEYS.map((key) => [key, 0]));
         }
-        sim.reset();
         sim.updateWeights(weights.getWeightsMap());
-        tetrisBoard.clear();
-        animator.restart();
-        animator.setSpeed(80);
     }
 
     let worker: Worker;
@@ -77,7 +83,7 @@
                     trainState = event.data.data;
                     if (trainState.generation) {
                         trainGeneration = trainState.generation;
-                        startSim(trainGeneration.weights);
+                        updateSim(trainGeneration.weights);
                     }
                     break;
                 case "status":
@@ -93,7 +99,7 @@
             }
         };
 
-        startSim();
+        restartSim();
 
         return () => {
             worker.terminate();
@@ -102,6 +108,7 @@
 
     onDestroy(() => {
         animator.stop();
+        worker.terminate();
     });
 </script>
 
@@ -121,7 +128,7 @@
             </p>
         {/if}
     </div>
-    <div class="board">
+    <div>
         <TetrisBoard
             bind:this={tetrisBoard}
             bind:state={sim.state}

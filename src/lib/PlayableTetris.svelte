@@ -104,7 +104,7 @@
             onNewGame={() => newGame()}
         />
     </div>
-    <div class="board">
+    <div class="board-frame">
         <TetrisBoard
             bind:this={tetrisBoard}
             bind:state={gameState}
@@ -120,7 +120,7 @@
         grid-template-rows: min-content auto;
         gap: 16px;
     }
-    .board {
+    .board-frame {
         grid-column: 2;
         grid-row: 2;
     }

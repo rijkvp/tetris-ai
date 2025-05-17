@@ -15,19 +15,19 @@
     <div class="buttons">
         <button
             onclick={() => {
-                weights.reset();
-            }}
-        >
-            <svg inline-src="arrow-clockwise" alt="Reset" />
-            {$t("feature_control.reset")}</button
-        >
-        <button
-            onclick={() => {
                 weights.randomize();
             }}
         >
             <svg inline-src="shuffle" alt="Shuffle" />
             {$t("feature_control.randomize")}</button
+        >
+        <button
+            onclick={() => {
+                weights.reset();
+            }}
+        >
+            <svg inline-src="arrow-clockwise" alt="Reset" />
+            {$t("feature_control.reset")}</button
         >
     </div>
     <div style:display={localState.cheatMode ? "inline" : "none"}>
@@ -45,29 +45,27 @@
     </div>
     <div class="weights-list">
         {#each weights.entries() as [key, entry]}
-            <div class="weight-item">
-                <input
-                    type="checkbox"
-                    bind:checked={entry.enabled}
-                    disabled={entry.locked}
-                />
-                <input
-                    type="range"
-                    bind:value={entry.value}
-                    disabled={entry.locked}
-                    min="-10.0"
-                    max="10.0"
-                    step="0.1"
-                />
-                <span class="weight-value">{entry.value}</span>
-                <span class="weight-name">{$t(`feature.${key}.name`)}</span>
-                <button
-                    onclick={() => {
-                        selectedFeature = key;
-                        infoDialog.showModal();
-                    }}>?</button
-                >
-            </div>
+            <input
+                type="checkbox"
+                bind:checked={entry.enabled}
+                disabled={entry.locked}
+            />
+            <span class="weight-value">{entry.value}</span>
+            <input
+                type="range"
+                bind:value={entry.value}
+                disabled={entry.locked}
+                min="-10.0"
+                max="10.0"
+                step="0.1"
+            />
+            <span class="weight-name">{$t(`feature.${key}.name`)}</span>
+            <button
+                onclick={() => {
+                    selectedFeature = key;
+                    infoDialog.showModal();
+                }}>?</button
+            >
         {/each}
     </div>
 </div>
@@ -89,25 +87,16 @@
 
 <style>
     .weights-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
+        display: grid;
+        grid-template-columns: max-content 1.8rem 150px max-content min-content;
+        column-gap: 1rem;
+        row-gap: 0.4rem;
         margin: 0.5rem 0;
-    }
-    .weight-item {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-    }
-    .weight-item input[type="range"] {
-        width: 150px;
+        justify-items: stretch;
+        align-items: center;
     }
     .weight-value {
-        width: 1.6rem;
         font-weight: bold;
-    }
-    .weight-name {
-        flex-grow: 1;
     }
     dialog {
         inset: 50%;
@@ -128,6 +117,9 @@
     .buttons {
         display: flex;
         gap: 0.5rem;
+    }
+    .buttons button {
+        min-width: 5.5rem;
     }
     .example {
         margin-top: 0.5rem;

@@ -10,25 +10,26 @@ export interface LevelInfo {
     sideText?: MultiLang;
 };
 
+/// This defines the ordering of the levels in the game.
 export const LEVELS: string[] = [
-    "intro",
-    "2",
-    "3",
-    "4",
-    "5",
-    "train",
+    "play",
+    "feat1",
+    "feat2",
+    "feat3",
+    "feat4",
+    "training",
     "sandbox",
 ];
 
 export const LEVEL_INFO: { [key: string]: LevelInfo } = {
-    "intro": {
+    "play": {
         name: {
-            en: "Introduction",
-            nl: "Introductie"
+            en: "Play Tetris",
+            nl: "Speel Tetris"
         },
         summary: {
             en: "Play Tetris yourself to explore the game and its features.",
-            nl: "Speel Tetris zelf om het spel en de kenmerken te verkennen."
+            nl: "Speel Tetris zelf om het spel te leren kennen."
         },
         explanation: {
             en: `<h2>Welcome!</h2>
@@ -103,7 +104,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
  </ul>`
         }
     },
-    "2": {
+    "feat1": {
         name: {
             en: "Features",
             nl: "Kenmerken"
@@ -129,69 +130,84 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
                 The <em>goal</em> is to clear 20 lines by tweaking the weights of the features, good luck!
                 </p>
             `,
-            nl: `<p>Laten we de AI nu Tetris laten spelen! Computers zijn erg snel en kunnen kan gemakkelijk alle mogelijke plekken berekenen om de blokjes te plaatsen. Maar hij weet niet welke zetten goed zijn en welke slecht.</p>
+            nl: `<p>Laten we nu de AI Tetris laten spelen! Computers zijn erg snel en kunnen kan gemakkelijk alle mogelijke plekken berekenen om de blokjes te plaatsen. Maar hij weet niet welke zetten goed zijn en welke slecht.</p>
 <p>
-Hier komen kenmerken om de hoek kijken. Kenmerken zijn aanwijzingen van stukjes informatie die de AI helpen om beslissingen te nemen. Door gewichten toe te kennen aan deze kenmerken laten we de AI weten welke soorten zetten goed zijn en welke juist slecht.</p>
+Hier komen <strong>kenmerken</strong> om de hoek kijken. Kenmerken zijn aanwijzingen van stukjes informatie die de AI helpen om beslissingen te nemen. Door gewichten toe te kennen aan deze kenmerken laten we de AI weten welke soorten zetten goed zijn en welke juist slecht.</p>
 <p>
-In het volgende level begin je met twee kenmerken: Gaten en Landingshoogte. Je kunt de gewichten van de kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kenmerken wenselijk is, kun je het gewicht verhogen zodat de AI deze prioriteert. Of als je denkt dat een kenmerk juist vermeden moet worden, kun je het gewicht verlagen. Het doel is om 20 lijnen weg te spelen door de gewichten van de kenmerken aan te passen, succes!</p>
+In het volgende level begin je met twee kenmerken: <strong>Gaten</strong> en <strong>Landingshoogte</strong>. Je kunt de gewichten van de kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kenmerken wenselijk is, kun je het gewicht verhogen zodat de AI deze prioriteert. Of als je denkt dat een kenmerk juist vermeden moet worden, kun je het gewicht verlagen. Het doel is om 20 lijnen weg te spelen door de gewichten van de kenmerken aan te passen, succes!</p>
 
 `
         },
     },
-    "3": {
+    "feat2": {
         name: {
             en: "Features 2",
-            nl: "Kenmerken 2"
+            nl: "Kolommen en rijen"
         },
         summary: {
             en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+            nl: "Leer hoe kolom- en rijovergangen werken."
         },
         explanation: {
             en: "Try to clear hundred lines by adjusting the column transitions and row transitions.",
-            nl: "Pas de waardes van de kenmerken zo aan zodat de AI honderd rijen weggespeelt."
+            nl: `<p>In dit level zijn er twee andere kenmerken: <strong>Kolomovergangen</strong> en <strong>Rijovergangen</strong>.
+Probeer met deze kenmerken honderd rijen weg te spelen. Voor uitleg over de kenmerken kun je de <strong>[?]</strong> knop gebruiken.</p>`
         },
     },
-    "4": {
+    "feat3": {
         name: {
             en: "Tetris",
             nl: "Tetris"
         },
         summary: {
             en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+            nl: "Leer de AI om een Tetris te maken."
         },
         explanation: {
             en: "Try to get a tetris (clearing four rows at once) by using the cleared cells and wells features.",
-            nl: "Probeer vier tetrissen te halen (vier rijen tegelijk wegspelen) door de landingshoogte aan te passen."
+            nl: `<p>Probeer een <strong>Tetris</strong> te halen door vier rijen tegelijk wegspelen.
+Doe dit met behulp van de <strong>Gewiste hokjes</strong> en <strong>Putten</strong> kenmerken.
+De gewichten van twee andere kenmerken zijn al gegeven om je op weg te helpen. Deze kun je niet meer aanpassen.
+            </p>`
         },
     },
-    "5": {
+    "feat4": {
         name: {
             en: "Level 29",
             nl: "Level 29"
         },
         summary: {
-            en: "Learn how to use features to make the AI play Tetris.",
-            nl: "Leer hoe je kenmerken kunt gebruiken om de AI Tetris te laten spelen."
+            en: "Reach level 29 by using 6 features.",
+            nl: "Behaal level 29 halen met 6 kenmerken."
         },
         explanation: {
             en: "Try to reach level 29.",
-            nl: "Probeer level 29 te halen en 200 rijen vrij te maken met behulp van 4 kenmerken."
+            nl: `<p>
+Nu gaan we alle kenmerken combineren. In Tetris is het moeilijkste level 29. Probeer dit level te halen door de weer de gewichten van de <strong>Gewiste hokjes</strong> en <strong>Putten</strong> aan te passen. De 4 andere kenmerken zijn al gegeven.</p>`
         },
     },
-    "train": {
+    "training": {
         name: {
-            en: "Train",
-            nl: "Train"
+            en: "Training",
+            nl: "Training"
         },
         summary: {
             en: "Explore how the AI is trained to play Tetris.",
-            nl: "Verken hoe de AI wordt getraind om Tetris te spelen."
+            nl: "Leer hoe de AI wordt getraind om Tetris te spelen."
         },
         explanation: {
             en: "In this level you can see how to AI is trained.",
-            nl: "TODO"
+            nl: `<p>In de praktijk is het (zoals je misschien gemerkt hebt) niet praktisch om alle kenmerken handmatig in te stellen. AI modellen kunnen wel duizenden kenmerken hebben. In plaats daarvan worden AIs 'getraind' door een algoritme. In dit 'level' kun je zien hoe de Tetris AI wordt getraind door een algoritme. In de visualisatie zie je steeds de beste versie van de AI van de vorige generatie. Je ziet dat die steeds beter wordt in het spelen van Tetris.
+
+<h3>Hoe werkt het trainingsalgoritme?</h3>
+
+<p>
+Het proces begint met een generatie van 100 Tetris-modellen, die elk willekeurige gewichten krijgen. Nadat elk model een potje Tetris heeft gespeeld, worden de 10 beste modellen gekozen op basis van hun score. Deze topmodellen vormen samen de basis voor de volgende generatie.
+</p>
+
+<p>
+Het gemiddelde van de gewichten van de topmodellen wordt genoemen en dat gemiddelde wordt vervolgens een beetje aangepast met kleine, willekeurige veranderingen. Zo ontstaat een nieuwe generatie modellen, die hopelijk nog beter speelt. Dit process wordt net zolang herhaald totdat alle modellen op dezelfde kenmerken uitkomen.
+</p>`
         },
     },
     "sandbox": {
@@ -200,6 +216,10 @@ In het volgende level begin je met twee kenmerken: Gaten en Landingshoogte. Je k
             en: "Play around with all the features.",
             nl: "Speel met alle kenmerken.",
         },
+        sideText: {
+            en: "Here you can play around with all the features.",
+            nl: "Hier kun je met alle kenmerken spelen.",
+        }
     },
 };
 
@@ -218,7 +238,7 @@ export interface Goals {
 };
 
 export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
-    "2": {
+    "feat1": {
         goals: {
             lines: 20,
         },
@@ -227,7 +247,7 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             ["landing_height", 0]
         ]
     },
-    "3": {
+    "feat2": {
         goals: {
             lines: 100,
         },
@@ -236,7 +256,7 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             ["row_trans", 0]
         ]
     },
-    "4": {
+    "feat3": {
         goals: {
             tetrises: 1
         },
@@ -251,7 +271,7 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             "landing_height"
         ]
     },
-    "5": {
+    "feat4": {
         goals: {
             level: 29
         },
