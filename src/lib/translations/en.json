@@ -1,13 +1,14 @@
 {
   "general": {
     "close": "Close",
-    "previous": "Previous",
-    "next": "Next",
+    "previous_level": "Previous level",
+    "next_level": "Next level",
     "example": "Example",
     "features": "Features",
     "scoreboard": "Scoreboard",
     "level_start": "Start level",
-    "level_explanation": "Back to explanation"
+    "level_explanation": "Back to explanation",
+    "reset_progress": "Reset progress"
   },
   "level_select": {
     "title": "Select level",
@@ -41,14 +42,14 @@
   },
   "feature": {
     "col_trans": {
-      "name": "Column transitions",
+      "name": "Vertical transitions",
       "description": "The number of times that two cells next to each other in the same column don't match (one is filled and the other is empty).",
-      "example": "In this example, the arrows show the column transitions. In total there are 15 column transitions."
+      "example": "In this example, the arrows show the vertical transitions. In total there are 15 column transitions."
     },
     "row_trans": {
-      "name": "Row transitions",
+      "name": "Horizontal transitions",
       "description": "The number of times that two cells next to each other in the same row don't match (one is filled and the other is empty).",
-      "example": "In this example, the arrows show the row transitions. In total there are 11 row transitions."
+      "example": "In this example, the arrows show the horizontal transitions. In total there are 11 row transitions."
     },
     "pits": {
       "name": "Holes",
@@ -88,6 +89,6 @@
   },
   "credits": {
     "title": "Credits",
-    "content": "Made by Rijk van Putten for the Jantina Tammes School of the University of Groningen."
+    "content": "<p>Made by <a href=\"https://rijkvp.nl/\">Rijk van Putten</a> for the <a href=\"https://www.rug.nl/jantina-tammes-school/\">Jantina Tammes School</a> of the University of Groningen.</p> <a href=\"https://hdl.handle.net/11370/bd472f68-d9de-4095-9697-9b3c6db02d49\">Link to research</a>"
   }
 }

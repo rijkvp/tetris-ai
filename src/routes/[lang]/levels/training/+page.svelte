@@ -102,7 +102,7 @@
                     <option value="tetrises">Tetrises</option>
                 </select>
             </div>
-            <TrainTetris bind:weights />
+            <TrainTetris bind:weights bind:isRunning />
         </div>
     {/snippet}
     {#snippet side()}

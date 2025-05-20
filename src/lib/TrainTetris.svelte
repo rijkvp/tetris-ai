@@ -5,7 +5,10 @@
     import { TetrisSimulator } from "./simulator.svelte";
     import type { Weights } from "./weights.svelte";
 
-    let { weights = $bindable() }: { weights: Weights } = $props();
+    let {
+        weights = $bindable(),
+        isRunning = $bindable(),
+    }: { weights: Weights; isRunning: boolean } = $props();
 
     let tetrisBoard: TetrisBoard;
     let sim = new TetrisSimulator();
@@ -28,6 +31,10 @@
 
     $effect(() => {
         sim.updateWeights(weights.getWeightsMap());
+    });
+
+    $effect(() => {
+        animator.setRunning(isRunning);
     });
 
     onMount(() => {

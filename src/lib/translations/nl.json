@@ -1,13 +1,14 @@
 {
   "general": {
     "close": "Sluiten",
-    "previous": "Vorige",
-    "next": "Volgende",
+    "previous_level": "Vorig level",
+    "next_level": "Volgend level",
     "example": "Voorbeeld",
     "features": "Kenmerken",
     "scoreboard": "Scorebord",
     "level_start": "Begin level",
-    "level_explanation": "Terug naar uitleg"
+    "level_explanation": "Terug naar uitleg",
+    "reset_progress": "Herstel voortgang"
   },
   "level_select": {
     "title": "Level selecteren",
@@ -41,18 +42,18 @@
   },
   "feature": {
     "col_trans": {
-      "name": "Kolomovergangen",
+      "name": "Verticale overgangen",
       "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg).",
-      "example": "In dit voorbeeld zijn alle kolomovergangen gemarkeerd met pijltjes. Er zijn 15 kolomovergangen in totaal."
+      "example": "In dit voorbeeld zijn alle verticale overgangen gemarkeerd met pijltjes. Er zijn 15 verticale overgangen in totaal."
     },
     "row_trans": {
-      "name": "Rijovergangen",
+      "name": "Horizontale overgangen",
       "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg).",
-      "example": "In dit voorbeeld zijn alle rijovergangen gemarkeerd met pijltjes. Er zijn 11 rijovergangen in totaal."
+      "example": "In dit voorbeeld zijn alle horizontale overgangen gemarkeerd met pijltjes. Er zijn 11 horizontale overgangen in totaal."
     },
     "pits": {
       "name": "Gaten",
-      "description": "Het aantal lege cellen dat een gevulde cel erboven heeft.",
+      "description": "Het aantal lege hokjes dat een gevuld kokje erboven heeft.",
       "example": "In dit voorbeeld zijn alle gaten gemarkeerd met kruisjes. Er zijn 25 gaten in totaal."
     },
     "landing_height": {
@@ -61,13 +62,13 @@
       "example": "In dit voorbeeld, the tetromino wordt geplaatst op hoogte 3."
     },
     "eroded_cells": {
-      "name": "Gewiste hokjes",
-      "description": "Het aantal hokjes dat wordt gewist van de tetromino zelf als gevolg van de zet.",
-      "example": "In dit voorbeeld is het aantal gewiste hokjes 4."
+      "name": "Weggespeelde hokjes",
+      "description": "Het aantal hokjes dat wordt weggespeeld van de tetromino zelf als gevolg van de zet.",
+      "example": "In dit voorbeeld is het aantal weggespeelde hokjes 4."
     },
     "cuml_wells": {
       "name": "Putten",
-      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde cellen.",
+      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde hokjes.",
       "example": "In dit voorbeeld zijn er 4 putten met verschillende dieptes."
     }
   },
@@ -88,6 +89,6 @@
   },
   "credits": {
     "title": "Colofon",
-    "content": "Gemaakt door Rijk van Putten voor de Jantina Tammes School van de Rijksuniversiteit Groningen."
+    "content": "<p>Gemaakt door <a href=\"https://rijkvp.nl/\">Rijk van Putten</a> voor de <a href=\"https://www.rug.nl/jantina-tammes-school/\">Jantina Tammes School</a> van de Rijksuniversiteit Groningen.</p> <a href=\"https://hdl.handle.net/11370/bd472f68-d9de-4095-9697-9b3c6db02d49\">Link naar onderzoek</a>"
   }
 }

@@ -95,11 +95,17 @@ export class TetrisAnimator {
     }
 
     togglePaused() {
-        this.isRunning = !this.isRunning;
+        this.setRunning(!this.isRunning);
+    }
+
+    setRunning(running: boolean) {
+        this.isRunning = running;
         if (this.isRunning) {
             // start the game loop / animation
             this.#lastFrameTime = performance.now(); // prevents time from 'ticking' while paused
             this.#animationFrame = requestAnimationFrame(this.#gameLoop.bind(this));
+        } else {
+            cancelAnimationFrame(this.#animationFrame);
         }
     }
 

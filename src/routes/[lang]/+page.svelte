@@ -24,7 +24,10 @@
     {/each}
 </div>
 
-<button onclick={() => resetProgress()}>Reset progress</button>
+<button class="reset-progress" onclick={() => resetProgress()}>
+    <svg inline-src="trash" alt="Trash" />
+    {$t("general.reset_progress")}
+</button>
 
 <style>
     h3 {
@@ -46,5 +49,9 @@
     .level:hover {
         background-color: var(--bg1);
         text-decoration: none;
+    }
+    .reset-progress {
+        margin-top: 0.5rem;
+        float: right;
     }
 </style>

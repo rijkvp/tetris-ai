@@ -35,7 +35,8 @@
             }
         }}
     >
-        {$t("general.previous")}</button
+        <svg inline-src="arrow-left" alt="Left arrow" />
+        {$t("general.previous_level")}</button
     >
     <h1>{levelInfo.name[$locale]}</h1>
     <button
@@ -47,7 +48,8 @@
             }
         }}
     >
-        {$t("general.next")}</button
+        <svg inline-src="arrow-right" alt="Right arrow" />
+        {$t("general.next_level")}</button
     >
 </nav>
 
@@ -68,8 +70,9 @@
         {@render content()}
         <div class="panel">
             {#if levelInfo.explanation != null}
-                <button onclick={() => (inExplanation = true)}
-                    >{$t("general.level_explanation")}</button
+                <button onclick={() => (inExplanation = true)}>
+                    <svg inline-src="arrow-return-left" alt="Back arrow" />
+                    {$t("general.level_explanation")}</button
                 >
             {/if}
             {#if levelInfo.sideText != null}
