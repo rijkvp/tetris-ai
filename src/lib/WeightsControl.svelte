@@ -34,13 +34,13 @@
         <h2>Cheat mode</h2>
         <button
             onclick={() => {
-                weights.loadPreset("infinite");
-            }}>Preset (infinite)</button
+                weights.loadPreset("score");
+            }}>Preset (score)</button
         >
         <button
             onclick={() => {
-                weights.loadPreset("score");
-            }}>Preset (score)</button
+                weights.loadPreset("levels");
+            }}>Preset (levels)</button
         >
     </div>
     <div class="weights-list">

@@ -11,7 +11,7 @@ use wasm_bindgen::prelude::*;
 
 const MODELS_PER_GEN: usize = 100;
 const KEPT_PER_GEN: usize = 10;
-const EVAL_ITERATIONS: usize = 10000;
+const EVAL_ITERATIONS: usize = 1000;
 const WEIGHT_RANGE: f64 = 10.0;
 const STABLE_THRESHOLD: f64 = 0.25;
 
@@ -20,7 +20,7 @@ pub struct Trainer {
     features: Features,
     weights: Vec<f64>,
     st_dev: Vec<f64>,
-    criteria: TrainCriteria,
+    criterion: TrainCriterion,
     // state
     current_gen: Option<Vec<Vec<f64>>>,
     current_gen_index: usize,
@@ -29,12 +29,12 @@ pub struct Trainer {
 }
 
 impl Trainer {
-    pub fn new(features: Features, criteria: TrainCriteria) -> Self {
+    pub fn new(features: Features, criterion: TrainCriterion) -> Self {
         Self {
             weights: vec![0.0; features.len()],
             st_dev: vec![WEIGHT_RANGE; features.len()],
             features,
-            criteria,
+            criterion,
             current_gen: None,
             current_gen_index: 1,
             current_results: Vec::with_capacity(MODELS_PER_GEN),
@@ -54,9 +54,9 @@ impl TrainState {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Trainer {
     #[cfg(feature = "wasm")]
-    pub fn from_feature_names(feature_names: Box<[String]>, criteria: String) -> Self {
+    pub fn from_feature_names(feature_names: Box<[String]>, criterion: String) -> Self {
         let strs = feature_names.iter().map(String::as_str).collect::<Vec<_>>();
-        Self::new(Features::from_names(&strs), criteria.parse().unwrap())
+        Self::new(Features::from_names(&strs), criterion.parse().unwrap())
     }
 
     pub fn reset(&mut self) {
@@ -87,7 +87,7 @@ impl Trainer {
         });
         // Eval a single model inside the current generation
         let weights = generation[self.current_model_index].clone();
-        let score = self.criteria.eval(self.features.with_weights(&weights));
+        let score = self.criterion.eval(self.features.with_weights(&weights));
         let result = EvalResult { weights, score };
         self.current_results.push(result.clone());
         self.current_model_index += 1;
@@ -170,21 +170,21 @@ impl Trainer {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum TrainCriteria {
+pub enum TrainCriterion {
     Score,
     Level,
     Tetrises,
 }
 
-impl TrainCriteria {
+impl TrainCriterion {
     fn eval(&self, weights: Weights) -> f64 {
         let mut sim = Simulator::new_with_weights(weights);
         match self {
-            TrainCriteria::Score => {
+            TrainCriterion::Score => {
                 sim.run_for(EVAL_ITERATIONS);
                 sim.stats().score as f64
             }
-            TrainCriteria::Level => {
+            TrainCriterion::Level => {
                 while sim.step() {
                     if sim.stats().level >= 30 {
                         break;
@@ -192,10 +192,23 @@ impl TrainCriteria {
                 }
                 sim.stats().lines as f64
             }
-            TrainCriteria::Tetrises => {
+            TrainCriterion::Tetrises => {
                 sim.run_for(EVAL_ITERATIONS);
                 sim.stats().score as f64 * 10.0 * (sim.stats().tetrises + 1) as f64
             }
+        }
+    }
+}
+
+impl FromStr for TrainCriterion {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "score" => Ok(TrainCriterion::Score),
+            "level" => Ok(TrainCriterion::Level),
+            "tetrises" => Ok(TrainCriterion::Tetrises),
+            _ => Err(()),
         }
     }
 }
@@ -233,19 +246,6 @@ impl TrainState {
 
     pub fn generation(&self) -> Option<&TrainGeneration> {
         self.generation.as_ref()
-    }
-}
-
-impl FromStr for TrainCriteria {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "score" => Ok(TrainCriteria::Score),
-            "level" => Ok(TrainCriteria::Level),
-            "tetrises" => Ok(TrainCriteria::Tetrises),
-            _ => Err(()),
-        }
     }
 }
 

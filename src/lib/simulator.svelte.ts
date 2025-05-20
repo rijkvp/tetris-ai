@@ -28,6 +28,11 @@ export class TetrisSimulator {
         this.#simulator.update_weights(weightsMap);
     }
 
+    setTimePressure(enabled: boolean) {
+        console.log("set time pressure", enabled);
+        this.#simulator.set_time_pressure(enabled);
+    }
+
     simulateNext(): boolean {
         this.#state = this.#next;
         if (this.state.gameOver) {

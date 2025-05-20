@@ -97,22 +97,6 @@ impl Board {
         }
     }
 
-    /// Returns true if the pattern overlaps with the board.
-    // TODO: obsolete
-    pub(crate) fn overlaps(&self, pattern: &Pattern, row: usize, col: usize) -> bool {
-        if row + pattern.rows() > BOARD_HEIGHT || col + pattern.cols() > BOARD_WIDTH {
-            return true; // out of bounds
-        }
-        for (r, p_row) in pattern.iter_rows().enumerate() {
-            for (c, filled) in p_row.iter().enumerate() {
-                if *filled && self.data[row + r][col + c].filled() {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
     /// Returns true if the move overlaps with the board.
     pub(crate) fn overlaps_move(&self, r#move: Move) -> bool {
         let pattern = r#move.pattern();

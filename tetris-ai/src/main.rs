@@ -2,26 +2,27 @@ use std::time::Instant;
 use tetris_ai::{
     feature::Features,
     simulator::Simulator,
-    train::{TrainCriteria, Trainer},
+    train::{TrainCriterion, Trainer},
 };
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
 
-    if args.len() > 1 {
+    if args.len() > 2 {
+        let arg2 = args[2].as_str();
         match args[1].as_str() {
-            "train" => train(),
-            "run" => run(),
-            _ => eprintln!("unknown command: {}", args[1]),
+            "run" => run(arg2),
+            "train" => train(arg2),
+            _ => eprintln!("Unknown command: {}", args[1]),
         }
     } else {
-        run();
+        eprintln!("Usage: {} run|train [preset|criterion]", args[0]);
     }
 }
 
-fn run() {
+fn run(preset: &str) {
     let start = Instant::now();
-    let mut simulator = Simulator::new_with_preset("score");
+    let mut simulator = Simulator::new_with_preset(preset);
     simulator.run();
     let elapsed = start.elapsed();
     let stats = simulator.stats();
@@ -37,17 +38,22 @@ fn run() {
     println!("{}", simulator.board());
 }
 
-fn train() {
+fn train(criterion: &str) {
+    // The features to train on
     const FEATURE_NAMES: &[&str] = &[
-        "row_trans",
         "col_trans",
+        "row_trans",
         "pits",
         "landing_height",
         "eroded_cells",
         "cuml_wells",
     ];
+    let Ok(criterion) = criterion.parse::<TrainCriterion>() else {
+        eprintln!("Unknown criterion: '{}'", criterion);
+        return;
+    };
 
-    let mut trainer = Trainer::new(Features::from_names(FEATURE_NAMES), TrainCriteria::Score);
+    let mut trainer = Trainer::new(Features::from_names(FEATURE_NAMES), criterion);
     while !trainer.is_stable() {
         let state = trainer.step();
         println!(

@@ -8,11 +8,11 @@ use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Default)]
 pub struct Simulator {
     state: State,
     weights: Weights,
     current_path: Option<Path>,
+    time_pressure: bool,
 }
 
 impl Simulator {
@@ -29,6 +29,17 @@ impl Simulator {
 
     pub fn board(&self) -> &Board {
         self.state.board()
+    }
+}
+
+impl Default for Simulator {
+    fn default() -> Self {
+        Self {
+            state: State::default(),
+            weights: Weights::default(),
+            current_path: None,
+            time_pressure: true,
+        }
     }
 }
 
@@ -71,7 +82,15 @@ impl Simulator {
         let mut best_score = f64::NEG_INFINITY;
         let mut count = 0;
         let mut rng = rand::rng();
-        for path in move_dijkstra(self.state.board(), piece, self.state.stats().level) {
+        for path in move_dijkstra(
+            self.state.board(),
+            piece,
+            if self.time_pressure {
+                Some(self.state.stats().level)
+            } else {
+                None
+            },
+        ) {
             let future = self.state.future(path.final_move());
             let score = self.weights.evaluate(&future);
             if score > best_score {
@@ -97,6 +116,10 @@ impl Simulator {
 
     pub fn update_weights(&mut self, weights_map: WeightsMap) {
         self.weights = weights_map.into();
+    }
+
+    pub fn set_time_pressure(&mut self, time_pressure: bool) {
+        self.time_pressure = time_pressure;
     }
 
     #[cfg(feature = "wasm")]

@@ -1,6 +1,6 @@
 use crate::board::Board;
 use crate::board::{BOARD_HEIGHT, BOARD_WIDTH};
-use crate::r#move::{Move, Position, move_drop};
+use crate::r#move::{Move, Position, move_dijkstra};
 use crate::piece::Piece;
 use crate::state::State;
 use pyo3::ffi::c_str;
@@ -40,11 +40,14 @@ pub fn random_state() -> State {
     let mut rng = rand::rng();
     loop {
         let piece = Piece::from_index(rng.random_range(0..7));
-        let possible_moves = move_drop(state.board(), piece);
-        if possible_moves.is_empty() {
+        let possible_positions = move_dijkstra(state.board(), piece, None)
+            .into_iter()
+            .map(|path| path.final_move().pos)
+            .collect::<Vec<_>>();
+        if possible_positions.is_empty() {
             break;
         }
-        let pos = possible_moves[rng.random_range(0..possible_moves.len())];
+        let pos = possible_positions[rng.random_range(0..possible_positions.len())];
         state = state.future(Move { piece, pos });
     }
     state

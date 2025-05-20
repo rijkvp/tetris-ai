@@ -1,4 +1,4 @@
-use crate::board::{BOARD_HEIGHT, BOARD_WIDTH, Board};
+use crate::board::Board;
 #[cfg(feature = "wasm")]
 use crate::piece::WasmPattern;
 use crate::piece::{Pattern, Piece};
@@ -118,35 +118,6 @@ impl Path {
     }
 }
 
-/// Returns all possible moves when dropping a piece.
-pub fn move_drop(board: &Board, piece: Piece) -> Vec<Position> {
-    let mut moves = Vec::new();
-    // for each rotation of the piece
-    for rot in 0..piece.num_rotations() {
-        let pattern = piece.rotation(rot);
-        // for each column where the piece can be placed
-        for col in 0..=(BOARD_WIDTH - pattern.cols()) {
-            // the highest point where the pattern can be placed
-            let highest = (0..pattern.cols())
-                .map(|c| board.height(col + c))
-                .max()
-                .unwrap();
-            let mut row = (BOARD_HEIGHT - highest).saturating_sub(pattern.rows()); // saturating_sub to avoid underflow
-            if !board.overlaps(&pattern, row, col) {
-                while !board.overlaps(&pattern, row + 1, col) {
-                    row += 1;
-                }
-                moves.push(Position {
-                    rot,
-                    row: row as isize,
-                    col: col as isize,
-                });
-            }
-        }
-    }
-    moves
-}
-
 const MIN_MOVES: u64 = 5; // minimum number of moves to perform in total
 const MAX_MOVES: u64 = 12; // maximum number of moves to perform in total
 const MAX_MOVES_PER_TICK: u64 = 3; // maximum number of moves to perform per tick
@@ -221,17 +192,24 @@ fn touches_ground(piece: Piece, pos: Position, board: &Board) -> bool {
     })
 }
 
-pub fn move_dijkstra(board: &Board, piece: Piece, level: u64) -> Vec<Path> {
+/// Calculates all paths to all possible landing positions for a given piece using Dijkstra's algorithm.
+/// `time_pressure_level` is used the simulate time pressure as a Tetris game speeds up, this will
+/// limit the number of moves and the number of moves per tick, making the AI seem more realistic.
+pub fn move_dijkstra(board: &Board, piece: Piece, time_pressure_level: Option<u64>) -> Vec<Path> {
     let mut cost = HashMap::<Position, u64>::new();
     let mut parent = HashMap::<Position, Position>::new();
     let mut to_visit = BinaryHeap::new();
     let mut destinations = Vec::new();
 
-    let speed: f64 = level as f64 / 30.0; // speed cap at level 30
-
-    // linearly decrease with speed
-    let max_moves = MIN_MOVES + ((1.0 - speed) * (MAX_MOVES - MIN_MOVES) as f64).round() as u64;
-    let max_tick_moves = 1 + ((1.0 - speed) * (MAX_MOVES_PER_TICK - 1) as f64).round() as u64;
+    let (max_moves, max_tick_moves) = if let Some(time_pressure_level) = time_pressure_level {
+        let speed: f64 = time_pressure_level as f64 / 30.0; // speed cap at level 30
+        // linearly decrease with speed
+        let max_moves = MIN_MOVES + ((1.0 - speed) * (MAX_MOVES - MIN_MOVES) as f64).round() as u64;
+        let max_tick_moves = 1 + ((1.0 - speed) * (MAX_MOVES_PER_TICK - 1) as f64).round() as u64;
+        (max_moves, max_tick_moves)
+    } else {
+        (MAX_MOVES, MAX_MOVES_PER_TICK)
+    };
 
     let start_move = piece.into_start_move();
     if board.overlaps_move(start_move) {

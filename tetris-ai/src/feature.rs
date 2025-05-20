@@ -9,18 +9,19 @@ use wasm_bindgen::prelude::{JsValue, wasm_bindgen};
 
 type FeatureFn = fn(&State) -> usize;
 
-const PRESET_MAP: [(&str, &[(&str, f64)]); 2] = [
-    (
-        "infinite",
-        &[
-            ("col_trans", -8.4),
-            ("row_trans", -2.4),
-            ("pits", -10.0),
-            ("landing_height", -5.0),
-            ("eroded_cells", 10.0),
-            ("cuml_wells", -3.5),
-        ],
-    ),
+/// This defines all the available features by mapping their names to their respective functions.
+/// To add a new feature, you can simply add a new entry to this array.
+const FEATURE_LOOKUP: &[(&str, FeatureFn)] = &[
+    ("col_trans", col_trans),
+    ("row_trans", row_trans),
+    ("pits", pits),
+    ("landing_height", landing_height),
+    ("eroded_cells", eroded_cells),
+    ("cuml_wells", cuml_wells),
+];
+
+/// Presets can be used to quickly initialize a set of weights.
+const PRESETS: &[(&str, &[(&str, f64)])] = &[
     (
         "score",
         &[
@@ -32,15 +33,17 @@ const PRESET_MAP: [(&str, &[(&str, f64)]); 2] = [
             ("cuml_wells", -0.4),
         ],
     ),
-];
-
-const FEATURE_LOOKUP: [(&str, FeatureFn); 6] = [
-    ("col_trans", col_trans),
-    ("row_trans", row_trans),
-    ("pits", pits),
-    ("landing_height", landing_height),
-    ("eroded_cells", eroded_cells),
-    ("cuml_wells", cuml_wells),
+    (
+        "levels",
+        &[
+            ("col_trans", -8.4),
+            ("row_trans", -2.4),
+            ("pits", -10.0),
+            ("landing_height", -5.0),
+            ("eroded_cells", 10.0),
+            ("cuml_wells", -3.5),
+        ],
+    ),
 ];
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
@@ -67,7 +70,7 @@ impl WeightsMap {
     }
 
     pub fn preset(preset: &str) -> Self {
-        if let Some((_, weight_map)) = PRESET_MAP.iter().find(|(name, _)| name == &preset) {
+        if let Some((_, weight_map)) = PRESETS.iter().find(|(name, _)| name == &preset) {
             Self(
                 weight_map
                     .iter()
@@ -185,10 +188,10 @@ impl Features {
 
 impl Weights {
     pub fn from_preset(preset: &str) -> Self {
-        if let Some((_, weight_map)) = PRESET_MAP.iter().find(|(name, _)| name == &preset) {
+        if let Some((_, weight_map)) = PRESETS.iter().find(|(name, _)| name == &preset) {
             Weights::from_iter(weight_map.iter().copied())
         } else {
-            panic!("Unknown preset: {}", preset);
+            panic!("Unknown preset: '{}'", preset);
         }
     }
 
@@ -198,18 +201,16 @@ impl Weights {
             if let Some((_, feature)) = FEATURE_LOOKUP.iter().find(|(n, _)| n == &name) {
                 weights.push((*feature, weight));
             } else {
-                panic!("Unknown feature: {}", name);
+                panic!("Unknown feature: '{}'", name);
             }
         }
         Weights(weights)
     }
 
     pub fn evaluate(&self, state: &State) -> f64 {
-        let mut score = 0.0;
-        for (feature, weight) in self.0.iter() {
-            score += feature(state) as f64 * weight;
-        }
-        score
+        self.0.iter().fold(0.0, |acc, (feature, weight)| {
+            acc + feature(state) as f64 * weight
+        })
     }
 
     pub fn iter_values(&self) -> impl Iterator<Item = f64> {
@@ -322,7 +323,7 @@ mod tests {
         ("col_trans", col_trans),
         ("row_trans", row_trans),
         ("pits", pits),
-        // ("landing_height", landing_height), // TOFIX: differs from Python since piece includes empty rows/columns
+        // ("landing_height", landing_height), // NOTE: differs from Python since piece includes empty rows/columns
         ("eroded_cells", eroded_cells),
         ("cuml_wells", cuml_wells),
     ];

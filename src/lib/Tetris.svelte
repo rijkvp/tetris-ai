@@ -19,11 +19,13 @@
         onNewStats,
         onGameOver,
         maxSpeed = SPEED_MUTIPLIER.length - 1,
+        timePressure = $bindable(true),
     }: {
         weights: Weights;
         onNewStats?: (stats: Stats) => void;
         onGameOver: (stats: Stats) => void;
         maxSpeed?: number;
+        timePressure?: boolean;
     } = $props();
 
     let sim = new TetrisSimulator();
@@ -41,6 +43,9 @@
 
     $effect(() => {
         sim.updateWeights(weights.getWeightsMap());
+    });
+    $effect(() => {
+        sim.setTimePressure(timePressure);
     });
 
     let speedIndex = $state(2);
