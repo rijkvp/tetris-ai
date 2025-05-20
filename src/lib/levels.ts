@@ -91,7 +91,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
                 <strong>Left/Right arrow keys</strong>: move the tetromino to
                 the left/right
             </li>
-            <li><strong>Up arrow/Z<strong>.: Rotate the tetromino</li>
+            <li><strong>Up arrow/Z</strong>: Rotate the tetromino</li>
             <li><strong>Down arrow</strong>: Move the tetromino down (soft drop)</li>
             <li><strong>Space</strong>: Drop the tetromino (hard drop)</li>
         </ul>`,
