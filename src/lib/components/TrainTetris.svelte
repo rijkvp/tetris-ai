@@ -1,9 +1,9 @@
 <script lang="ts">
+    import type { Weights } from "$lib/weights.svelte";
     import { onMount } from "svelte";
-    import TetrisBoard from "./TetrisBoard.svelte";
-    import { TetrisAnimator } from "./animator.svelte";
-    import { TetrisSimulator } from "./simulator.svelte";
-    import type { Weights } from "./weights.svelte";
+    import { TetrisAnimator } from "$lib/animator.svelte";
+    import { TetrisSimulator } from "$lib/simulator.svelte";
+    import TetrisBoard from "$lib/components/TetrisBoard.svelte";
 
     let {
         weights = $bindable(),

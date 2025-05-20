@@ -8,10 +8,10 @@
         WorkerCommand,
         WorkerMessage,
     } from "$lib/worker.ts";
-    import WeightsDisplay from "$lib/WeightsDisplay.svelte";
     import { Weights } from "$lib/weights.svelte";
-    import TrainTetris from "$lib/TrainTetris.svelte";
-    import Level from "$lib/Level.svelte";
+    import WeightsDisplay from "$lib/components/WeightsDisplay.svelte";
+    import TrainTetris from "$lib/components/TrainTetris.svelte";
+    import Level from "$lib/components/Level.svelte";
 
     let trainCriterion: TrainCriterion = $state("score");
     let isRunning: boolean = $state(false);

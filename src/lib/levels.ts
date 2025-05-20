@@ -10,7 +10,7 @@ export interface LevelInfo {
     sideText?: MultiLang;
 };
 
-/// This defines the ordering of the levels in the game.
+// This defines the ordering of the levels in the game.
 export const LEVELS: string[] = [
     "play",
     "feat1",
@@ -21,6 +21,7 @@ export const LEVELS: string[] = [
     "sandbox",
 ];
 
+// The text/translatios strings for each level.
 export const LEVEL_INFO: { [key: string]: LevelInfo } = {
     "play": {
         name: {
@@ -247,6 +248,7 @@ export interface Goals {
     tetrises?: number;
 };
 
+// The configuration of each feature level.
 export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
     "feat1": {
         goals: {

@@ -2,7 +2,7 @@
     import { t } from "$lib/translations";
     import { Weights } from "$lib/weights.svelte";
     import { localState } from "$lib/stores.svelte";
-    import ExampleBoard from "./ExampleBoard.svelte";
+    import ExampleBoard from "$lib/components/ExampleBoard.svelte";
 
     let { weights }: { weights: Weights } = $props();
 

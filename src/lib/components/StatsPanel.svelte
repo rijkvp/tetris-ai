@@ -1,6 +1,6 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import type { Stats } from "./types";
+    import type { Stats } from "$lib/types";
     import { localState } from "$lib/stores.svelte";
 
     let {

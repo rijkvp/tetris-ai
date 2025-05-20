@@ -1,9 +1,9 @@
 <script lang="ts">
     import "../app.css"; // global styles
-    import Header from "$lib/Header.svelte";
     import { localState } from "$lib/stores.svelte";
     import { onMount, onDestroy } from "svelte";
-    import Footer from "$lib/Footer.svelte";
+    import Header from "$lib/components/Header.svelte";
+    import Footer from "$lib/components/Footer.svelte";
 
     let { children } = $props();
 

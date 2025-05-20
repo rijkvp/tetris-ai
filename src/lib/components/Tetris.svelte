@@ -1,17 +1,16 @@
 <script lang="ts">
     import { t } from "$lib/translations";
-    import { onDestroy } from "svelte";
+    import { onMount, onDestroy } from "svelte";
+    import type { Stats } from "$lib/types.ts";
+    import type { Weights } from "$lib/weights.svelte";
     import { TetrisAnimator } from "$lib/animator.svelte";
     import { TetrisSimulator } from "$lib/simulator.svelte";
-    import type { Stats } from "$lib/types.ts";
-    import TetrisBoard from "$lib/TetrisBoard.svelte";
-    import StatsPanel from "$lib/StatsPanel.svelte";
-    import GameControls from "$lib/GameControls.svelte";
-    import { onMount } from "svelte";
-    import type { Weights } from "./weights.svelte";
+    import TetrisBoard from "$lib/components/TetrisBoard.svelte";
+    import StatsPanel from "$lib/components/StatsPanel.svelte";
+    import GameControls from "$lib/components/GameControls.svelte";
 
     const SPEED_MUTIPLIER = [
-        0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000, 1000000,
+        1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000,
     ];
 
     let {
@@ -48,7 +47,7 @@
         sim.setTimePressure(timePressure);
     });
 
-    let speedIndex = $state(2);
+    let speedIndex = $state(0);
     let speedMultiplier = $derived(SPEED_MUTIPLIER[speedIndex]);
 
     let moves = 0;

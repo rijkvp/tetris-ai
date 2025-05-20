@@ -1,12 +1,12 @@
 <script lang="ts">
     import type { PageProps } from "./$types";
-    import Level from "$lib/Level.svelte";
-    import Tetris from "$lib/Tetris.svelte";
-    import WeightsControl from "$lib/WeightsControl.svelte";
-    import Scoreboard from "$lib/Scoreboard.svelte";
-    import Goals from "$lib/Goals.svelte";
     import { Weights } from "$lib/weights.svelte";
     import { LEVEL_CONFIG } from "$lib/levels";
+    import Level from "$lib/components/Level.svelte";
+    import Tetris from "$lib/components/Tetris.svelte";
+    import WeightsControl from "$lib/components/WeightsControl.svelte";
+    import Scoreboard from "$lib/components/Scoreboard.svelte";
+    import Goals from "$lib/components/Goals.svelte";
 
     let { data }: PageProps = $props();
 

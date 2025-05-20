@@ -1,8 +1,8 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import { onMount } from "svelte";
-    import type { Stats } from "./types";
-    import type { Weights, WeightsObject } from "./weights.svelte";
+    import type { Stats } from "$lib/types";
+    import type { Weights, WeightsObject } from "$lib/weights.svelte";
 
     let {
         key,

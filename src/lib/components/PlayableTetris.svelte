@@ -1,9 +1,9 @@
 <script lang="ts">
     import { Game } from "tetris-ai";
-    import TetrisBoard from "$lib/TetrisBoard.svelte";
-    import StatsPanel from "$lib/StatsPanel.svelte";
     import { onDestroy, onMount } from "svelte";
-    import GameControls from "./GameControls.svelte";
+    import GameControls from "$lib/components/GameControls.svelte";
+    import TetrisBoard from "$lib/components/TetrisBoard.svelte";
+    import StatsPanel from "$lib/components/StatsPanel.svelte";
 
     let game: Game = new Game();
     let tetrisBoard: TetrisBoard;

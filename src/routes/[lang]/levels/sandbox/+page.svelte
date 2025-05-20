@@ -1,9 +1,9 @@
 <script lang="ts">
-    import LevelComp from "$lib/Level.svelte";
-    import Tetris from "$lib/Tetris.svelte";
-    import WeightsControl from "$lib/WeightsControl.svelte";
-    import Scoreboard from "$lib/Scoreboard.svelte";
     import { Weights } from "$lib/weights.svelte";
+    import LevelComp from "$lib/components/Level.svelte";
+    import Tetris from "$lib/components/Tetris.svelte";
+    import WeightsControl from "$lib/components/WeightsControl.svelte";
+    import Scoreboard from "$lib/components/Scoreboard.svelte";
 
     let scoreboard: Scoreboard;
     let weights = new Weights();

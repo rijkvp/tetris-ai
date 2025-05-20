@@ -1,7 +1,7 @@
 <script lang="ts">
     import { theme } from "$lib/theme.svelte";
     import { locale } from "$lib/translations";
-    import LangSwitcher from "$lib/LangSwitcher.svelte";
+    import LangSwitcher from "$lib/components/LangSwitcher.svelte";
     import { base } from "$app/paths";
 </script>
 

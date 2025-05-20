@@ -16,7 +16,7 @@ export default defineConfig(() => {
                         height: '20',
                     },
                 },
-            ]),
+            ], { typedef: true }),
             sveltekit(),
             wasm(),
             topLevelAwait()

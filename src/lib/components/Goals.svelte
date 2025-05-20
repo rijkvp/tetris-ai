@@ -1,7 +1,7 @@
 <script lang="ts">
     import { t } from "$lib/translations";
     import type { Stats } from "$lib/types";
-    import type { Goals } from "./levels";
+    import type { Goals } from "$lib/levels";
 
     const { goals }: { goals: Goals } = $props();
 
