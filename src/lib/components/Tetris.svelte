@@ -9,9 +9,7 @@
     import StatsPanel from "$lib/components/StatsPanel.svelte";
     import GameControls from "$lib/components/GameControls.svelte";
 
-    const SPEED_MUTIPLIER = [
-        1, 2, 5, 10, 20, 50, 100, 1000, 10000, 100000,
-    ];
+    const SPEED_MUTIPLIER = [1, 2, 5, 10, 20, 50, 100, 1000, 10000];
 
     let {
         weights,

@@ -28,7 +28,7 @@
     {#snippet content()}
         <Tetris
             {weights}
-            maxSpeed={9}
+            maxSpeed={6}
             onNewStats={(stats) => goals.updateGoals(stats)}
             onGameOver={(stats) => scoreboard.addEntry(stats, weights)}
         />

@@ -22,7 +22,7 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:console_error_panic_hook"]
 
 [dev-dependencies]
-pyo3 = { version = "0.24.2", features = ["auto-initialize"] }
+pyo3 = { version = "0.25.0", features = ["auto-initialize"] }
 
 [profile.release]
 opt-level = 3
