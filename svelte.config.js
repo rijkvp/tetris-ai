@@ -1,6 +1,12 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
+let basePath = '';
+if (process.env.NODE_ENV === 'production') {
+    basePath = process.env.BASE_PATH;
+    console.log(`Base path: '${basePath}'`);
+}
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
     preprocess: vitePreprocess(),
@@ -15,7 +21,7 @@ const config = {
             strict: true
         }),
         paths: {
-            base: process.env.NODE_ENV === 'production' ? '/tetris-ai' : '',
+            base: basePath
         }
     }
 };

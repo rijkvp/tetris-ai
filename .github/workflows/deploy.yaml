@@ -27,6 +27,8 @@ jobs:
         pnpm wasm 
         pnpm install --frozen-lockfile
         pnpm build
+      env:
+        BASE_PATH: /tetris-ai
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
