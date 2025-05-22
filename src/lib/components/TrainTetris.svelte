@@ -5,10 +5,7 @@
     import { TetrisSimulator } from "$lib/simulator.svelte";
     import TetrisBoard from "$lib/components/TetrisBoard.svelte";
 
-    let {
-        weights = $bindable(),
-        isRunning = $bindable(),
-    }: { weights: Weights; isRunning: boolean } = $props();
+    let { isRunning = $bindable() }: { isRunning: boolean } = $props();
 
     let tetrisBoard: TetrisBoard;
     let sim = new TetrisSimulator();
@@ -21,25 +18,29 @@
             restartSim();
         },
     );
-
-    function restartSim() {
-        sim.reset();
-        tetrisBoard.clear();
-        animator.restart();
-        animator.setSpeed(50);
-    }
-
-    $effect(() => {
-        sim.updateWeights(weights.getWeightsMap());
-    });
+    let weights: Weights | null = null;
 
     $effect(() => {
         animator.setRunning(isRunning);
     });
 
+    function restartSim() {
+        tetrisBoard.clear();
+        sim.reset();
+        if (weights != null) {
+            sim.updateWeights(weights.getWeightsMap());
+        }
+        animator.restart();
+        animator.setSpeed(50);
+    }
+
+    export const updateWeights = (newWeights: Weights) => {
+        weights = newWeights;
+        restartSim();
+    };
+
     onMount(() => {
         restartSim();
-
         return () => animator.stop();
     });
 </script>

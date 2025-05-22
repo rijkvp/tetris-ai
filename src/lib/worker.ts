@@ -3,7 +3,7 @@ import init, { Trainer } from "tetris-ai";
 export type TrainCriterion = "score" | "level" | "tetrises";
 
 export type WorkerCommand =
-    | { command: 'restart', criterion: TrainCriterion }
+    | { command: 'restart', featureNames: string[], criterion: TrainCriterion }
     | { command: 'stop' };
 
 export type EvalResult = {
@@ -29,15 +29,6 @@ export type TrainState = {
 export type WorkerMessage =
     | { type: 'train_state'; data: TrainState }
     | { type: 'status'; status: 'stopped' | 'started', message?: string };
-
-const FEATURE_NAMES = [
-    "row_trans",
-    "col_trans",
-    "pits",
-    "landing_height",
-    "eroded_cells",
-    "cuml_wells"];
-
 
 let trainer: Trainer;
 
@@ -80,7 +71,7 @@ self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
     switch (event.data.command) {
         case 'restart':
             if (!isRunning) {
-                trainer = Trainer.from_feature_names(FEATURE_NAMES, event.data.criterion);
+                trainer = Trainer.from_feature_names(event.data.featureNames, event.data.criterion);
                 runTrainingLoop();
             }
             break;
@@ -96,8 +87,6 @@ self.onmessage = (event: MessageEvent<WorkerCommand>): void => {
 
 async function initWorker() {
     await init(); // initialize the WASM module
-    trainer = Trainer.from_feature_names(FEATURE_NAMES, "score");
-    runTrainingLoop();
 }
 
 initWorker();

@@ -112,7 +112,7 @@ input[type=range] {
     transition: opacity .2s;
     border-radius: 0px;
 }
-button[disabled], input[disabled] {
+button[disabled], input[disabled], select[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
 }

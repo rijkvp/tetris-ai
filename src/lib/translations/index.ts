@@ -10,6 +10,11 @@ const config = {
     },
 };
 
+export const localeNames = {
+    en: "English",
+    nl: "Nederlands",
+};
+
 const stores = new i18n(config);
 export const { t, locales, loading, loadTranslations } = stores;
 export const locale = stores.locale as unknown as Writable<"en" | "nl">;

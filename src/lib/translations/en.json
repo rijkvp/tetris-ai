@@ -1,5 +1,6 @@
 {
   "general": {
+    "title": "Tetris AI",
     "close": "Close",
     "previous_level": "Previous level",
     "next_level": "Next level",
@@ -13,10 +14,6 @@
   "level_select": {
     "title": "Select level",
     "description": "Select a level to play."
-  },
-  "locale": {
-    "en": "English",
-    "nl": "Dutch"
   },
   "score": {
     "score": "Score",

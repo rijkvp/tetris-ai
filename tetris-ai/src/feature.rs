@@ -7,7 +7,7 @@ use std::cmp::{max, min};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::{JsValue, wasm_bindgen};
 
-type FeatureFn = fn(&State) -> usize;
+type FeatureFn = fn(&State) -> f64;
 
 /// This defines all the available features by mapping their names to their respective functions.
 /// To add a new feature, you can simply add a new entry to this array.
@@ -208,9 +208,9 @@ impl Weights {
     }
 
     pub fn evaluate(&self, state: &State) -> f64 {
-        self.0.iter().fold(0.0, |acc, (feature, weight)| {
-            acc + feature(state) as f64 * weight
-        })
+        self.0
+            .iter()
+            .fold(0.0, |acc, (feature, weight)| acc + feature(state) * weight)
     }
 
     pub fn iter_values(&self) -> impl Iterator<Item = f64> {
@@ -227,7 +227,7 @@ impl Weights {
 }
 
 /// The number of times that two adjacent cells in the same row mismatch.
-fn row_trans(state: &State) -> usize {
+fn row_trans(state: &State) -> f64 {
     let mut sum = 0;
     for r in 0..BOARD_HEIGHT {
         for c in 0..BOARD_WIDTH - 1 {
@@ -236,11 +236,11 @@ fn row_trans(state: &State) -> usize {
             }
         }
     }
-    sum
+    sum as f64
 }
 
 /// The number of times that two adjacent cells in the same column mismatch.
-fn col_trans(state: &State) -> usize {
+fn col_trans(state: &State) -> f64 {
     let mut sum = 0;
     for c in 0..BOARD_WIDTH {
         for r in 0..BOARD_HEIGHT - 1 {
@@ -249,7 +249,7 @@ fn col_trans(state: &State) -> usize {
             }
         }
     }
-    sum
+    sum as f64
 }
 
 /// The depth of each column with respect to its adjacent columns.
@@ -268,15 +268,24 @@ fn wells(state: &State) -> [i64; BOARD_WIDTH] {
 
 /// The sum from 1 to wells.
 // Computed using the formula for the sum of natural numbers.
-fn cuml_wells(state: &State) -> usize {
-    wells(state)
+fn cuml_wells(state: &State) -> f64 {
+    let value = wells(state)
         .into_iter()
         .map(|x| x * (x + 1) / 2)
-        .sum::<i64>() as usize
+        .sum::<i64>() as f64;
+    // Adjust the value inside the frontend version by a constant factor to make more user friendly.
+    #[cfg(feature = "wasm")]
+    {
+        value * 0.08
+    }
+    #[cfg(not(feature = "wasm"))]
+    {
+        value
+    }
 }
 
 /// The number of empty cells that have at least one filled cell above them.
-fn pits(state: &State) -> usize {
+fn pits(state: &State) -> f64 {
     let mut total = 0;
     for c in 0..BOARD_WIDTH {
         for r in BOARD_HEIGHT - state.board().height(c)..BOARD_HEIGHT {
@@ -285,12 +294,12 @@ fn pits(state: &State) -> usize {
             }
         }
     }
-    total
+    total as f64
 }
 
 /// The height of the row containing the bottom-most cell of the previously placed piece.
-fn landing_height(state: &State) -> usize {
-    BOARD_HEIGHT
+fn landing_height(state: &State) -> f64 {
+    (BOARD_HEIGHT
         - state
             .delta()
             .as_ref()
@@ -299,12 +308,21 @@ fn landing_height(state: &State) -> usize {
                 delta.r#move.pos.row.max(0) as usize + piece_height
             })
             .unwrap_or(0)
-            .min(BOARD_HEIGHT)
+            .min(BOARD_HEIGHT)) as f64
 }
 
 /// The number of cells that were cleared from the previously placed piece.
-fn eroded_cells(state: &State) -> usize {
-    state.delta().map(|delta| delta.eroded).unwrap_or(0)
+fn eroded_cells(state: &State) -> f64 {
+    let value = state.delta().map(|delta| delta.eroded).unwrap_or(0) as f64;
+    // Adjust the value inside the frontend version by a constant factor to make more user friendly.
+    #[cfg(feature = "wasm")]
+    {
+        value * 0.4
+    }
+    #[cfg(not(feature = "wasm"))]
+    {
+        value
+    }
 }
 
 #[cfg(test)]
@@ -334,7 +352,7 @@ mod tests {
             for _ in 0..TEST_ITERATIONS {
                 let state = State::new(test::random_board());
                 let py_output = test::run_py_feature(&state, feature_name);
-                let rust_output = feature(&state);
+                let rust_output = feature(&state).round() as usize;
                 if py_output != rust_output {
                     panic!(
                         "Mismatch for feature {}\nPython: {}\nRust: {}\nBoard {}\nHeights: {:?}",
@@ -355,7 +373,7 @@ mod tests {
             for _ in 0..TEST_ITERATIONS {
                 let state = test::random_state();
                 let py_output = test::run_py_feature(&state, feature_name);
-                let rust_output = feature(&state);
+                let rust_output = feature(&state).round() as usize;
                 if py_output != rust_output {
                     if let Some(delta) = state.delta() {
                         println!(
@@ -392,6 +410,6 @@ mod tests {
             cleared: vec![],
         }));
         // 3 rows from the bottom of the board
-        assert_eq!(lh, 3);
+        assert_eq!(lh as usize, 3);
     }
 }

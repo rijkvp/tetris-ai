@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t, locale, locales, setLocale } from "$lib/translations";
+    import { locale, locales, localeNames, setLocale } from "$lib/translations";
     import { base } from "$app/paths";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
@@ -19,7 +19,7 @@
     >
         {#each $locales as lc}
             <option value={lc} selected={lc === $locale}>
-                {$t(`locale.${lc}`)}</option
+                {localeNames[lc as keyof typeof localeNames]}</option
             >
         {/each}
     </select>

@@ -9,10 +9,12 @@
         key,
         content,
         side,
+        onStart,
     }: {
         key: string;
         content: Snippet;
         side?: Snippet;
+        onStart?: () => void;
     } = $props();
     const levelInfo = $derived(LEVEL_INFO[key]);
 
@@ -25,6 +27,13 @@
     );
 </script>
 
+<svelte:head>
+    <title>
+        {$t("general.title")} -
+        {currentIndex + 1}: {levelInfo.name[$locale]}
+    </title>
+</svelte:head>
+
 <nav>
     <button
         disabled={prev == null}
@@ -35,10 +44,10 @@
             }
         }}
     >
-        <svg inline-src="arrow-left" alt="Left arrow" />
+        <svg inline-src="arrow-left" />
         {$t("general.previous_level")}</button
     >
-    <h1>{levelInfo.name[$locale]}</h1>
+    <h1>{currentIndex + 1}: {levelInfo.name[$locale]}</h1>
     <button
         disabled={next == null}
         onclick={() => {
@@ -48,7 +57,7 @@
             }
         }}
     >
-        <svg inline-src="arrow-right" alt="Right arrow" />
+        <svg inline-src="arrow-right" />
         {$t("general.next_level")}</button
     >
 </nav>
@@ -60,6 +69,7 @@
     <button
         onclick={() => {
             inExplanation = false;
+            onStart?.();
         }}
         class="btn-big btn-primary"
     >
@@ -71,7 +81,7 @@
         <div class="panel">
             {#if levelInfo.explanation != null}
                 <button onclick={() => (inExplanation = true)}>
-                    <svg inline-src="arrow-return-left" alt="Back arrow" />
+                    <svg inline-src="arrow-return-left" />
                     {$t("general.level_explanation")}</button
                 >
             {/if}

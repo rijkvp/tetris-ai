@@ -7,6 +7,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{$t("general.title")} - {$t("level_select.title")}</title>
+</svelte:head>
+
 <h2>{$t("level_select.title")}</h2>
 <p>{$t("level_select.description")}</p>
 
@@ -25,7 +29,7 @@
 </div>
 
 <button class="reset-progress" onclick={() => resetProgress()}>
-    <svg inline-src="trash" alt="Trash" />
+    <svg inline-src="trash" />
     {$t("general.reset_progress")}
 </button>
 

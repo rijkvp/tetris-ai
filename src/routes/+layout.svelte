@@ -1,5 +1,6 @@
 <script lang="ts">
     import "../app.css"; // global styles
+    import { t } from "$lib/translations";
     import { localState } from "$lib/stores.svelte";
     import { onMount, onDestroy } from "svelte";
     import Header from "$lib/components/Header.svelte";
@@ -23,6 +24,11 @@
     });
 </script>
 
+<svelte:head>
+    <title>
+        {$t("general.title")}
+    </title>
+</svelte:head>
 <Header />
 {@render children()}
 <Footer />

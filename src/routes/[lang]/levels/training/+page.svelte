@@ -17,23 +17,28 @@
     let isRunning: boolean = $state(false);
     let trainState: TrainState | null = $state(null);
     let trainGeneration: TrainGeneration | null = $state(null);
+    let trainTetris: TrainTetris;
 
-    const FEATURE_KEYS: string[] = [
-        "row_trans",
-        "col_trans",
+    // This are all the features available in the training
+    const FEATURE_NAMES: string[] = [
+        // "row_trans",
+        // "col_trans",
         "pits",
         "landing_height",
         "eroded_cells",
         "cuml_wells",
     ];
-    let weights = $state(new Weights(FEATURE_KEYS.map((key) => [key, 0])));
 
     function restartTrain() {
         trainState = null;
         trainGeneration = null;
-        weights = new Weights(FEATURE_KEYS.map((key) => [key, 0]));
+        if (trainTetris != null) {
+            const weights = new Weights(FEATURE_NAMES.map((key) => [key, 0]));
+            trainTetris.updateWeights(weights);
+        }
         worker.postMessage({
             command: "restart",
+            featureNames: FEATURE_NAMES,
             criterion: trainCriterion,
         } satisfies WorkerCommand);
     }
@@ -55,10 +60,12 @@
                     trainState = event.data.data;
                     if (trainState.generation) {
                         trainGeneration = trainState.generation;
-                        weights = Weights.fromValues(
-                            FEATURE_KEYS,
+                        console.log("New generation");
+                        const weights = Weights.fromValues(
+                            FEATURE_NAMES,
                             trainGeneration.weights,
                         );
+                        trainTetris.updateWeights(weights);
                     }
                     break;
                 case "status":
@@ -74,35 +81,41 @@
         };
 
         return () => {
+            console.log("Stopping worker");
+            stopTrain();
             worker.terminate();
         };
     });
 </script>
 
-<Level key="training">
+<Level
+    key="training"
+    onStart={() => {
+        restartTrain();
+    }}
+>
     {#snippet content()}
         <div class="left">
             <div class="controls">
                 {#if isRunning}
                     <button onclick={stopTrain}>
-                        <svg inline-src="stop" alt="Stop" />
+                        <svg inline-src="stop" />
                         {$t("training.stop")}</button
                     >
                 {:else}
                     <button onclick={restartTrain}>
-                        <svg inline-src="arrow-clockwise" alt="Reset" />
+                        <svg inline-src="arrow-clockwise" />
 
                         {$t("training.restart")}</button
                     >
                 {/if}
-                <span class="criterion-label">{$t("training.criterion")}:</span>
-                <select bind:value={trainCriterion}>
+                <select bind:value={trainCriterion} disabled={isRunning}>
                     <option value="score">Score</option>
                     <option value="level">Level</option>
                     <option value="tetrises">Tetrises</option>
                 </select>
             </div>
-            <TrainTetris bind:weights bind:isRunning />
+            <TrainTetris bind:this={trainTetris} bind:isRunning />
         </div>
     {/snippet}
     {#snippet side()}
@@ -116,7 +129,7 @@
                     </h2>
                     {#if trainState}
                         <WeightsDisplay
-                            weightKeys={FEATURE_KEYS}
+                            weightKeys={FEATURE_NAMES}
                             weightValues={trainState.eval_result.weights}
                         />
                     {/if}
@@ -139,7 +152,7 @@
                                 <strong>{trainGeneration.max}</strong>
                             </p>
                             <WeightsDisplay
-                                weightKeys={FEATURE_KEYS}
+                                weightKeys={FEATURE_NAMES}
                                 weightValues={trainGeneration.weights}
                             />
                         {/if}
@@ -155,20 +168,17 @@
         display: flex;
         gap: 0.5rem;
         align-items: stretch;
-        margin-bottom: 1rem;
         justify-content: space-between;
+        width: 100%;
     }
     .controls button {
-        min-width: 5rem;
-    }
-    .criterion-label {
-        align-self: center;
-        font-weight: bold;
+        min-width: 8rem;
     }
     .left {
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        align-items: start;
     }
     .weights {
         display: flex;

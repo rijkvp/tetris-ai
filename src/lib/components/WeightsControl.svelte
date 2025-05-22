@@ -18,7 +18,7 @@
                 weights.randomize();
             }}
         >
-            <svg inline-src="shuffle" alt="Shuffle" />
+            <svg inline-src="shuffle" />
             {$t("feature_control.randomize")}</button
         >
         <button
@@ -26,7 +26,7 @@
                 weights.reset();
             }}
         >
-            <svg inline-src="arrow-clockwise" alt="Reset" />
+            <svg inline-src="arrow-clockwise" />
             {$t("feature_control.reset")}</button
         >
     </div>
@@ -80,7 +80,7 @@
         </div>
     </div>
     <button class="close-button" onclick={() => infoDialog.close()}>
-        <svg inline-src="x" alt="x" />
+        <svg inline-src="x" />
         {$t("general.close")}
     </button>
 </dialog>
@@ -123,11 +123,16 @@
     }
     .example {
         margin-top: 0.5rem;
+        overflow: hidden;
     }
     .example-board {
         margin-top: 0.5rem;
         display: flex;
         justify-content: center;
+        transform: scale(0.9);
+        transform-origin: top center;
+        overflow: hidden;
+        height: 576px;
     }
     .close-button {
         position: absolute;

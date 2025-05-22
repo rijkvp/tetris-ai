@@ -1,5 +1,6 @@
 {
   "general": {
+    "title": "Tetris AI",
     "close": "Sluiten",
     "previous_level": "Vorig level",
     "next_level": "Volgend level",
@@ -13,10 +14,6 @@
   "level_select": {
     "title": "Level selecteren",
     "description": "Kies een level om te spelen."
-  },
-  "locale": {
-    "en": "Engels",
-    "nl": "Nederlands"
   },
   "score": {
     "score": "Score",
