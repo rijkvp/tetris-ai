@@ -38,15 +38,35 @@ For running the tests:
 
 - Python 3.12 with the `numpy` package
 
-## Development
+## Developing
 
-### Adding/changing translations
+After cloning the repository, ensure the dependencies are installed:
 
-TODO
+```sh
+devenv shell # or `direnv allow`, only if you are using devenv
+pnpm wasm # bootstraps the backend
+pnpm install # installs JavaScript dependencies
+```
+
+Now you can run `pnpm dev` which opens a live preview of the site which updates as you make changes.
+
+To run the back end go inside the `tetris-ai` subdirectory and run `cargo run`.
+
+### Updating translations
+
+Edit the JSON files in `src/lib/translations/[lang].json`.
+
+### Updating levels
+
+Edit the configurations in `src/lib/levels.ts`.
 
 ### Adding a new feature
 
-TODO
+TODO: Test this
+
+1. Write a feature in `tetris-ai/src/feature.rs`
+2. Add it to the `FEATURE_LOOKUP` array at the top of the file
+3. Now it should be available for use inside the levels.
 
 ## Deployment
 
@@ -63,6 +83,5 @@ pnpm build
 The files will be build to the `build` directory which you can upload to your web host.
 
 The fallback page is set to `404.html`, this works well with GitHub pages.
-If this is different on your web host make sure to change this in `svelte.config.ts`. See also [the instructions from SvelteKit](https://svelte.dev/docs/kit/single-page-apps#Usage).
-
+If it is different on your web host make sure to change it in `svelte.config.ts`. See also [the instructions from SvelteKit](https://svelte.dev/docs/kit/single-page-apps#Usage).
 
