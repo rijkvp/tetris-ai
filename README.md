@@ -85,3 +85,8 @@ The files will be build to the `build` directory which you can upload to your we
 The fallback page is set to `404.html`, this works well with GitHub pages.
 If it is different on your web host make sure to change it in `svelte.config.ts`. See also [the instructions from SvelteKit](https://svelte.dev/docs/kit/single-page-apps#Usage).
 
+## License
+
+This project is licensed under the [MIT License](/LICENSE).
+
+The Rust code was originally based on a [Python implementation](https://github.com/clsibert/Tetris-AI). This repository still includes a simplified copy of the Python code used for testing. All credit goes to the original authors.
