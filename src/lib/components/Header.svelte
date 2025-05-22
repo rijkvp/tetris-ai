@@ -1,12 +1,12 @@
 <script lang="ts">
     import { theme } from "$lib/theme.svelte";
-    import { locale } from "$lib/translations";
-    import LangSwitcher from "$lib/components/LangSwitcher.svelte";
+    import { t, locale } from "$lib/translations";
     import { base } from "$app/paths";
+    import { goto } from "$app/navigation";
 </script>
 
 <header>
-    <div class="logo">
+    <div class="header-section">
         <a
             href="https://www.rug.nl/jantina-tammes-school/"
             target="_blank"
@@ -19,10 +19,15 @@
             {/if}
         </a>
         <h1>
-            <a href="{base}/{$locale}">Tetris AI</a>
+            <a href="{base}/{$locale}">{$t("general.title")}</a>
         </h1>
     </div>
-    <LangSwitcher />
+    <div class="header-section">
+        <button onclick={() => goto(`${base}/${$locale}`)}>
+            <svg inline-src="list" />
+            {$t("general.level_menu")}
+        </button>
+    </div>
 </header>
 
 <style>
@@ -43,12 +48,12 @@
             height: 2rem;
         }
     }
-    .logo {
+    .header-section {
         display: flex;
         gap: 1.3rem;
         align-items: center;
     }
-    .logo > h1 {
+    .header-section > h1 {
         display: inline-block;
         margin: 0;
         font-size: 1.6rem;

@@ -128,7 +128,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
                 <p>
                 In the following level you will start with two features: <strong>Holes</strong> and <strong>Landing Height</strong>.
                 You can adjust the <strong>weights</strong> of these features using the sliders. For example, if you think a feature is desired, you can increase its weight to make the AI prioritize it. Or, if you think a feature should be avoided, you can decrease its weight.
-                The goal> is to clear 20 lines by tweaking the weights of the features, good luck!
+                The goal is to clear 20 lines by tweaking the weights of the features, good luck!
                 </p>
             `,
             nl: `<p>Laten we nu de AI Tetris laten spelen! Computers zijn erg snel en kunnen gemakkelijk alle mogelijke plekken berekenen om de blokjes te plaatsen. Maar hij weet niet welke zetten goed zijn en welke slecht.</p>

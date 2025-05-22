@@ -1,10 +1,19 @@
 <script lang="ts">
     import { t, locale } from "$lib/translations";
     import { LEVELS, LEVEL_INFO } from "$lib/levels";
+    import { onMount } from "svelte";
+
+    let completedLevels: string[] = $state([]);
 
     function resetProgress() {
         localStorage.clear();
+        completedLevels = [];
     }
+
+    onMount(() => {
+        const json = localStorage.getItem("completed_levels");
+        completedLevels = json ? JSON.parse(json) : [];
+    });
 </script>
 
 <svelte:head>
@@ -15,11 +24,14 @@
 <p>{$t("level_select.description")}</p>
 
 <div class="level-select">
-    {#each LEVELS as level}
+    {#each LEVELS as level, i}
         {@const info = LEVEL_INFO[level]}
         <a class="level" href="{$locale}/levels/{level}">
             <h3>
-                {info.name[$locale]}
+                {i + 1}: {info.name[$locale]}
+                {#if completedLevels.includes(level)}
+                    <span class="completed">&#10004;</span>
+                {/if}
             </h3>
             <span>
                 {info.summary[$locale]}
@@ -37,8 +49,12 @@
     h3 {
         margin-bottom: 0.5rem;
     }
-    a {
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
         font: inherit;
+        font-weight: normal;
     }
     .level-select {
         display: flex;
@@ -57,5 +73,9 @@
     .reset-progress {
         margin-top: 0.5rem;
         float: right;
+    }
+    .completed {
+        color: var(--green);
+        font-weight: bold;
     }
 </style>

@@ -29,7 +29,6 @@ export class TetrisSimulator {
     }
 
     setTimePressure(enabled: boolean) {
-        console.log("set time pressure", enabled);
         this.#simulator.set_time_pressure(enabled);
     }
 

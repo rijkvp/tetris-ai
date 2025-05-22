@@ -2,8 +2,9 @@
     import { t } from "$lib/translations";
     import type { Stats } from "$lib/types";
     import type { Goals } from "$lib/levels";
+    import { onMount } from "svelte";
 
-    const { goals }: { goals: Goals } = $props();
+    const { levelKey, goals }: { levelKey: string; goals: Goals } = $props();
 
     type GoalStat = "score" | "lines" | "level" | "tetrises";
     type GoalItem = {
@@ -11,6 +12,8 @@
         progress: bigint;
         goal: bigint;
     };
+    let completed = $state(false);
+    let completedLevels: string[];
 
     let goalItems: GoalItem[] = $state(
         Object.entries(goals || {}).map(([stat, goal]) => ({
@@ -24,9 +27,30 @@
         goalItems.every((goal) => goal.progress >= goal.goal),
     );
 
+    onMount(() => {
+        const json = localStorage.getItem("completed_levels");
+        completedLevels = json ? JSON.parse(json) : [];
+    });
+
+    function save() {
+        localStorage.setItem(
+            "completed_levels",
+            JSON.stringify(completedLevels),
+        );
+    }
+
     export const updateGoals = (stats: Stats) => {
         for (const goal of goalItems) {
             goal.progress = stats[goal.stat];
+
+            // mark level as completed
+            if (goal.progress >= goal.goal) {
+                completed = true;
+                if (!completedLevels.includes(levelKey)) {
+                    completedLevels.push(levelKey);
+                    save();
+                }
+            }
         }
     };
 </script>

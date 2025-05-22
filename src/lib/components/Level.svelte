@@ -73,6 +73,7 @@
         }}
         class="btn-big btn-primary"
     >
+        <svg inline-src="play" />
         {$t("general.level_start")}</button
     >
 {:else}

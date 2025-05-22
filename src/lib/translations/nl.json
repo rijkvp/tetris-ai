@@ -4,10 +4,11 @@
     "close": "Sluiten",
     "previous_level": "Vorig level",
     "next_level": "Volgend level",
+    "level_menu": "Alle levels",
     "example": "Voorbeeld",
     "features": "Kenmerken",
     "scoreboard": "Scorebord",
-    "level_start": "Begin level",
+    "level_start": "Start level",
     "level_explanation": "Terug naar uitleg",
     "reset_progress": "Herstel voortgang"
   },

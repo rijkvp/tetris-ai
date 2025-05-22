@@ -9,6 +9,7 @@ declare module 'svelte/elements' {
 			| 'arrow-left'
 			| 'arrow-return-left'
 			| 'arrow-right'
+			| 'list'
 			| 'pause'
 			| 'play'
 			| 'shuffle'

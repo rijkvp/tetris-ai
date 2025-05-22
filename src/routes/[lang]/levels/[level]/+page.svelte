@@ -34,7 +34,7 @@
         />
     {/snippet}
     {#snippet side()}
-        <Goals bind:this={goals} goals={levelConfig.goals} />
+        <Goals {levelKey} bind:this={goals} goals={levelConfig.goals} />
         <WeightsControl {weights} />
         <Scoreboard
             bind:this={scoreboard}

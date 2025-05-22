@@ -1,6 +1,7 @@
 <script lang="ts">
     import { t, locale } from "$lib/translations";
     import { base } from "$app/paths";
+    import LangSwitcher from "$lib/components/LangSwitcher.svelte";
 </script>
 
 <footer>
@@ -15,6 +16,10 @@
     >
         {$t("footer.source_code")}
     </a>
+
+    &nbsp;|&nbsp;
+
+    <LangSwitcher />
 </footer>
 
 <style>

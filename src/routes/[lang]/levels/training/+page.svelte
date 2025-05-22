@@ -21,8 +21,8 @@
 
     // This are all the features available in the training
     const FEATURE_NAMES: string[] = [
-        // "row_trans",
-        // "col_trans",
+        "row_trans",
+        "col_trans",
         "pits",
         "landing_height",
         "eroded_cells",
@@ -60,7 +60,6 @@
                     trainState = event.data.data;
                     if (trainState.generation) {
                         trainGeneration = trainState.generation;
-                        console.log("New generation");
                         const weights = Weights.fromValues(
                             FEATURE_NAMES,
                             trainGeneration.weights,
@@ -81,7 +80,6 @@
         };
 
         return () => {
-            console.log("Stopping worker");
             stopTrain();
             worker.terminate();
         };

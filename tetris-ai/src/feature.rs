@@ -276,7 +276,7 @@ fn cuml_wells(state: &State) -> f64 {
     // Adjust the value inside the frontend version by a constant factor to make more user friendly.
     #[cfg(feature = "wasm")]
     {
-        value * 0.08
+        value * 0.15
     }
     #[cfg(not(feature = "wasm"))]
     {
@@ -313,16 +313,7 @@ fn landing_height(state: &State) -> f64 {
 
 /// The number of cells that were cleared from the previously placed piece.
 fn eroded_cells(state: &State) -> f64 {
-    let value = state.delta().map(|delta| delta.eroded).unwrap_or(0) as f64;
-    // Adjust the value inside the frontend version by a constant factor to make more user friendly.
-    #[cfg(feature = "wasm")]
-    {
-        value * 0.4
-    }
-    #[cfg(not(feature = "wasm"))]
-    {
-        value
-    }
+    state.delta().map(|delta| delta.eroded).unwrap_or(0) as f64
 }
 
 #[cfg(test)]
