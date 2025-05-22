@@ -15,14 +15,15 @@ tetris-ai run|train [preset|criterion]
 ```
 
 The available weight presets are: `score` and `levels`.
-The available training criteria are: `score`,`levels` and`tetrisses`.
+The available training criteria are: `score`,`levels` and `tetrisses`.
 
+## Install
 
-## Development
+### Using devenv
 
-### Dependencies
+A [devenv](https://devenv.sh/) is provided which creates a development environment with all the dependencies. 
 
-A [devenv](https://devenv.sh/) is provided which creates a environment with all the dependencies. Otherwise, install the following:
+### Manually
 
 For developing the backend:
 
@@ -37,6 +38,8 @@ For running the tests:
 
 - Python 3.12 with the `numpy` package
 
+## Development
+
 ### Adding/changing translations
 
 TODO
@@ -47,4 +50,19 @@ TODO
 
 ## Deployment
 
-TODO
+First install the dependencies as described in the Install section.
+Clone the repository and run the following commands:
+
+```sh
+pnpm wasm 
+pnpm install --frozen-lockfile
+export BASE_PATH=/tetris-ai # set to the path where the site will be deployed e.g. example.com/tetris-ai
+pnpm build
+```
+
+The files will be build to the `build` directory which you can upload to your web host.
+
+The fallback page is set to `404.html`, this works well with GitHub pages.
+If this is different on your web host make sure to change this in `svelte.config.ts`. See also [the instructions from SvelteKit](https://svelte.dev/docs/kit/single-page-apps#Usage).
+
+
