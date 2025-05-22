@@ -85,6 +85,8 @@ The files will be build to the `build` directory which you can upload to your we
 The fallback page is set to `404.html`, this works well with GitHub pages.
 If it is different on your web host make sure to change it in `svelte.config.ts`. See also [the instructions from SvelteKit](https://svelte.dev/docs/kit/single-page-apps#Usage).
 
+An automatically build version is available from [GitHub Releases](https://github.com/rijkvp/tetris-ai/releases/tag/latest), however note that this version has the `/tetris-ai` path built into it and only works if you deploy to a domain like `example.com/tetris-ai`.
+
 ## License
 
 This project is licensed under the [MIT License](/LICENSE).
