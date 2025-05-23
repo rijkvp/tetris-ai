@@ -13,13 +13,8 @@
     import TrainTetris from "$lib/components/TrainTetris.svelte";
     import Level from "$lib/components/Level.svelte";
 
-    let trainCriterion: TrainCriterion = $state("score");
-    let isRunning: boolean = $state(false);
-    let trainState: TrainState | null = $state(null);
-    let trainGeneration: TrainGeneration | null = $state(null);
-    let trainTetris: TrainTetris;
-
     // This are all the features available in the training
+    // TODO: Expensibility: should be defined elsewhere
     const FEATURE_NAMES: string[] = [
         "row_trans",
         "col_trans",
@@ -29,17 +24,28 @@
         "cuml_wells",
     ];
 
+    let trainCriterion: TrainCriterion = $state("score");
+    let currentFeatures: string[] = $state(FEATURE_NAMES);
+    let featureNames: string[] = $state(FEATURE_NAMES);
+
+    let isRunning: boolean = $state(false);
+    let isTetrisRunning: boolean = $state(false);
+    let trainState: TrainState | null = $state(null);
+    let trainGeneration: TrainGeneration | null = $state(null);
+    let trainTetris: TrainTetris;
+
     function restartTrain() {
         trainState = null;
         trainGeneration = null;
         if (trainTetris != null) {
             const weights = new Weights(FEATURE_NAMES.map((key) => [key, 0]));
-            trainTetris.updateWeights(weights);
+            trainTetris.updateWeights(weights, true);
         }
+        currentFeatures = featureNames;
         worker.postMessage({
             command: "restart",
-            featureNames: FEATURE_NAMES,
-            criterion: trainCriterion,
+            featureNames: $state.snapshot(featureNames),
+            criterion: $state.snapshot(trainCriterion),
         } satisfies WorkerCommand);
     }
 
@@ -64,13 +70,17 @@
                             FEATURE_NAMES,
                             trainGeneration.weights,
                         );
-                        trainTetris.updateWeights(weights);
+                        trainTetris.updateWeights(weights, false);
                     }
                     break;
                 case "status":
                     if (event.data.status === "started") {
                         isRunning = true;
+                        isTetrisRunning = true;
                     } else if (event.data.status === "stopped") {
+                        isRunning = false;
+                        isTetrisRunning = false;
+                    } else if (event.data.status === "finished") {
                         isRunning = false;
                     }
                     break;
@@ -107,16 +117,50 @@
                         {$t("training.restart")}</button
                     >
                 {/if}
-                <select bind:value={trainCriterion} disabled={isRunning}>
+            </div>
+            <TrainTetris
+                bind:this={trainTetris}
+                bind:isRunning={isTetrisRunning}
+            />
+        </div>
+    {/snippet}
+    {#snippet side()}
+        <div>
+            <h2>
+                {$t("training.settings")}
+            </h2>
+            <div class="setting">
+                <label for="criterion">
+                    {$t("training.criterion")}:
+                </label>
+                <select
+                    name="criterion"
+                    bind:value={trainCriterion}
+                    disabled={isRunning}
+                >
                     <option value="score">Score</option>
                     <option value="level">Level</option>
                     <option value="tetrises">Tetrises</option>
                 </select>
             </div>
-            <TrainTetris bind:this={trainTetris} bind:isRunning />
+            <div class="setting">
+                <label for="available_features">
+                    {$t("training.available_features")}:
+                </label>
+                <select
+                    name="available_features"
+                    bind:value={featureNames}
+                    disabled={isRunning}
+                    multiple
+                >
+                    {#each FEATURE_NAMES as featureName}
+                        <option value={featureName}>
+                            {$t(`feature.${featureName}.name`)}
+                        </option>
+                    {/each}
+                </select>
+            </div>
         </div>
-    {/snippet}
-    {#snippet side()}
         <div class="weights">
             {#if trainState != null}
                 <div class="weights-item">
@@ -127,7 +171,7 @@
                     </h2>
                     {#if trainState}
                         <WeightsDisplay
-                            weightKeys={FEATURE_NAMES}
+                            weightKeys={currentFeatures}
                             weightValues={trainState.eval_result.weights}
                         />
                     {/if}
@@ -150,7 +194,7 @@
                                 <strong>{trainGeneration.max}</strong>
                             </p>
                             <WeightsDisplay
-                                weightKeys={FEATURE_NAMES}
+                                weightKeys={currentFeatures}
                                 weightValues={trainGeneration.weights}
                             />
                         {/if}
@@ -171,6 +215,13 @@
     }
     .controls button {
         min-width: 8rem;
+    }
+    .setting {
+        display: flex;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+        align-items: center;
+        justify-content: space-between;
     }
     .left {
         display: flex;

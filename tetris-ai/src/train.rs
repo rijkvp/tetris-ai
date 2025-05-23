@@ -13,7 +13,7 @@ const MODELS_PER_GEN: usize = 100;
 const KEPT_PER_GEN: usize = 10;
 const EVAL_ITERATIONS: usize = 1000;
 const WEIGHT_RANGE: f64 = 10.0;
-const STABLE_THRESHOLD: f64 = 0.25;
+const STABLE_THRESHOLD: f64 = 0.5;
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct Trainer {

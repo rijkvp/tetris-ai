@@ -71,7 +71,9 @@
     }
   },
   "training": {
+    "settings": "Settings",
     "criterion": "Criterion",
+    "available_features": "Available features",
     "generation": "Generation",
     "model": "Model",
     "current_results": "Current results",

@@ -28,7 +28,7 @@ export type TrainState = {
 
 export type WorkerMessage =
     | { type: 'train_state'; data: TrainState }
-    | { type: 'status'; status: 'stopped' | 'started', message?: string };
+    | { type: 'status'; status: 'stopped' | 'started' | 'finished' };
 
 let trainer: Trainer;
 
@@ -37,7 +37,7 @@ let isStopRequested: boolean = false;
 
 function stepTrainer(): boolean {
     if (trainer.is_stable()) {
-        self.postMessage({ type: 'status', status: 'stopped' } satisfies WorkerMessage);
+        self.postMessage({ type: 'status', status: 'finished' } satisfies WorkerMessage);
         return true;
     }
 
@@ -62,8 +62,12 @@ async function runTrainingLoop(): Promise<void> {
     }
 
     isRunning = false;
-    isStopRequested = false;
-    self.postMessage({ type: 'status', status: 'stopped' } satisfies WorkerMessage);
+    if (isStopRequested) {
+        isStopRequested = false;
+        self.postMessage({ type: 'status', status: 'stopped' } satisfies WorkerMessage);
+    } else {
+        self.postMessage({ type: 'status', status: 'finished' } satisfies WorkerMessage);
+    }
 }
 
 

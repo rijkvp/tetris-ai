@@ -18,7 +18,6 @@
             restartSim();
         },
     );
-    let weights: Weights | null = null;
 
     $effect(() => {
         animator.setRunning(isRunning);
@@ -27,16 +26,13 @@
     function restartSim() {
         tetrisBoard.clear();
         sim.reset();
-        if (weights != null) {
-            sim.updateWeights(weights.getWeightsMap());
-        }
         animator.restart();
         animator.setSpeed(50);
     }
 
-    export const updateWeights = (newWeights: Weights) => {
-        weights = newWeights;
-        restartSim();
+    export const updateWeights = (newWeights: Weights, restart: boolean) => {
+        sim.updateWeights(newWeights.getWeightsMap());
+        if (restart) restartSim();
     };
 
     onMount(() => {

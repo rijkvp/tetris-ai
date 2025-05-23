@@ -71,7 +71,9 @@
     }
   },
   "training": {
+    "settings": "Instellingen",
     "criterion": "Criterium",
+    "available_features": "Beschikbare kenmerken",
     "generation": "Generatie",
     "model": "Model",
     "current_results": "Huidige resultaten",
