@@ -135,7 +135,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
 <p>
 Hier komen <strong>kenmerken</strong> om de hoek kijken. Kenmerken zijn aanwijzingen van stukjes informatie die de AI helpen om beslissingen te nemen. Door <strong>waardes</strong> toe te kennen aan deze kenmerken laten we de AI weten welke soorten zetten goed zijn en welke juist slecht.</p>
 <p>
-In het volgende level begin je met twee kenmerken: <strong>gaten</strong> en <strong>landingshoogte</strong>. Je kunt de <strong>waardes</strong> van deze kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kermerk wenselijk is, kun je de waarde ervan verhogen zodat de AI er voorraang aan geeft. Andersom, als je denkt dat een kenmerk juist vermeden moet worden, kun je het gewicht ervan verlagen. Het doel is om 20 rijen weg te spelen door de waardes van de kenmerken aan te passen. Succes!</p>
+In het volgende level begin je met twee kenmerken: <strong>gaten</strong> en <strong>landingshoogte</strong>. Je kunt de <strong>waardes</strong> van deze kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kermerk wenselijk is, kun je de waarde ervan verhogen zodat de AI er voorraang aan geeft. Andersom, als je denkt dat een kenmerk juist vermeden moet worden, kun je de waarde ervan verlagen. Het doel is om 20 rijen weg te spelen door de waardes van de kenmerken aan te passen. Succes!</p>
 
 `
         },
@@ -288,11 +288,11 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             level: 29
         },
         features: [
-            ["col_trans", -8.5],
-            ["row_trans", -2.5],
-            ["pits", -10],
-            ["landing_height", -5],
-            ["eroded_cells", 0],
+            ["col_trans", -10],
+            ["row_trans", -4],
+            ["pits", -5],
+            ["landing_height", -3],
+            ["eroded_cells", -1.5],
             ["cuml_wells", 0]
         ],
         lockedFeatures: [

@@ -36,37 +36,38 @@
   },
   "feature_control": {
     "reset": "Reset",
-    "randomize": "Randomize"
+    "randomize": "Randomize",
+    "time_pressure": "Time pressure"
   },
   "feature": {
     "col_trans": {
       "name": "Vertical transitions",
-      "description": "The number of times that two cells next to each other in the same column don't match (one is filled and the other is empty).",
+      "description": "The number of times that two cells next to each other in the same column don't match (one is filled and the other is empty). Lower weights make the AI prioritize column fills with fewer gaps, encouraging cleaner stacking patterns that are easier to clear later.",
       "example": "In this example, the arrows show the vertical transitions. In total there are 15 column transitions."
     },
     "row_trans": {
       "name": "Horizontal transitions",
-      "description": "The number of times that two cells next to each other in the same row don't match (one is filled and the other is empty).",
+      "description": "The number of times that two cells next to each other in the same row don't match (one is filled and the other is empty). Lower weights make the AI prioritize rows with fewer gaps, while higher weights make the AI prioritize rows with more gaps, creating pilars of tetrominoes.",
       "example": "In this example, the arrows show the horizontal transitions. In total there are 11 row transitions."
     },
     "pits": {
       "name": "Holes",
-      "description": "The number of empty cells that have a filled cell above them.",
+      "description": "The number of empty cells that have a filled cell above them. In Tetris you generally want to avoid holes since holes make it harder to clear lines.",
       "example": "In this example, all holes are marked with crosses. In total there are 25 holes."
     },
     "landing_height": {
       "name": "Landing height",
-      "description": "The height at which the tetromino is placed.",
+      "description": "The height at which the tetromino is placed. Higher values of this will make the AI prioritize higher placements. Lower values will make the AI prioritize lower placements.",
       "example": "In this example, the tetromino is placed at height 3."
     },
     "eroded_cells": {
       "name": "Cleared cells",
-      "description": "The number of cells that are cleared from the tetromino itself as a result of the move.",
+      "description": "The number of cells that are cleared from the tetromino itself as a result of the move. Higher values will make the AI prioritize clearing more lines immediately, which is safer but may prevent it from setting up larger combos like Tetrises (4-line clears).",
       "example": "In this example, the number of cleared cells is 4 because 4 cells are cleared from the tetromino due to the line being cleared when it is placed."
     },
     "cuml_wells": {
       "name": "Wells",
-      "description": "The sum of the depths of all wells on the board. A well is a column with empty cells that are adjacent to filled cells.",
+      "description": "The total depth of all wells (empty columns surrounded by filled cells) on the board. While smaller wells can help setting up Tetrises, deeper wells become increasingly risky and harder to fill without causing a game over.",
       "example": "There are 4 wells in total in this example with varying depths."
     }
   },

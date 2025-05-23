@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "$lib/translations";
     import { Weights } from "$lib/weights.svelte";
     import LevelComp from "$lib/components/Level.svelte";
     import Tetris from "$lib/components/Tetris.svelte";
@@ -26,7 +27,9 @@
                 type="checkbox"
                 bind:checked={timePressure}
             />
-            <label for="time-pressure">Time pressure</label>
+            <label for="time-pressure"
+                >{$t("feature_control.time_pressure")}</label
+            >
         </div>
         <Scoreboard
             key="sandbox"

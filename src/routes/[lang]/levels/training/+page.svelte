@@ -16,8 +16,8 @@
     // This are all the features available in the training
     // TODO: Expensibility: should be defined elsewhere
     const FEATURE_NAMES: string[] = [
-        "row_trans",
         "col_trans",
+        "row_trans",
         "pits",
         "landing_height",
         "eroded_cells",

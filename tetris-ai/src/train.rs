@@ -190,7 +190,7 @@ impl TrainCriterion {
                         break;
                     }
                 }
-                sim.stats().lines as f64
+                sim.stats().lines as f64 / 10.0
             }
             TrainCriterion::Tetrises => {
                 sim.run_for(EVAL_ITERATIONS);
