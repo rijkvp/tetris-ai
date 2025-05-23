@@ -2,7 +2,7 @@ import type { Move } from "tetris-ai";
 import type { TetrisSimulator } from "./simulator.svelte";
 
 const BASE_SPEED = 1 / 5; // base interval between ticks in seconds
-const MIN_FPS = 30; // minimum frames per second
+const MAX_STEPS_PER_FRAME = 100;
 
 // based on NES Tetris
 function framesPerDrop(level: number): number {
@@ -52,13 +52,15 @@ export class TetrisAnimator {
         if (this.isRunning) {
             // Simulate whole moves based on accumulated time
 
-            // TODO: Fix the game from freezing at very high speeds
-            while (this.#accumulator >= this.#tickInterval * this.#simulator.pathLength) {
+            let stepsThisFrame = 0; // fixes the game from freezing at very high speeds
+            while (this.#accumulator >= this.#tickInterval * this.#simulator.pathLength
+                && stepsThisFrame < MAX_STEPS_PER_FRAME) {
                 this.#accumulator -= this.#tickInterval * this.#simulator.pathLength;
                 if (!this.#simulator.simulateNext()) {
                     this.#gameOver();
                     break;
                 }
+                stepsThisFrame++;
             }
 
             const progress = this.#accumulator / (this.#tickInterval * this.#simulator.pathLength);

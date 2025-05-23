@@ -274,7 +274,7 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
         },
         features: [
             ["pits", -10],
-            ["landing_height", -3],
+            ["landing_height", -4],
             ["eroded_cells", 0],
             ["cuml_wells", 0],
         ],
