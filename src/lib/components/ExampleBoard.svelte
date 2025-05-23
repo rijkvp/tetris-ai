@@ -66,7 +66,12 @@
             height[BOARD_WIDTH - 2] - height[BOARD_WIDTH - 1],
         );
         for (let c = 0; c < BOARD_WIDTH; c++) {
-            highlightWell(ctx, c, BOARD_HEIGHT - height[c] - wells[c], BOARD_HEIGHT - height[c]);
+            highlightWell(
+                ctx,
+                c,
+                BOARD_HEIGHT - height[c] - wells[c],
+                BOARD_HEIGHT - height[c],
+            );
         }
     }
 
@@ -97,7 +102,7 @@
         return height;
     }
 
-    function selectBoard(feature: string): number[][] {
+    function selectBoard(feature: string): number[][] | null {
         switch (feature) {
             case "col_trans":
             case "row_trans":
@@ -111,7 +116,7 @@
             case "cuml_wells":
                 return boards.WELLS_BOARD;
             default:
-                throw new Error(`Unkown feature: ${feature}`);
+                return null;
         }
     }
 
@@ -143,9 +148,14 @@
     let { feature }: { feature: string } = $props();
 
     $effect(() => {
-        const board = selectBoard(feature).map((row) => new Uint8Array(row));
-        const height = getHeight(board);
         clearBoard(ctx, canvas);
+        const boardValues = selectBoard(feature);
+        if (!boardValues) {
+            console.warn("No example board found for feature:", feature);
+            return;
+        }
+        const board = boardValues.map((row) => new Uint8Array(row));
+        const height = getHeight(board);
         displayBoard(ctx, board);
         displayFeature(feature, board, height);
     });

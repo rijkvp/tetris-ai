@@ -59,8 +59,14 @@
                 max="10.0"
                 step="0.1"
             />
-            <span class="weight-name">{$t(`feature.${key}.name`)}</span>
+            <span class="weight-name">
+                {$t(`feature.${key}.name`) === `feature.${key}.name`
+                    ? key
+                    : $t(`feature.${key}.name`)}
+            </span>
             <button
+                disabled={$t(`feature.${key}.description`) ===
+                    `feature.${key}.description`}
                 onclick={() => {
                     selectedFeature = key;
                     infoDialog.showModal();
@@ -94,6 +100,8 @@
         margin: 0.5rem 0;
         justify-items: stretch;
         align-items: center;
+        max-height: 300px;
+        overflow-y: auto;
     }
     .weight-value {
         font-weight: bold;

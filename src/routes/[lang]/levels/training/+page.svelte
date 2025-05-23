@@ -12,21 +12,15 @@
     import WeightsDisplay from "$lib/components/WeightsDisplay.svelte";
     import TrainTetris from "$lib/components/TrainTetris.svelte";
     import Level from "$lib/components/Level.svelte";
+    import { WeightsMap } from "tetris-ai";
 
-    // This are all the features available in the training
-    // TODO: Expensibility: should be defined elsewhere
-    const FEATURE_NAMES: string[] = [
-        "col_trans",
-        "row_trans",
-        "pits",
-        "landing_height",
-        "eroded_cells",
-        "cuml_wells",
-    ];
+    const DEFAULT_FEATURES = Array.from(
+        WeightsMap.defaults().into_js() as [string, number][],
+    ).map(([key, _]) => key);
 
     let trainCriterion: TrainCriterion = $state("score");
-    let currentFeatures: string[] = $state(FEATURE_NAMES);
-    let featureNames: string[] = $state(FEATURE_NAMES);
+    let currentFeatures: string[] = $state(DEFAULT_FEATURES);
+    let featureNames: string[] = $state(DEFAULT_FEATURES);
 
     let isRunning: boolean = $state(false);
     let isTetrisRunning: boolean = $state(false);
@@ -38,7 +32,9 @@
         trainState = null;
         trainGeneration = null;
         if (trainTetris != null) {
-            const weights = new Weights(FEATURE_NAMES.map((key) => [key, 0]));
+            const weights = new Weights(
+                DEFAULT_FEATURES.map((key) => [key, 0]),
+            );
             trainTetris.updateWeights(weights, true);
         }
         currentFeatures = featureNames;
@@ -67,7 +63,7 @@
                     if (trainState.generation) {
                         trainGeneration = trainState.generation;
                         const weights = Weights.fromValues(
-                            FEATURE_NAMES,
+                            currentFeatures,
                             trainGeneration.weights,
                         );
                         trainTetris.updateWeights(weights, false);
@@ -153,7 +149,7 @@
                     disabled={isRunning}
                     multiple
                 >
-                    {#each FEATURE_NAMES as featureName}
+                    {#each DEFAULT_FEATURES as featureName}
                         <option value={featureName}>
                             {$t(`feature.${featureName}.name`)}
                         </option>
@@ -187,11 +183,15 @@
                         {#if trainGeneration}
                             <p>
                                 {$t("training.min")}:
-                                <strong>{trainGeneration.min}</strong>,
+                                <strong>{trainGeneration.min.toFixed(2)}</strong
+                                >,
                                 {$t("training.mean")}:
-                                <strong>{trainGeneration.mean}</strong>,
+                                <strong
+                                    >{trainGeneration.mean.toFixed(2)}</strong
+                                >,
                                 {$t("training.max")}:
-                                <strong>{trainGeneration.max}</strong>
+                                <strong>{trainGeneration.max.toFixed(2)}</strong
+                                >
                             </p>
                             <WeightsDisplay
                                 weightKeys={currentFeatures}

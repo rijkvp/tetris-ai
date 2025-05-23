@@ -62,11 +62,9 @@ Edit the configurations in `src/lib/levels.ts`.
 
 ### Adding a new feature
 
-TODO: Test this
-
-1. Write a feature in `tetris-ai/src/feature.rs`
+1. Create a function that implements it insie `tetris-ai/src/feature.rs`
 2. Add it to the `FEATURE_LOOKUP` array at the top of the file
-3. Now it should be available for use inside the levels.
+3. Now the feature should be available for use. Optionally you can add the translations to the JSON translation files under `feature.[name]` where the `name` corresponds to the string you defined in the lookup table.
 
 ## Deployment
 

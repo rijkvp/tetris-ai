@@ -18,6 +18,7 @@ const FEATURE_LOOKUP: &[(&str, FeatureFn)] = &[
     ("landing_height", landing_height),
     ("eroded_cells", eroded_cells),
     ("cuml_wells", cuml_wells),
+    // Add new features here
 ];
 
 /// Presets can be used to quickly initialize a set of weights.
