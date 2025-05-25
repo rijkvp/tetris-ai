@@ -135,7 +135,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
 <p>
 Hier komen <strong>kenmerken</strong> om de hoek kijken. Kenmerken zijn aanwijzingen van stukjes informatie die de AI helpen om beslissingen te nemen. Door <strong>waardes</strong> toe te kennen aan deze kenmerken laten we de AI weten welke soorten zetten goed zijn en welke juist slecht.</p>
 <p>
-In het volgende level begin je met twee kenmerken: <strong>gaten</strong> en <strong>landingshoogte</strong>. Je kunt de <strong>waardes</strong> van deze kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kermerk wenselijk is, kun je de waarde ervan verhogen zodat de AI er voorraang aan geeft. Andersom, als je denkt dat een kenmerk juist vermeden moet worden, kun je de waarde ervan verlagen. Het doel is om 20 rijen weg te spelen door de waardes van de kenmerken aan te passen. Succes!</p>
+In het volgende level begin je met twee kenmerken: <strong>gaten</strong> en <strong>landingshoogte</strong>. Je kunt de <strong>waardes</strong> van deze kenmerken aanpassen met schuifregelaars. Als je bijvoorbeeld denkt dat een kenmerk wenselijk is, kun je de waarde ervan verhogen zodat de AI er voorraang aan geeft. Andersom, als je denkt dat een kenmerk juist vermeden moet worden, kun je de waarde ervan verlagen. Het doel is om 20 rijen weg te spelen door de waardes van de kenmerken aan te passen. Succes!</p>
 
 `
         },
@@ -180,14 +180,14 @@ De waardes van twee andere kenmerken zijn al gegeven om je op weg te helpen. Dez
             nl: "Level 29"
         },
         summary: {
-            en: "Reach level 29 by using 6 features.",
-            nl: "Behaal level 29 halen met 6 kenmerken."
+            en: "Reach level 29 by using six features.",
+            nl: "Behaal level 29 halen met zes kenmerken."
         },
         explanation: {
             en: `<p>
 Now let's combine all the features. The hardest level in Tetris is level 29. Try to reach this level by adjusting the weights of the <strong>cleared cells</strong> and <strong>wells</strong> features again. The weights of the other four features are already given.</p>`,
             nl: `<p>
-Nu gaan we alle kenmerken combineren. In Tetris is het moeilijkste level 29. Probeer dit level te halen door weer de waardes van de <strong>weggespeelde hokjes</strong> en <strong>putten</strong> aan te passen. De 4 andere kenmerken zijn al gegeven.</p>`
+Nu gaan we alle kenmerken combineren. In Tetris is het moeilijkste level 29. Probeer dit level te halen door weer de waardes van de <strong>weggespeelde hokjes</strong> en <strong>putten</strong> aan te passen. De vier andere kenmerken zijn al gegeven.</p>`
         },
     },
     "training": {
@@ -200,7 +200,7 @@ Nu gaan we alle kenmerken combineren. In Tetris is het moeilijkste level 29. Pro
             nl: "Leer hoe de AI wordt getraind om Tetris te spelen."
         },
         explanation: {
-            en: `<p>In practice, it is not practical to set all features manually (as you may have noticed). AI models can have thousands of features. Instead, AIs are 'trained' by an algorithm. In this 'level', you can see how the Tetris AI is trained by an algorithm. In the visualization, you see the best version of the AI playing from the previous generation. You can see that it gets better and better at playing Tetris.</p>
+            en: `<p>It is not practical to set all features manually (as you may have noticed). AI models can have thousands of features. Instead, AIs are automatically 'trained' by an algorithm, which you can see in this 'level'. In the visualisation, you see the best version of the AI playing from the previous generation. Observe that every generation gets better and better at playing Tetris over time.</p>
 
 <h3>How does the training algorithm work?</h3>
 <p>
@@ -208,7 +208,7 @@ The process starts with a generation of 100 Tetris models, each with random valu
 
 <p>
 The average of the values of the top models is taken, and that average is then slightly adjusted with small, random changes. This creates a new generation of models that hopefully plays even better. This process is repeated until all models converge on the same features.</p>`,
-            nl: `<p>In de praktijk is het (zoals je misschien gemerkt hebt) niet praktisch om alle kenmerken handmatig in te stellen. AI modellen kunnen wel duizenden kenmerken hebben. In plaats daarvan worden AIs 'getraind' door een algoritme. In dit 'level' kun je zien hoe de Tetris AI wordt getraind door een algoritme. In de visualisatie zie je steeds de beste versie van de AI van de vorige generatie. Je ziet dat die steeds beter wordt in het spelen van Tetris.
+            nl: `<p>In de praktijk is het (zoals je misschien gemerkt hebt) niet praktisch om alle kenmerken handmatig in te stellen. AI modellen kunnen wel duizenden kenmerken hebben. In plaats daarvan worden AIs 'getraind' door een algoritme wat je kunt zien in dit 'level'. In de visualisatie zie je steeds de beste versie van de AI van de vorige generatie. Merk op dat elke generatie steeds beter wordt in het spelen van Tetris.
 
 <h3>Hoe werkt het trainingsalgoritme?</h3>
 
@@ -217,7 +217,7 @@ Het proces begint met een generatie van 100 Tetris-modellen, die elk willekeurig
 </p>
 
 <p>
-Het gemiddelde van de waardes van de topmodellen wordt genomen en dat gemiddelde wordt vervolgens een beetje aangepast met kleine, willekeurige veranderingen. Zo ontstaat een nieuwe generatie modellen, die hopelijk nog beter speelt. Dit process wordt net zolang herhaald totdat alle modellen op dezelfde kenmerken uitkomen.
+Het gemiddelde van de waardes van de topmodellen wordt vervolgens een beetje aangepast met kleine, willekeurige veranderingen. Zo ontstaat een nieuwe generatie modellen, die hopelijk nog beter speelt. Dit proces wordt net zolang herhaald totdat alle modellen op dezelfde kenmerken uitkomen.
 </p>`
         },
     },
