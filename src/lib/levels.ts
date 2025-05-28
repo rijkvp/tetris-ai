@@ -288,7 +288,7 @@ export const LEVEL_CONFIG: { [key: string]: LevelConfig } = {
             ["row_trans", -4],
             ["pits", -5],
             ["landing_height", -3],
-            ["eroded_cells", -1.5],
+            ["eroded_cells", 0],
             ["cuml_wells", 0]
         ],
         lockedFeatures: [
