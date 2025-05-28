@@ -2,6 +2,8 @@
 
 This is an educational 'game' to teach people about machine learning in the context of a Tetris AI.
 
+![screenshot](https://github.com/user-attachments/assets/373c88ae-1479-46aa-889f-57547350bad6)
+
 ## Usage
 
 The Rust back end is both available as a CLI and as WASM library.
