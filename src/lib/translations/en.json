@@ -2,18 +2,18 @@
   "general": {
     "title": "Tetris AI",
     "close": "Close",
-    "previous_level": "Previous level",
-    "next_level": "Next level",
-    "level_menu": "All levels",
+    "previous_level": "Previous Level",
+    "next_level": "Next Level",
+    "level_menu": "All Levels",
     "example": "Example",
     "features": "Features",
     "scoreboard": "Scoreboard",
-    "level_start": "Start level",
-    "level_explanation": "Back to explanation",
-    "reset_progress": "Reset progress"
+    "level_start": "Start Level",
+    "level_explanation": "Back to Explanation",
+    "reset_progress": "Reset Progress"
   },
   "level_select": {
-    "title": "Select level",
+    "title": "Select Level",
     "description": "Select a level to play."
   },
   "score": {
@@ -26,7 +26,7 @@
     "play": "Play",
     "pause": "Pause",
     "step": "Step",
-    "new_game": "New game",
+    "new_game": "New Game",
     "speed": "Speed"
   },
   "goals": {
@@ -37,59 +37,59 @@
   "feature_control": {
     "reset": "Reset",
     "randomize": "Randomize",
-    "time_pressure": "Time pressure"
+    "time_pressure": "Time Pressure"
   },
   "feature": {
     "col_trans": {
-      "name": "Vertical transitions",
-      "description": "The number of times that two cells next to each other in the same column don't match (one is filled and the other is empty). Lower weights make the AI prioritize column fills with fewer gaps, encouraging cleaner stacking patterns that are easier to clear later.",
-      "example": "In this example, the arrows show the vertical transitions. In total there are 15 column transitions."
+      "name": "Vertical Transitions",
+      "description": "The number of times two adjacent cells in the same column don't match (one is filled and the other is empty). Lower weights make the AI prioritize column fills with fewer gaps, encouraging cleaner stacking patterns that are easier to clear later.",
+      "example": "In this example, the arrows show the vertical transitions. There are 15 column transitions in total."
     },
     "row_trans": {
-      "name": "Horizontal transitions",
-      "description": "The number of times that two cells next to each other in the same row don't match (one is filled and the other is empty). Lower weights make the AI prioritize rows with fewer gaps, while higher weights make the AI prioritize rows with more gaps, creating pilars of tetrominoes.",
-      "example": "In this example, the arrows show the horizontal transitions. In total there are 11 row transitions."
+      "name": "Horizontal Transitions",
+      "description": "The number of times two adjacent cells in the same row don't match (one is filled and the other is empty). Lower weights make the AI prioritize rows with fewer gaps, while higher weights encourage it to create pillars of tetrominoes.",
+      "example": "In this example, the arrows show the horizontal transitions. There are 11 row transitions in total."
     },
     "pits": {
       "name": "Holes",
-      "description": "The number of empty cells that have a filled cell above them. In Tetris you generally want to avoid holes since holes make it harder to clear lines.",
-      "example": "In this example, all holes are marked with crosses. In total there are 25 holes."
+      "description": "The number of empty cells with at least one filled cell above them. In Tetris, you generally want to avoid holes, as they make it harder to clear lines.",
+      "example": "In this example, all holes are marked with crosses. There are 25 holes in total."
     },
     "landing_height": {
-      "name": "Landing height",
-      "description": "The height at which the tetromino is placed. Higher values of this will make the AI prioritize higher placements. Lower values will make the AI prioritize lower placements.",
+      "name": "Landing Height",
+      "description": "The height at which the tetromino is placed. Higher values make the AI prioritize higher placements, while lower values favor lower placements.",
       "example": "In this example, the tetromino is placed at height 3."
     },
     "eroded_cells": {
-      "name": "Cleared cells",
-      "description": "The number of cells that are cleared from the tetromino itself as a result of the move. Higher values will make the AI prioritize clearing more lines immediately, which is safer but may prevent it from setting up larger combos like Tetrises (4-line clears).",
+      "name": "Cleared Cells",
+      "description": "The number of cells cleared from the tetromino itself as a result of the move. Higher values make the AI prioritize immediate line clears, which is safer but may prevent setting up larger combos like Tetrises (4-line clears).",
       "example": "In this example, the number of cleared cells is 4 because 4 cells are cleared from the tetromino due to the line being cleared when it is placed."
     },
     "cuml_wells": {
       "name": "Wells",
-      "description": "The total depth of all wells (empty columns surrounded by filled cells) on the board. While smaller wells can help setting up Tetrises, deeper wells become increasingly risky and harder to fill without causing a game over.",
-      "example": "There are 4 wells in total in this example with varying depths."
+      "description": "The total depth of all wells (empty columns surrounded by filled cells) on the board. Smaller wells can help in setting up Tetrises, but deeper wells are increasingly risky and harder to fill without causing a game over.",
+      "example": "There are 4 wells in total in this example, with varying depths."
     }
   },
   "training": {
     "settings": "Settings",
     "criterion": "Criterion",
-    "available_features": "Available features",
+    "available_features": "Available Features",
     "generation": "Generation",
     "model": "Model",
-    "current_results": "Current results",
+    "current_results": "Current Results",
     "min": "Min",
     "max": "Max",
     "mean": "Mean",
-    "restart": "Restart training",
-    "stop": "Stop training"
+    "restart": "Restart Training",
+    "stop": "Stop Training"
   },
   "footer": {
     "credits": "Credits",
-    "source_code": "Source code"
+    "source_code": "Source Code"
   },
   "credits": {
     "title": "Credits",
-    "content": "<p>Made by <a href=\"https://rijkvp.nl/\">Rijk van Putten</a> for the <a href=\"https://www.rug.nl/jantina-tammes-school/\">Jantina Tammes School</a> of the University of Groningen.</p> <a href=\"https://hdl.handle.net/11370/bd472f68-d9de-4095-9697-9b3c6db02d49\">Link to research</a>"
+    "content": "<p>Made by <a href=\"https://rijkvp.nl/\">Rijk van Putten</a> for the <a href=\"https://www.rug.nl/jantina-tammes-school/\">Jantina Tammes School</a> at the University of Groningen.</p> <a href=\"https://hdl.handle.net/11370/bd472f68-d9de-4095-9697-9b3c6db02d49\">Link to research</a>"
   }
 }

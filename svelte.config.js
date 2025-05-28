@@ -3,7 +3,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 let basePath = '';
 if (process.env.NODE_ENV === 'production') {
-    basePath = process.env.BASE_PATH;
+    basePath = process.env.BASE_PATH ?? '';
     console.log(`Base path: '${basePath}'`);
 }
 

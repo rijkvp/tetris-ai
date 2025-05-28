@@ -42,32 +42,32 @@
   "feature": {
     "col_trans": {
       "name": "Verticale overgangen",
-      "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere is leeg). Lagere waardes zorgen ervoor dat de AI prioriteit geeft aan Kolommen met minder lege hokjes, wat voor patronen zorgt die later gemakkelijker weg te spelen zijn.",
+      "description": "Het aantal keren dat twee hokjes boven elkaar in dezelfde kolom niet overeenkomen (de ene is gevuld en de andere leeg). Lagere waarden zorgen ervoor dat de AI prioriteit geeft aan kolommen met minder lege hokjes, wat patronen oplevert die later gemakkelijker zijn weg te spelen",
       "example": "In dit voorbeeld zijn alle verticale overgangen gemarkeerd met pijltjes. Er zijn 15 verticale overgangen in totaal."
     },
     "row_trans": {
       "name": "Horizontale overgangen",
-      "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere is leeg). Lagere waardes zorgen ervoor dat de AI prioriteit geeft aan rijen met minder gaten, omgekeerd zorgen hogere waardes voor het tegengestelde, wat leidt tot pilaren van tetromino's.",
+      "description": "Het aantal keren dat twee hokjes naast elkaar in dezelfde rij niet overeenkomen (de ene is gevuld en de andere leeg). Lagere waarden zorgen ervoor dat de AI prioriteit geeft aan rijen met minder gaten. Hogere waarden zorgen voor het tegenovergestelde, wat leidt tot pilaren van tetromino's.",
       "example": "In dit voorbeeld zijn alle horizontale overgangen gemarkeerd met pijltjes. Er zijn 11 horizontale overgangen in totaal."
     },
     "pits": {
       "name": "Gaten",
-      "description": "Het aantal lege hokjes dat een gevuld kokje erboven heeft. In Tetris wil je over het algemeen gaten vermijden, omdat ze het moeilijker maken om rijen weg te spelen.",
+      "description": "Het aantal lege hokjes dat een gevuld hokje erboven heeft. In Tetris wil je over het algemeen gaten vermijden, omdat ze het moeilijker maken om rijen weg te spelen.",
       "example": "In dit voorbeeld zijn alle gaten gemarkeerd met kruisjes. Er zijn 25 gaten in totaal."
     },
     "landing_height": {
       "name": "Landingshoogte",
-      "description": "De hoogte waarop de tetromino wordt geplaatst. Hogere waardes zorgen ervoor dat de AI prioriteit geeft aan hogere plekken. Lagere waardes zorgen ervoor dat de AI prioriteit geeft aan lagere plekken.",
-      "example": "In dit voorbeeld, wordt de tetromino geplaatst op hoogte 3."
+      "description": "De hoogte waarop de tetromino wordt geplaatst. Hogere waarden zorgen ervoor dat de AI prioriteit geeft aan hogere plekken. Lagere waarden zorgen ervoor dat de AI prioriteit geeft aan lagere plekken.",
+      "example": "In dit voorbeeld wordt de tetromino geplaatst op hoogte 3."
     },
     "eroded_cells": {
       "name": "Weggespeelde hokjes",
-      "description": "Het aantal hokjes dat wordt weggespeeld van de tetromino zelf als gevolg van de zet. Hogere waarden zorgen ervoor dat de AI het onmiddellijk wegspelen van meer rijen prioriteert, wat veiliger is maar het opzetten van grotere combinaties zoals tetrissen (4 rijen tegelijk wegspelen) kan verhinderen.",
+      "description": "Het aantal hokjes dat van de tetromino zelf wordt weggespeeld als gevolg van de zet. Hogere waarden zorgen ervoor dat de AI het onmiddellijk wegspelen van meer rijen prioriteert. Dit is veiliger, maar kan het opzetten van grotere combinaties zoals tetrissen (4 rijen tegelijk wegspelen) verhinderen.",
       "example": "In dit voorbeeld is het aantal weggespeelde hokjes 4."
     },
     "cuml_wells": {
       "name": "Putten",
-      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die grenzen aan gevulde hokjes. Kleinere putten kunnen helpen bij het opzetten van tetrissen, maar diepere putten worden steeds riskanter en moeilijker te vullen zonder game over te krijgen.",
+      "description": "De som van de dieptes van alle putten op het bord. Een put is een kolom met lege hokjes die aan gevulde hokjes grenzen. Kleinere putten kunnen helpen bij het opzetten van tetrissen, maar diepere putten worden steeds riskanter en moeilijker te vullen zonder game over te gaan.",
       "example": "In dit voorbeeld zijn er 4 putten met verschillende dieptes."
     }
   },

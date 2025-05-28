@@ -99,8 +99,8 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
  <ul>
  <li>
  <strong>Pijltjes links/rechts</strong>: verplaats de tetromino naar links/rechts </li>
- <li><strong>Pijlje omhoog/Z</strong>: draai de tetromino</li>
- <li><strong>Pijlje omlaag</strong>: verplaats de tetromino naar beneden</li>
+ <li><strong>Pijltje omhoog/Z</strong>: draai de tetromino</li>
+ <li><strong>Pijltje omlaag</strong>: verplaats de tetromino naar beneden</li>
  <li><strong>Spatiebalk</strong>: laat de tetromino vallen</li>
  </ul>`
         }
@@ -118,7 +118,7 @@ Eerst ga je zelf Tetris spelen om een gevoel te krijgen voor het spel.</p>`,
             en: `
                 <p>
                 Now let's make the AI play Tetris!
-                Computers are really fast and the AI can easiliy calculate all possible splots to place the tetronomino.
+                Computers are really fast and the AI can easiliy calculate all possible spots to place the tetronomino.
                 However, it does not know what moves are good, and which are bad.
                 </p>
                 <p>
