@@ -270,19 +270,10 @@ fn wells(state: &State) -> [i64; BOARD_WIDTH] {
 /// The sum from 1 to wells.
 // Computed using the formula for the sum of natural numbers.
 fn cuml_wells(state: &State) -> f64 {
-    let value = wells(state)
+    wells(state)
         .into_iter()
         .map(|x| x * (x + 1) / 2)
-        .sum::<i64>() as f64;
-    // Adjust the value inside the frontend version by a constant factor to make more user friendly.
-    #[cfg(feature = "wasm")]
-    {
-        value * 0.15
-    }
-    #[cfg(not(feature = "wasm"))]
-    {
-        value
-    }
+        .sum::<i64>() as f64
 }
 
 /// The number of empty cells that have at least one filled cell above them.

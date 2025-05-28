@@ -50,6 +50,7 @@
     }
     .header-section {
         display: flex;
+        flex-wrap: wrap;
         gap: 1.3rem;
         align-items: center;
     }

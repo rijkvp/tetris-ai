@@ -63,9 +63,8 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        if (event.repeat) {
-            return;
-        }
+        // Allow repeating keys, uncomment to disable
+        // if (event.repeat) return;
         if (event.key === "l" || event.key === "ArrowRight") {
             game.move_right();
         } else if (event.key === "j" || event.key === "ArrowLeft") {
